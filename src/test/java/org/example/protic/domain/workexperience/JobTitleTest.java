@@ -1,4 +1,4 @@
-package org.example.protic.domain.experience;
+package org.example.protic.domain.workexperience;
 
 import org.apache.commons.lang.StringUtils;
 import org.example.protic.commons.ValidationException;
@@ -40,7 +40,7 @@ class JobTitleTest {
   void createJobTitleWithValidName() {
     String name = "job title";
     JobTitle jobTitle = JobTitle.of(name);
-    assertEquals(name, jobTitle.getName());
+    assertEquals(name.toUpperCase(), jobTitle.getName());
   }
 
   @Test
@@ -48,7 +48,7 @@ class JobTitleTest {
   void createJobTitleWithNameContainingMultipleSpaces() {
     String name = "job  title  with  multiple  spaces";
     JobTitle jobTitle = JobTitle.of(name);
-    assertEquals(name.trim(), jobTitle.getName());
+    assertEquals(name.trim().toUpperCase(), jobTitle.getName());
   }
 
   @Test

@@ -1,4 +1,4 @@
-package org.example.protic.domain.experience;
+package org.example.protic.domain.workexperience;
 
 import org.apache.commons.lang.StringUtils;
 import org.example.protic.commons.ValidationException;
@@ -7,25 +7,25 @@ import org.example.protic.domain.ValueObject;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public final class Technology implements ValueObject {
+public final class Company implements ValueObject {
 
   public static final int MAX_NAME_SIZE = 50;
   private final String name;
 
-  private Technology(String name) {
+  private Company(String name) {
     if (StringUtils.isBlank(name)) {
-      throw new ValidationException("Null or empty technology name.");
+      throw new ValidationException("Null or empty company name.");
     }
     if (name.length() > MAX_NAME_SIZE) {
       throw new ValidationException(
           MessageFormat.format(
-              "Technology name cannot be greater than {0} characters.", MAX_NAME_SIZE));
+              "Company name cannot be greater than {0} characters.", MAX_NAME_SIZE));
     }
-    this.name = name.trim();
+    this.name = name.trim().toUpperCase();
   }
 
-  public static Technology of(String value) {
-    return new Technology(value);
+  public static Company of(String value) {
+    return new Company(value);
   }
 
   public String getName() {
@@ -40,8 +40,8 @@ public final class Technology implements ValueObject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Technology that = (Technology) o;
-    return Objects.equals(name, that.name);
+    Company company = (Company) o;
+    return Objects.equals(name, company.name);
   }
 
   @Override

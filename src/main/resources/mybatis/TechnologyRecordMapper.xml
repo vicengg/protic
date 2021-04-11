@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.TechnologyRecordMapper">
+    <sql id="technology_columns">
+        ID_TECHNOLOGY,
+        NAME_VALUE
+    </sql>
+    <select id="selectById" parameterType="org.example.protic.infrastructure.database.mybatis.records.TechnologyRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.TechnologyRecord">
+        select
+        <include refid="technology_columns"/>
+        from TECHNOLOGY
+        <where>
+            ID_TECHNOLOGY = #{idTechnology}
+        </where>
+    </select>
+    <select id="selectByNameValue" parameterType="org.example.protic.infrastructure.database.mybatis.records.TechnologyRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.TechnologyRecord">
+        select
+        <include refid="technology_columns"/>
+        from TECHNOLOGY
+        <where>
+            NAME_VALUE = #{nameValue}
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.TechnologyRecord"
+    useGeneratedKeys="true" keyProperty="idTechnology" keyColumn="ID_TECHNOLOGY">
+        insert into TECHNOLOGY (NAME_VALUE) values (#{nameValue,jdbcType=VARCHAR})
+    </insert>
+</mapper>

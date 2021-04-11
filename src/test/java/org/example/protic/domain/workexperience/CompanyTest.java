@@ -1,4 +1,4 @@
-package org.example.protic.domain.experience;
+package org.example.protic.domain.workexperience;
 
 import org.apache.commons.lang.StringUtils;
 import org.example.protic.commons.ValidationException;
@@ -41,7 +41,7 @@ class CompanyTest {
   void createCompanyWithValidName() {
     String name = "company";
     Company company = Company.of(name);
-    assertEquals(name, company.getName());
+    assertEquals(name.toUpperCase(), company.getName());
   }
 
   @Test
@@ -49,7 +49,7 @@ class CompanyTest {
   void createCompanyWithNameContainingMultipleSpaces() {
     String name = "company  with  multiple  spaces";
     Company company = Company.of(name);
-    assertEquals(name.trim(), company.getName());
+    assertEquals(name.trim().toUpperCase(), company.getName());
   }
 
   @Test

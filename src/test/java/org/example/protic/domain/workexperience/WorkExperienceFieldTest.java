@@ -1,4 +1,4 @@
-package org.example.protic.domain.experience;
+package org.example.protic.domain.workexperience;
 
 import org.example.protic.commons.ValidationException;
 import org.junit.jupiter.api.DisplayName;

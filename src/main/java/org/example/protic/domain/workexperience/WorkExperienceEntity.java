@@ -1,4 +1,4 @@
-package org.example.protic.domain.experience;
+package org.example.protic.domain.workexperience;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.example.protic.commons.ValidationException;
@@ -38,18 +38,22 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
                 () -> new ValidationException("Work period is mandatory for work experience."));
   }
 
+  @Override
   public WorkExperienceField<JobTitle> getJobTitle() {
     return jobTitle;
   }
 
+  @Override
   public WorkExperienceField<Company> getCompany() {
     return company;
   }
 
+  @Override
   public WorkExperienceField<Set<Technology>> getTechnologies() {
     return technologies;
   }
 
+  @Override
   public WorkExperienceField<WorkPeriod> getWorkPeriod() {
     return workPeriod;
   }
