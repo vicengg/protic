@@ -37,3 +37,15 @@ CREATE TABLE COMPANY (
     ID_COMPANY NUMBER NOT NULL AUTO_INCREMENT,
     NAME_VALUE VARCHAR2(50) NOT NULLL
 ) [42001-200]
+2021-04-12 00:08:07 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "INSERT INTO WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) VALUES
+        (?, (?)[*]"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, ,, )"
+Syntax error in SQL statement "INSERT INTO WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) VALUES
+        (?, (?)[*]"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, ,, )"; SQL statement:
+insert into WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) values
+        (?, (?) [42001-200]
+2021-04-12 00:09:03 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "4006cd05158b4e1d8f516f32bb81becb"
+Data conversion error converting "4006cd05158b4e1d8f516f32bb81becb"; SQL statement:
+insert into WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) values
+        (?, ?) [22018-200]

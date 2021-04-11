@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.WorkExperienceRecordMapper">
+    <sql id="work_experience_columns">
+        ID_WORK_EXPERIENCE,
+        CREATED_AT,
+        ID_JOB_TITLE,
+        VISIBILITY_JOB_TITLE,
+        ID_COMPANY,
+        VISIBILITY_COMPANY,
+        VISIBILITY_TECHNOLOGIES,
+        START_DATE,
+        END_DATE,
+        VISIBILITY_WORK_PERIOD
+    </sql>
+    <select id="selectById" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        select
+        <include refid="work_experience_columns"/>
+        from WORK_EXPERIENCE
+        <where>
+            ID_WORK_EXPERIENCE = #{idWorkExperience}
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        insert into WORK_EXPERIENCE (
+        ID_WORK_EXPERIENCE,
+        CREATED_AT,
+        ID_JOB_TITLE,
+        VISIBILITY_JOB_TITLE,
+        ID_COMPANY,
+        VISIBILITY_COMPANY,
+        VISIBILITY_TECHNOLOGIES,
+        START_DATE,
+        END_DATE,
+        VISIBILITY_WORK_PERIOD
+        ) values (
+        #{idWorkExperience,jdbcType=VARBINARY},
+        #{createdAt,jdbcType=TIMESTAMP},
+        #{idJobTitle,jdbcType=INTEGER},
+        #{visibilityJobTitle,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{idCompany,jdbcType=INTEGER},
+        #{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{startDate,jdbcType=DATE},
+        #{endDate,jdbcType=DATE},
+        #{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean}
+        )
+    </insert>
+</mapper>

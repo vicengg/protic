@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.WorkExperienceTechnologyRecordMapper">
+    <sql id="work_experience_technology_columns">
+        ID_WORK_EXPERIENCE,
+        ID_TECHNOLOGY
+    </sql>
+    <select id="selectByWorkExperienceId"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceTechnologyRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceTechnologyRecord">
+        select
+        <include refid="work_experience_technology_columns"/>
+        from WORK_EXPERIENCE_TECHNOLOGY
+        <where>
+            ID_WORK_EXPERIENCE = #{idWorkExperience}
+        </where>
+    </select>
+    <insert id="insert"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceTechnologyRecord">
+        insert into WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) values
+        (#{idWorkExperience,jdbcType=VARBINARY}, #{idTechnology,jdbcType=INTEGER})
+    </insert>
+</mapper>

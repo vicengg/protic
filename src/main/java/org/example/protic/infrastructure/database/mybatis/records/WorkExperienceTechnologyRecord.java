@@ -1,7 +1,7 @@
 package org.example.protic.infrastructure.database.mybatis.records;
 
-public class TechnologyRecord {
+public class WorkExperienceTechnologyRecord {
 
+  public byte[] idWorkExperience;
   public long idTechnology;
-  public String nameValue;
 }

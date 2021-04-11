@@ -2,9 +2,7 @@ package org.example.protic.infrastructure.database;
 
 import org.example.protic.application.workexperience.WorkExperienceRepository;
 import org.example.protic.domain.workexperience.*;
-import org.example.protic.infrastructure.database.mybatis.mappers.CompanyRecordMapper;
-import org.example.protic.infrastructure.database.mybatis.mappers.JobTitleRecordMapper;
-import org.example.protic.infrastructure.database.mybatis.mappers.TechnologyRecordMapper;
+import org.example.protic.infrastructure.database.mybatis.mappers.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,6 +29,8 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
   @Inject private JobTitleRecordMapper jobTitleRecordMapper;
   @Inject private CompanyRecordMapper companyRecordMapper;
   @Inject private TechnologyRecordMapper technologyRecordMapper;
+  @Inject private WorkExperienceRecordMapper workExperienceRecordMapper;
+  @Inject private WorkExperienceTechnologyRecordMapper workExperienceTechnologyRecordMapper;
 
   @Test
   @DisplayName("It tests work experience creation on database.")
@@ -48,7 +48,11 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
 
   private WorkExperienceRepositoryAdapterSync createAdapterSync() {
     return new WorkExperienceRepositoryAdapterSync(
-        jobTitleRecordMapper, companyRecordMapper, technologyRecordMapper);
+        jobTitleRecordMapper,
+        companyRecordMapper,
+        technologyRecordMapper,
+        workExperienceRecordMapper,
+        workExperienceTechnologyRecordMapper);
   }
 
   private static WorkExperience createWorkExperience() {
