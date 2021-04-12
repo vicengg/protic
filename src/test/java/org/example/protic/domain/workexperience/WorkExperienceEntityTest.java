@@ -2,6 +2,7 @@ package org.example.protic.domain.workexperience;
 
 import org.apache.commons.collections4.SetUtils;
 import org.example.protic.commons.ValidationException;
+import org.example.protic.domain.UserId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorkExperienceEntityTest {
 
+  private static final UserId USER_ID = UserId.of("user_id");
   private static final WorkExperienceField<JobTitle> JOB_TITLE =
       WorkExperienceField.ofPrivate(JobTitle.of("job title"));
   private static final WorkExperienceField<Company> COMPANY =
@@ -24,13 +26,29 @@ class WorkExperienceEntityTest {
           WorkPeriod.from(LocalDate.now().minus(1, ChronoUnit.DAYS)).toPresent());
 
   @Test
+  @DisplayName("It tries to create a work experience entity without user id.")
+  void createWorkExperienceEntityWithoutUserId() {
+    ValidationException exception =
+        assertThrows(
+            ValidationException.class,
+            () ->
+                WorkExperienceEntity.builder(null, true)
+                    .withJobTitle(JOB_TITLE)
+                    .withCompany(COMPANY)
+                    .withTechnologies(TECHNOLOGIES)
+                    .withWorkPeriod(WORK_PERIOD)
+                    .build());
+    assertEquals("User ID is mandatory for work experience.", exception.getMessage());
+  }
+
+  @Test
   @DisplayName("It tries to create a work experience entity without job title.")
   void createWorkExperienceEntityWithoutJobTitle() {
     ValidationException exception =
         assertThrows(
             ValidationException.class,
             () ->
-                WorkExperienceEntity.builder()
+                WorkExperienceEntity.builder(USER_ID, true)
                     .withCompany(COMPANY)
                     .withTechnologies(TECHNOLOGIES)
                     .withWorkPeriod(WORK_PERIOD)
@@ -45,7 +63,7 @@ class WorkExperienceEntityTest {
         assertThrows(
             ValidationException.class,
             () ->
-                WorkExperienceEntity.builder()
+                WorkExperienceEntity.builder(USER_ID, true)
                     .withJobTitle(JOB_TITLE)
                     .withTechnologies(TECHNOLOGIES)
                     .withWorkPeriod(WORK_PERIOD)
@@ -60,7 +78,7 @@ class WorkExperienceEntityTest {
         assertThrows(
             ValidationException.class,
             () ->
-                WorkExperienceEntity.builder()
+                WorkExperienceEntity.builder(USER_ID, true)
                     .withJobTitle(JOB_TITLE)
                     .withCompany(COMPANY)
                     .withWorkPeriod(WORK_PERIOD)
@@ -76,7 +94,7 @@ class WorkExperienceEntityTest {
         assertThrows(
             ValidationException.class,
             () ->
-                WorkExperienceEntity.builder()
+                WorkExperienceEntity.builder(USER_ID, true)
                     .withJobTitle(JOB_TITLE)
                     .withCompany(COMPANY)
                     .withTechnologies(WorkExperienceField.ofPrivate(SetUtils.emptySet()))
@@ -93,7 +111,7 @@ class WorkExperienceEntityTest {
         assertThrows(
             ValidationException.class,
             () ->
-                WorkExperienceEntity.builder()
+                WorkExperienceEntity.builder(USER_ID, true)
                     .withJobTitle(JOB_TITLE)
                     .withCompany(COMPANY)
                     .withTechnologies(TECHNOLOGIES)
@@ -105,7 +123,7 @@ class WorkExperienceEntityTest {
   @DisplayName("It creates a work experience with all fields.")
   void createWorkExperienceEntityWithAllFields() {
     WorkExperienceEntity workExperienceEntity =
-        WorkExperienceEntity.builder()
+        WorkExperienceEntity.builder(USER_ID, true)
             .withJobTitle(JOB_TITLE)
             .withCompany(COMPANY)
             .withTechnologies(TECHNOLOGIES)

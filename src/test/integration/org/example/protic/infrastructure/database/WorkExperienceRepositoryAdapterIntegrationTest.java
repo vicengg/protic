@@ -1,8 +1,11 @@
 package org.example.protic.infrastructure.database;
 
 import org.example.protic.application.workexperience.WorkExperienceRepository;
+import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.database.mybatis.mappers.*;
+import org.example.protic.infrastructure.database.workexperience.WorkExperienceRepositoryAdapter;
+import org.example.protic.infrastructure.database.workexperience.WorkExperienceRepositoryAdapterSync;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,8 +41,8 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
     WorkExperienceRepository adapter = createAdapter();
     WorkExperience workExperience = createWorkExperience();
     adapter.create(workExperience).join();
-    FilteredWorkExperience filteredWorkExperience = adapter.findById(workExperience.getId()).join();
-    assertNotNull(filteredWorkExperience);
+    WorkExperience recoveredWorkExperience = adapter.findById(workExperience.getId()).join();
+    assertNotNull(recoveredWorkExperience);
   }
 
   private WorkExperienceRepository createAdapter() {
@@ -59,8 +62,10 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
     WorkExperience workExperience = Mockito.mock(WorkExperience.class);
     when(workExperience.getId()).thenReturn(UUID.randomUUID());
     when(workExperience.getCreatedAt()).thenReturn(Timestamp.from(Instant.now()));
+    when(workExperience.getUserId()).thenReturn(UserId.of("USER_ID"));
+    when(workExperience.getBinding()).thenReturn(true);
     when(workExperience.getJobTitle())
-        .thenReturn(WorkExperienceField.ofPublic(JobTitle.of("JOB_TITLE3")));
+        .thenReturn(WorkExperienceField.ofPublic(JobTitle.of("JOB_TITLE")));
     when(workExperience.getCompany())
         .thenReturn(WorkExperienceField.ofPublic(Company.of("COMPANY")));
     when(workExperience.getTechnologies())

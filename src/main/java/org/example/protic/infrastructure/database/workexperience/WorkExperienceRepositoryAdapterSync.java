@@ -1,16 +1,15 @@
-package org.example.protic.infrastructure.database;
+package org.example.protic.infrastructure.database.workexperience;
 
+import org.apache.commons.collections4.ListUtils;
 import org.example.protic.commons.UuidAdapter;
+import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.database.mybatis.mappers.*;
 import org.example.protic.infrastructure.database.mybatis.records.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WorkExperienceRepositoryAdapterSync {
@@ -45,6 +44,8 @@ public class WorkExperienceRepositoryAdapterSync {
     WorkExperienceRecord workExperienceRecord = new WorkExperienceRecord();
     workExperienceRecord.idWorkExperience = UuidAdapter.getBytesFromUUID(workExperience.getId());
     workExperienceRecord.createdAt = workExperience.getCreatedAt();
+    workExperienceRecord.userId = workExperience.getUserId().getValue();
+    workExperienceRecord.binding = workExperience.getBinding();
     workExperienceRecord.idJobTitle =
         createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
     workExperienceRecord.visibilityJobTitle = workExperience.getJobTitle().isPublic();
@@ -61,29 +62,56 @@ public class WorkExperienceRepositoryAdapterSync {
     insertTechnologies(workExperience.getId(), workExperience.getTechnologies().getValue());
   }
 
-  public FilteredWorkExperience findById(UUID id) {
+  public WorkExperience findById(UUID id) {
     WorkExperienceRecord workExperienceQuery = new WorkExperienceRecord();
     workExperienceQuery.idWorkExperience = UuidAdapter.getBytesFromUUID(id);
     WorkExperienceRecord workExperienceResult =
         expectOne(workExperienceRecordMapper.selectById(workExperienceQuery));
-    FilteredWorkExperienceImpl.Builder builder = FilteredWorkExperienceImpl.builder();
-    if (workExperienceResult.visibilityJobTitle) {
-      builder.withJobTitle(findJobTitleById(workExperienceResult.idJobTitle));
-    }
-    if (workExperienceResult.visibilityCompany) {
-      builder.withCompany(findCompanyById(workExperienceResult.idCompany));
-    }
-    if (workExperienceResult.visibilityTechnologies) {
-      builder.withTechnologies(
-          findTechnologiesByWorkExperienceId(workExperienceResult.idWorkExperience));
-    }
-    if (workExperienceResult.visibilityWorkPeriod) {
-      WorkPeriod.Builder from = WorkPeriod.from(workExperienceResult.startDate.toLocalDate());
-      builder.withWorkPeriod(
-          Optional.ofNullable(workExperienceResult.endDate)
-              .map(date -> from.to(date.toLocalDate()))
-              .orElse(from.toPresent()));
-    }
+    return recoverWorkExperience(workExperienceResult);
+  }
+
+  public List<WorkExperience> getByUserId(UserId userId) {
+    WorkExperienceRecord workExperienceQuery = new WorkExperienceRecord();
+    workExperienceQuery.userId = userId.getValue();
+    return ListUtils.emptyIfNull(workExperienceRecordMapper.selectByUserId(workExperienceQuery))
+        .stream()
+        .map(this::recoverWorkExperience)
+        .collect(Collectors.toList());
+  }
+
+  private WorkExperienceAdapterImpl recoverWorkExperience(
+      WorkExperienceRecord workExperienceRecord) {
+    WorkExperienceAdapterImpl.Builder builder = WorkExperienceAdapterImpl.builder();
+    JobTitle jobTitle = findJobTitleById(workExperienceRecord.idJobTitle);
+    builder.withId(UuidAdapter.getUUIDFromBytes(workExperienceRecord.idWorkExperience));
+    builder.withCreatedAt(workExperienceRecord.createdAt);
+    builder.withUserId(UserId.of(workExperienceRecord.userId));
+    builder.withBinding(workExperienceRecord.binding);
+    builder.withJobTitle(
+        workExperienceRecord.visibilityJobTitle
+            ? WorkExperienceField.ofPublic(jobTitle)
+            : WorkExperienceField.ofPrivate(jobTitle));
+    Company company = findCompanyById(workExperienceRecord.idCompany);
+    builder.withCompany(
+        workExperienceRecord.visibilityCompany
+            ? WorkExperienceField.ofPublic(company)
+            : WorkExperienceField.ofPrivate(company));
+    Set<Technology> technologies =
+        findTechnologiesByWorkExperienceId(workExperienceRecord.idWorkExperience);
+    builder.withTechnologies(
+        workExperienceRecord.visibilityTechnologies
+            ? WorkExperienceField.ofPublic(technologies)
+            : WorkExperienceField.ofPrivate(technologies));
+    WorkPeriod.Builder workPeriodStartDate =
+        WorkPeriod.from(workExperienceRecord.startDate.toLocalDate());
+    WorkPeriod workPeriod =
+        Optional.ofNullable(workExperienceRecord.endDate)
+            .map(date -> workPeriodStartDate.to(date.toLocalDate()))
+            .orElse(workPeriodStartDate.toPresent());
+    builder.withWorkPeriod(
+        workExperienceRecord.visibilityWorkPeriod
+            ? WorkExperienceField.ofPublic(workPeriod)
+            : WorkExperienceField.ofPrivate(workPeriod));
     return builder.build();
   }
 

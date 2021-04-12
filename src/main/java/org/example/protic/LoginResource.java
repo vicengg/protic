@@ -4,6 +4,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -13,6 +14,8 @@ import javax.ws.rs.core.SecurityContext;
 @Path("/")
 public class LoginResource {
 
+  public LoginResource() {}
+
   @GET
   @Path("login")
   @Produces(MediaType.TEXT_HTML)
@@ -20,7 +23,7 @@ public class LoginResource {
     return "Log in with <a href=\"/oauth2/authorization/github\">GitHub</a>";
   }
 
-  @GET
+  @POST
   @Produces(MediaType.TEXT_PLAIN)
   public String home(@Context SecurityContext securityContext) {
     OAuth2AuthenticationToken authenticationToken =

@@ -7,6 +7,8 @@ public class WorkExperienceRecord {
 
   public byte[] idWorkExperience;
   public Timestamp createdAt;
+  public String userId;
+  public boolean binding;
   public long idJobTitle;
   public boolean visibilityJobTitle;
   public long idCompany;

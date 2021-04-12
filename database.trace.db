@@ -49,3 +49,33 @@ org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "40
 Data conversion error converting "4006cd05158b4e1d8f516f32bb81becb"; SQL statement:
 insert into WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) values
         (?, ?) [22018-200]
+2021-04-12 23:10:00 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'USER_ID' (WORK_EXPERIENCE: ""USER_ID"" NUMBER NOT NULL)"
+Data conversion error converting "'USER_ID' (WORK_EXPERIENCE: ""USER_ID"" NUMBER NOT NULL)"; SQL statement:
+insert into WORK_EXPERIENCE (
+        ID_WORK_EXPERIENCE,
+        CREATED_AT,
+        USER_ID,
+        BINDING,
+        ID_JOB_TITLE,
+        VISIBILITY_JOB_TITLE,
+        ID_COMPANY,
+        VISIBILITY_COMPANY,
+        VISIBILITY_TECHNOLOGIES,
+        START_DATE,
+        END_DATE,
+        VISIBILITY_WORK_PERIOD
+        ) values (
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+        ) [22018-200]
