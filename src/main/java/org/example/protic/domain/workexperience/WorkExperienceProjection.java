@@ -4,8 +4,11 @@ import org.example.protic.domain.UserId;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
-public interface WorkExperienceResponse {
+public interface WorkExperienceProjection {
+
+  UUID getId();
 
   Optional<UserId> getUserId();
 

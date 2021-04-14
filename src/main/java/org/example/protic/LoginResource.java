@@ -23,7 +23,7 @@ public class LoginResource {
     return "Log in with <a href=\"/oauth2/authorization/github\">GitHub</a>";
   }
 
-  @POST
+  @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String home(@Context SecurityContext securityContext) {
     OAuth2AuthenticationToken authenticationToken =

@@ -6,8 +6,6 @@ import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.database.mybatis.mappers.*;
 import org.example.protic.infrastructure.database.workexperience.WorkExperienceRepositoryAdapter;
 import org.example.protic.infrastructure.database.workexperience.WorkExperienceRepositoryAdapterSync;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -21,7 +19,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @MybatisTest
@@ -34,16 +31,6 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
   @Inject private TechnologyRecordMapper technologyRecordMapper;
   @Inject private WorkExperienceRecordMapper workExperienceRecordMapper;
   @Inject private WorkExperienceTechnologyRecordMapper workExperienceTechnologyRecordMapper;
-
-  @Test
-  @DisplayName("It tests work experience creation on database.")
-  void persistWorkExperience() {
-    WorkExperienceRepository adapter = createAdapter();
-    WorkExperience workExperience = createWorkExperience();
-    adapter.create(workExperience).join();
-    WorkExperience recoveredWorkExperience = adapter.findById(workExperience.getId()).join();
-    assertNotNull(recoveredWorkExperience);
-  }
 
   private WorkExperienceRepository createAdapter() {
     return new WorkExperienceRepositoryAdapter(createAdapterSync());

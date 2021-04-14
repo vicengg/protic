@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class UuidAdapter {
+
   public static byte[] getBytesFromUUID(UUID uuid) {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
     bb.putLong(uuid.getMostSignificantBits());

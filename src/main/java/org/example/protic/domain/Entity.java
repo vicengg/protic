@@ -14,6 +14,11 @@ public abstract class Entity implements Identifiable, TimeTraceable {
     this.createdAt = Timestamp.from(Instant.now());
   }
 
+  protected Entity(UUID id, Timestamp createdAt) {
+    this.id = id;
+    this.createdAt = createdAt;
+  }
+
   @Override
   public UUID getId() {
     return id;

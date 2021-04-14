@@ -2,37 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.WorkExperienceRecordMapper">
     <sql id="work_experience_columns">
-        ID_WORK_EXPERIENCE,
-        CREATED_AT,
-        USER_ID,
-        BINDING,
-        ID_JOB_TITLE,
-        VISIBILITY_JOB_TITLE,
-        ID_COMPANY,
-        VISIBILITY_COMPANY,
-        VISIBILITY_TECHNOLOGIES,
-        START_DATE,
-        END_DATE,
-        VISIBILITY_WORK_PERIOD
+        WE.ID_WORK_EXPERIENCE idWorkExperience,
+        WE.CREATED_AT createdAt,
+        WE.USER_ID userId,
+        WE.BINDING binding,
+        WE.ID_JOB_TITLE idJobTitle,
+        WE.VISIBILITY_JOB_TITLE visibilityJobTitle,
+        WE.ID_COMPANY idCompany,
+        WE.VISIBILITY_COMPANY visibilityCompany,
+        WE.VISIBILITY_TECHNOLOGIES visibilityTechnologies,
+        WE.START_DATE startDate,
+        WE.END_DATE endDate,
+        WE.VISIBILITY_WORK_PERIOD visibilityWorkPeriod
     </sql>
     <select id="selectById"
             parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord"
             resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
         select
         <include refid="work_experience_columns"/>
-        from WORK_EXPERIENCE
+        from WORK_EXPERIENCE WE
         <where>
-            ID_WORK_EXPERIENCE = #{idWorkExperience}
+            WE.ID_WORK_EXPERIENCE = #{idWorkExperience,jdbcType=VARBINARY}
         </where>
     </select>
-    <select id="selectByUserId"
-            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord"
+    <select id="select"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceFilterRecord"
             resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
-        select
+        select distinct
         <include refid="work_experience_columns"/>
-        from WORK_EXPERIENCE
+        from WORK_EXPERIENCE WE, JOB_TITLE JT, COMPANY C
         <where>
-            USER_ID = #{userId}
+            1 = 1
+            <if test='"own".equalsIgnoreCase(scope)'>
+                AND WE.USER_ID = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test='"foreign".equalsIgnoreCase(scope)'>
+                AND WE.USER_ID != #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="jobTitle!=null">
+                <bind name="jobTitlePattern" value="'%' + jobTitle + '%'"/>
+                AND WE.VISIBILITY_JOB_TITLE = TRUE
+                AND WE.ID_JOB_TITLE = JT.ID_JOB_TITLE
+                AND JT.NAME_VALUE LIKE #{jobTitlePattern,jdbcType=VARCHAR}
+            </if>
+            <if test="company!=null">
+                <bind name="companyPattern" value="'%' + company + '%'"/>
+                AND WE.VISIBILITY_COMPANY = TRUE
+                AND WE.ID_COMPANY = C.ID_COMPANY
+                AND C.NAME_VALUE LIKE #{companyPattern,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">

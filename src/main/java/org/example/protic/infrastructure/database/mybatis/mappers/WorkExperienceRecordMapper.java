@@ -1,6 +1,7 @@
 package org.example.protic.infrastructure.database.mybatis.mappers;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.protic.infrastructure.database.mybatis.records.WorkExperienceFilterRecord;
 import org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface WorkExperienceRecordMapper {
 
   int insert(WorkExperienceRecord workExperienceRecord);
 
-  List<WorkExperienceRecord> selectByUserId(WorkExperienceRecord workExperienceQuery);
+  List<WorkExperienceRecord> select(WorkExperienceFilterRecord workExperienceFilterRecord);
 }

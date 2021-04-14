@@ -1,6 +1,7 @@
 package org.example.protic.infrastructure.database.workexperience;
 
 import org.apache.commons.collections4.ListUtils;
+import org.example.protic.application.workexperience.GetWorkExperiencesQuery;
 import org.example.protic.commons.UuidAdapter;
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
@@ -70,13 +71,32 @@ public class WorkExperienceRepositoryAdapterSync {
     return recoverWorkExperience(workExperienceResult);
   }
 
-  public List<WorkExperience> getByUserId(UserId userId) {
-    WorkExperienceRecord workExperienceQuery = new WorkExperienceRecord();
-    workExperienceQuery.userId = userId.getValue();
-    return ListUtils.emptyIfNull(workExperienceRecordMapper.selectByUserId(workExperienceQuery))
-        .stream()
+  public List<WorkExperience> find(GetWorkExperiencesQuery query) {
+    WorkExperienceFilterRecord workExperienceFilters = mapToWorkExperienceFilters(query);
+    return ListUtils.emptyIfNull(workExperienceRecordMapper.select(workExperienceFilters)).stream()
         .map(this::recoverWorkExperience)
         .collect(Collectors.toList());
+  }
+
+  private static WorkExperienceFilterRecord mapToWorkExperienceFilters(
+      GetWorkExperiencesQuery query) {
+    WorkExperienceFilterRecord filters = new WorkExperienceFilterRecord();
+    filters.userId = Optional.ofNullable(query.userId).map(UserId::getValue).orElse(null);
+    filters.scope =
+        Optional.ofNullable(query.scope)
+            .map(Enum::name)
+            .orElse(GetWorkExperiencesQuery.Scope.ALL.name());
+    filters.jobTitle = Optional.ofNullable(query.jobTitle).map(JobTitle::getName).orElse(null);
+    filters.company = Optional.ofNullable(query.company).map(Company::getName).orElse(null);
+    filters.technologies =
+        Optional.ofNullable(query.technologies)
+            .map(Collection::stream)
+            .map(s -> s.map(Technology::getName))
+            .map(s -> s.collect(Collectors.toSet()))
+            .orElse(null);
+    filters.startDate = Optional.ofNullable(query.startDate).map(Date::valueOf).orElse(null);
+    filters.endDate = Optional.ofNullable(query.endDate).map(Date::valueOf).orElse(null);
+    return filters;
   }
 
   private WorkExperienceAdapterImpl recoverWorkExperience(

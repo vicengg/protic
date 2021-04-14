@@ -2,29 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.JobTitleRecordMapper">
     <sql id="job_title_columns">
-        ID_JOB_TITLE,
-        NAME_VALUE
+        ID_JOB_TITLE idJobTitle,
+        NAME_VALUE nameValue
     </sql>
     <select id="selectById" parameterType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord"
             resultType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord">
         select
         <include refid="job_title_columns"/>
         from JOB_TITLE
-        <where>
-            ID_JOB_TITLE = #{idJobTitle}
-        </where>
+        where ID_JOB_TITLE = #{idJobTitle,jdbcType=INTEGER}
     </select>
-    <select id="selectByNameValue" parameterType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord"
+    <select id="selectByNameValue"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord"
             resultType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord">
         select
         <include refid="job_title_columns"/>
         from JOB_TITLE
-        <where>
-            NAME_VALUE = #{nameValue}
-        </where>
+        where NAME_VALUE = #{nameValue,jdbcType=VARCHAR}
     </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.JobTitleRecord"
-    useGeneratedKeys="true" keyProperty="idJobTitle" keyColumn="ID_JOB_TITLE">
+            useGeneratedKeys="true" keyProperty="idJobTitle" keyColumn="ID_JOB_TITLE">
         insert into JOB_TITLE (NAME_VALUE) values (#{nameValue,jdbcType=VARCHAR})
     </insert>
 </mapper>

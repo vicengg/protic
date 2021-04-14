@@ -8,6 +8,7 @@ import org.example.protic.domain.UserId;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 public final class WorkExperienceEntity extends Entity implements WorkExperience {
 
@@ -48,6 +49,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   }
 
   private WorkExperienceEntity(WorkExperience workExperience) {
+    super(workExperience.getId(), workExperience.getCreatedAt());
     this.userId = workExperience.getUserId();
     this.binding = workExperience.getBinding();
     this.jobTitle = workExperience.getJobTitle();
@@ -86,25 +88,26 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return workPeriod;
   }
 
-  public WorkExperienceResponse toWorkExperienceResponse(UserId userId) {
+  public WorkExperienceProjection toWorkExperienceResponse(UserId userId) {
     Objects.requireNonNull(userId, "Null input user ID.");
-    WorkExperienceResponseImpl workExperienceResponse = new WorkExperienceResponseImpl();
+    WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
+    workExperienceProjection.id = this.getId();
     if (this.userId.equals(userId) || this.binding) {
-      workExperienceResponse.userId = this.userId;
+      workExperienceProjection.userId = this.userId;
     }
     if (this.userId.equals(userId) || this.jobTitle.isPublic()) {
-      workExperienceResponse.jobTitle = this.jobTitle.getValue();
+      workExperienceProjection.jobTitle = this.jobTitle.getValue();
     }
     if (this.userId.equals(userId) || this.company.isPublic()) {
-      workExperienceResponse.company = this.company.getValue();
+      workExperienceProjection.company = this.company.getValue();
     }
     if (this.userId.equals(userId) || this.technologies.isPublic()) {
-      workExperienceResponse.technologies = this.technologies.getValue();
+      workExperienceProjection.technologies = this.technologies.getValue();
     }
     if (this.userId.equals(userId) || this.workPeriod.isPublic()) {
-      workExperienceResponse.workPeriod = this.workPeriod.getValue();
+      workExperienceProjection.workPeriod = this.workPeriod.getValue();
     }
-    return workExperienceResponse;
+    return workExperienceProjection;
   }
 
   public static WorkExperienceEntity copy(WorkExperience workExperience) {
@@ -153,13 +156,19 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     }
   }
 
-  private static final class WorkExperienceResponseImpl implements WorkExperienceResponse {
+  private static final class WorkExperienceProjectionImpl implements WorkExperienceProjection {
 
+    private UUID id;
     private UserId userId;
     private JobTitle jobTitle;
     private Company company;
     private Set<Technology> technologies;
     private WorkPeriod workPeriod;
+
+    @Override
+    public UUID getId() {
+      return id;
+    }
 
     @Override
     public Optional<UserId> getUserId() {

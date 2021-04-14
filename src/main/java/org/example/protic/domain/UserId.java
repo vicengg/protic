@@ -1,5 +1,6 @@
 package org.example.protic.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.example.protic.commons.ValidationException;
 
 import java.util.Objects;
@@ -9,8 +10,8 @@ public class UserId implements ValueObject {
   private final String value;
 
   private UserId(String value) {
-    if (Objects.isNull(value)) {
-      throw new ValidationException("Null user ID.");
+    if (StringUtils.isBlank(value)) {
+      throw new ValidationException("Null or empty user ID.");
     }
     this.value = value;
   }

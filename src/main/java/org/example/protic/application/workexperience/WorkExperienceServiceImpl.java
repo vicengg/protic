@@ -2,7 +2,7 @@ package org.example.protic.application.workexperience;
 
 import org.example.protic.domain.workexperience.WorkExperience;
 import org.example.protic.domain.workexperience.WorkExperienceEntity;
-import org.example.protic.domain.workexperience.WorkExperienceResponse;
+import org.example.protic.domain.workexperience.WorkExperienceProjection;
 
 import java.util.Comparator;
 import java.util.List;
@@ -31,10 +31,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   }
 
   @Override
-  public CompletableFuture<List<WorkExperienceResponse>> getMyWorkExperiences(
-      GetMyWorkExperiencesQuery query) {
+  public CompletableFuture<List<WorkExperienceProjection>> getWorkExperiences(
+      GetWorkExperiencesQuery query) {
     return repository
-        .getByUserId(query.userId)
+        .find(query)
         .thenApply(
             workExperiences -> {
               workExperiences.sort(
