@@ -21,11 +21,14 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   @Override
   public CompletableFuture<UUID> createWorkExperience(CreateWorkExperienceCommand command) {
     WorkExperience workExperience =
-        WorkExperienceEntity.builder(command.userId, command.binding)
+        WorkExperienceEntity.builder()
+            .withUserId(command.userId)
+            .withBinding(command.binding)
             .withJobTitle(command.jobTitle)
             .withCompany(command.company)
             .withTechnologies(command.technologies)
             .withWorkPeriod(command.workPeriod)
+            .withSalary(command.salary)
             .build();
     return repository.create(workExperience).thenApply(ignore -> workExperience.getId());
   }
@@ -37,12 +40,39 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         .find(query)
         .thenApply(
             workExperiences -> {
-              workExperiences.sort(
-                  Comparator.comparing(a -> a.getWorkPeriod().getValue().getStartDate()));
+              workExperiences.sort(moreRecent());
               return workExperiences.stream()
                   .map(WorkExperienceEntity::copy)
                   .map(a -> a.toWorkExperienceResponse(query.userId))
                   .collect(Collectors.toList());
             });
+  }
+
+  @Override
+  public CompletableFuture<Void> updateWorkExperience(UpdateWorkExperienceCommand command) {
+    return repository
+        .findById(command.id)
+        .thenApply(WorkExperienceEntity::copy)
+        .thenApply(workExperienceEntity -> workExperienceEntity.update(command.userId))
+        .thenApply(
+            updater ->
+                updater
+                    .withUserId(command.userId)
+                    .withBinding(command.binding)
+                    .withJobTitle(command.jobTitle)
+                    .withCompany(command.company)
+                    .withTechnologies(command.technologies)
+                    .withWorkPeriod(command.workPeriod)
+                    .withSalary(command.salary)
+                    .build())
+        .thenCompose(repository::updateWorkExperience);
+  }
+
+  private static Comparator<WorkExperience> moreRecent() {
+    return (o1, o2) ->
+        o2.getWorkPeriod()
+            .getValue()
+            .getStartDate()
+            .compareTo(o1.getWorkPeriod().getValue().getStartDate());
   }
 }

@@ -22,6 +22,16 @@
         where
         NAME_VALUE = #{nameValue,jdbcType=VARCHAR}
     </select>
+    <select id="selectByNameValueContaining"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.TextRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.CompanyRecord">
+        <bind name="textPattern" value="'%' + text.toUpperCase() + '%'"/>
+        select
+        <include refid="company_columns"/>
+        from COMPANY
+        where NAME_VALUE LIKE #{textPattern,jdbcType=VARCHAR}
+        ORDER BY NAME_VALUE
+    </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.CompanyRecord"
             useGeneratedKeys="true" keyProperty="idCompany" keyColumn="ID_COMPANY">
         insert into COMPANY (NAME_VALUE) values (#{nameValue,jdbcType=VARCHAR})

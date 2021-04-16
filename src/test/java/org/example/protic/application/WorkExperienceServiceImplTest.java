@@ -6,6 +6,7 @@ import org.example.protic.application.workexperience.WorkExperienceService;
 import org.example.protic.application.workexperience.WorkExperienceServiceImpl;
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
+import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -47,6 +48,7 @@ class WorkExperienceServiceImplTest {
     command.workPeriod =
         WorkExperienceField.ofPrivate(
             WorkPeriod.from(LocalDate.now().minus(1, ChronoUnit.DAYS)).toPresent());
+    command.salary = WorkExperienceField.ofPrivate(Money.of(1000, "EUR"));
     return command;
   }
 

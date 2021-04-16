@@ -2,6 +2,7 @@ package org.example.protic.domain;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Entity implements Identifiable, TimeTraceable {
@@ -9,14 +10,9 @@ public abstract class Entity implements Identifiable, TimeTraceable {
   private final UUID id;
   private final Timestamp createdAt;
 
-  protected Entity() {
-    this.id = UUID.randomUUID();
-    this.createdAt = Timestamp.from(Instant.now());
-  }
-
   protected Entity(UUID id, Timestamp createdAt) {
-    this.id = id;
-    this.createdAt = createdAt;
+    this.id = Objects.requireNonNull(id);
+    this.createdAt = Objects.requireNonNull(createdAt);
   }
 
   @Override

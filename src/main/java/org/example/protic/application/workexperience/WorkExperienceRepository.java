@@ -8,9 +8,11 @@ import java.util.concurrent.CompletableFuture;
 
 public interface WorkExperienceRepository {
 
-  CompletableFuture<Void> create(WorkExperience workExperienceEntity);
+  CompletableFuture<Void> create(WorkExperience workExperience);
 
   CompletableFuture<WorkExperience> findById(UUID id);
 
   CompletableFuture<List<WorkExperience>> find(GetWorkExperiencesQuery query);
+
+  CompletableFuture<Void> updateWorkExperience(WorkExperience workExperience);
 }

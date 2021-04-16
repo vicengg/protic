@@ -8,8 +8,9 @@ import org.javamoney.moneta.Money;
 import java.util.Set;
 import java.util.UUID;
 
-public class CreateWorkExperienceCommand implements Command<UUID> {
+public class UpdateWorkExperienceCommand implements Command<UUID> {
 
+  public UUID id;
   public UserId userId;
   public boolean binding;
   public WorkExperienceField<JobTitle> jobTitle;

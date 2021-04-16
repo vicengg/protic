@@ -9,4 +9,5 @@ public class WorkExperienceRequestDto {
   public WorkExperienceFieldDto<String> company;
   public WorkExperienceFieldDto<Set<String>> technologies;
   public WorkExperienceFieldDto<WorkPeriodDto> workPeriod;
+  public WorkExperienceFieldDto<MoneyDto> salary;
 }

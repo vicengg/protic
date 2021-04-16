@@ -3,6 +3,7 @@ package org.example.protic.domain.workexperience;
 import org.example.protic.domain.Identifiable;
 import org.example.protic.domain.TimeTraceable;
 import org.example.protic.domain.UserId;
+import org.javamoney.moneta.Money;
 
 import java.util.Set;
 
@@ -19,4 +20,6 @@ public interface WorkExperience extends Identifiable, TimeTraceable {
   WorkExperienceField<Set<Technology>> getTechnologies();
 
   WorkExperienceField<WorkPeriod> getWorkPeriod();
+
+  WorkExperienceField<Money> getSalary();
 }

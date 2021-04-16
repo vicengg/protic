@@ -4,6 +4,7 @@ import org.example.protic.application.workexperience.GetWorkExperiencesQuery;
 import org.example.protic.application.workexperience.WorkExperienceRepository;
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.WorkExperience;
+import org.example.protic.domain.workexperience.WorkExperienceEntity;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,5 +32,10 @@ public class WorkExperienceRepositoryAdapter implements WorkExperienceRepository
   @Override
   public CompletableFuture<List<WorkExperience>> find(GetWorkExperiencesQuery query) {
     return CompletableFuture.supplyAsync(() -> syncAdapter.find(query));
+  }
+
+  @Override
+  public CompletableFuture<Void> updateWorkExperience(WorkExperience workExperience) {
+    return CompletableFuture.runAsync(() -> syncAdapter.updateWorkExperience(workExperience));
   }
 }

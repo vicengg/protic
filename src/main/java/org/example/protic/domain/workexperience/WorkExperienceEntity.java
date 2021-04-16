@@ -1,10 +1,16 @@
 package org.example.protic.domain.workexperience;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.example.protic.commons.CurrencyContext;
+import org.example.protic.commons.ForbiddenException;
 import org.example.protic.commons.ValidationException;
 import org.example.protic.domain.Entity;
 import org.example.protic.domain.UserId;
+import org.javamoney.moneta.Money;
 
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -18,8 +24,10 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   private final WorkExperienceField<Company> company;
   private final WorkExperienceField<Set<Technology>> technologies;
   private final WorkExperienceField<WorkPeriod> workPeriod;
+  private final WorkExperienceField<Money> salary;
 
   private WorkExperienceEntity(Builder builder) {
+    super(Objects.requireNonNull(builder.id), Objects.requireNonNull(builder.createdAt));
     this.userId =
         Optional.ofNullable(builder.userId)
             .orElseThrow(
@@ -46,6 +54,13 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
         Optional.ofNullable(builder.workPeriod)
             .orElseThrow(
                 () -> new ValidationException("Work period is mandatory for work experience."));
+    this.salary =
+        Optional.ofNullable(builder.salary)
+            .orElseThrow(() -> new ValidationException("Salary is mandatory for work experience."));
+    if (!CurrencyContext.isAllowed(salary.getValue().getCurrency())) {
+      throw new ValidationException(
+          MessageFormat.format("Not valid currency: {0}", salary.getValue().getCurrency()));
+    }
   }
 
   private WorkExperienceEntity(WorkExperience workExperience) {
@@ -56,6 +71,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     this.company = workExperience.getCompany();
     this.technologies = workExperience.getTechnologies();
     this.workPeriod = workExperience.getWorkPeriod();
+    this.salary = workExperience.getSalary();
   }
 
   @Override
@@ -88,6 +104,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return workPeriod;
   }
 
+  @Override
+  public WorkExperienceField<Money> getSalary() {
+    return salary;
+  }
+
   public WorkExperienceProjection toWorkExperienceResponse(UserId userId) {
     Objects.requireNonNull(userId, "Null input user ID.");
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
@@ -107,6 +128,9 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     if (this.userId.equals(userId) || this.workPeriod.isPublic()) {
       workExperienceProjection.workPeriod = this.workPeriod.getValue();
     }
+    if (this.userId.equals(userId) || this.salary.isPublic()) {
+      workExperienceProjection.salary = this.salary.getValue();
+    }
     return workExperienceProjection;
   }
 
@@ -114,21 +138,41 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return new WorkExperienceEntity(workExperience);
   }
 
-  public static Builder builder(UserId userId, boolean binding) {
-    return new Builder(userId, binding);
+  public Builder update(UserId userId) {
+    if (!this.userId.equals(userId)) {
+      throw new ForbiddenException();
+    }
+    return new Builder(this.getId(), this.getCreatedAt());
+  }
+
+  public static Builder builder() {
+    return new Builder(UUID.randomUUID(), Timestamp.from(Instant.now()));
   }
 
   public static final class Builder {
-    private final UserId userId;
-    private final boolean binding;
+    private final UUID id;
+    private final Timestamp createdAt;
+    private UserId userId;
+    private boolean binding;
+    public WorkExperienceField<Money> salary;
     private WorkExperienceField<JobTitle> jobTitle;
     private WorkExperienceField<Company> company;
     private WorkExperienceField<Set<Technology>> technologies;
     private WorkExperienceField<WorkPeriod> workPeriod;
 
-    private Builder(UserId userId, boolean binding) {
-      this.binding = binding;
+    public Builder(UUID id, Timestamp createdAt) {
+      this.id = id;
+      this.createdAt = createdAt;
+    }
+
+    public Builder withUserId(UserId userId) {
       this.userId = userId;
+      return this;
+    }
+
+    public Builder withBinding(boolean binding) {
+      this.binding = binding;
+      return this;
     }
 
     public Builder withJobTitle(WorkExperienceField<JobTitle> jobTitle) {
@@ -151,6 +195,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
       return this;
     }
 
+    public Builder withSalary(WorkExperienceField<Money> salary) {
+      this.salary = salary;
+      return this;
+    }
+
     public WorkExperienceEntity build() {
       return new WorkExperienceEntity(this);
     }
@@ -164,6 +213,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     private Company company;
     private Set<Technology> technologies;
     private WorkPeriod workPeriod;
+    private Money salary;
 
     @Override
     public UUID getId() {
@@ -193,6 +243,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     @Override
     public Optional<WorkPeriod> getWorkPeriod() {
       return Optional.ofNullable(workPeriod);
+    }
+
+    @Override
+    public Optional<Money> getSalary() {
+      return Optional.ofNullable(salary);
     }
   }
 }

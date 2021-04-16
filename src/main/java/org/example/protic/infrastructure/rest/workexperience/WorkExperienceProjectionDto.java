@@ -17,6 +17,7 @@ public class WorkExperienceProjectionDto {
   public String company;
   public Set<String> technologies;
   public WorkPeriodDto workPeriod;
+  public MoneyDto salary;
 
   public static WorkExperienceProjectionDto of(WorkExperienceProjection workExperienceProjection) {
     WorkExperienceProjectionDto workExperienceProjectionDto = new WorkExperienceProjectionDto();
@@ -36,6 +37,8 @@ public class WorkExperienceProjectionDto {
             .orElse(null);
     workExperienceProjectionDto.workPeriod =
         workExperienceProjection.getWorkPeriod().map(WorkPeriodDto::of).orElse(null);
+    workExperienceProjectionDto.salary =
+            workExperienceProjection.getSalary().map(MoneyDto::of).orElse(null);
     return workExperienceProjectionDto;
   }
 }

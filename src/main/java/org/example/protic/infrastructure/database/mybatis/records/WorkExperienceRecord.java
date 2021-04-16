@@ -1,5 +1,6 @@
 package org.example.protic.infrastructure.database.mybatis.records;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -17,4 +18,7 @@ public class WorkExperienceRecord {
   public Date startDate;
   public Date endDate;
   public boolean visibilityWorkPeriod;
+  public BigDecimal salary;
+  public String currency;
+  public boolean visibilitySalary;
 }

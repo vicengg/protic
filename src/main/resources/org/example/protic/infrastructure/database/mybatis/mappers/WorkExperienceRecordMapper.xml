@@ -13,7 +13,10 @@
         WE.VISIBILITY_TECHNOLOGIES visibilityTechnologies,
         WE.START_DATE startDate,
         WE.END_DATE endDate,
-        WE.VISIBILITY_WORK_PERIOD visibilityWorkPeriod
+        WE.VISIBILITY_WORK_PERIOD visibilityWorkPeriod,
+        WE.SALARY salary,
+        WE.CURRENCY currency,
+        WE.VISIBILITY_SALARY visibilitySalary
     </sql>
     <select id="selectById"
             parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord"
@@ -30,7 +33,7 @@
             resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
         select distinct
         <include refid="work_experience_columns"/>
-        from WORK_EXPERIENCE WE, JOB_TITLE JT, COMPANY C
+        from WORK_EXPERIENCE WE, JOB_TITLE JT, COMPANY C, WORK_EXPERIENCE_TECHNOLOGY WET, TECHNOLOGY T
         <where>
             1 = 1
             <if test='"own".equalsIgnoreCase(scope)'>
@@ -51,6 +54,14 @@
                 AND WE.ID_COMPANY = C.ID_COMPANY
                 AND C.NAME_VALUE LIKE #{companyPattern,jdbcType=VARCHAR}
             </if>
+            <if test="technologies!=null">
+                <foreach item="technology" index="index" collection="technologies">
+                    <bind name="technologyPattern" value="'%' + technology + '%'"/>
+                    AND WE.ID_WORK_EXPERIENCE = WET.ID_WORK_EXPERIENCE
+                    AND T.ID_TECHNOLOGY = WET.ID_TECHNOLOGY
+                    AND T.NAME_VALUE LIKE #{technologyPattern,jdbcType=VARCHAR}
+                </foreach>
+            </if>
         </where>
     </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
@@ -66,7 +77,10 @@
         VISIBILITY_TECHNOLOGIES,
         START_DATE,
         END_DATE,
-        VISIBILITY_WORK_PERIOD
+        VISIBILITY_WORK_PERIOD,
+        SALARY,
+        CURRENCY,
+        VISIBILITY_SALARY
         ) values (
         #{idWorkExperience,jdbcType=VARBINARY},
         #{createdAt,jdbcType=TIMESTAMP},
@@ -79,7 +93,26 @@
         #{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
         #{startDate,jdbcType=DATE},
         #{endDate,jdbcType=DATE},
-        #{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean}
+        #{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{salary,jdbcType=DECIMAL},
+        #{currency,jdbcType=VARCHAR},
+        #{visibilitySalary,jdbcType=INTEGER,javaType=java.lang.Boolean}
         )
     </insert>
+    <update id="update" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        update WORK_EXPERIENCE set
+        BINDING=#{binding,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        ID_JOB_TITLE=#{idJobTitle,jdbcType=INTEGER},
+        VISIBILITY_JOB_TITLE=#{visibilityJobTitle,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        ID_COMPANY=#{idCompany,jdbcType=INTEGER},
+        VISIBILITY=COMPANY=#{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        VISIBILITY_TECHNOLOGIES=#{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        START_DATE=#{startDate,jdbcType=DATE},
+        END_DATE=#{endDate,jdbcType=DATE},
+        VISIBILITY_WORK_PERIOD=#{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        SALARY=#{salary,jdbcType=DECIMAL},
+        CURRENCY=#{currency,jdbcType=VARCHAR},
+        VISIBILITY_SALARY=#{visibilitySalary,jdbcType=INTEGER,javaType=java.lang.Boolean}
+        where ID_WORK_EXPERIENCE=#{idWorkExperience,jdbcType=VARBINARY}
+    </update>
 </mapper>

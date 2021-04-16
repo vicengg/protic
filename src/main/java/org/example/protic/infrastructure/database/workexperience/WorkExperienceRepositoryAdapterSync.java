@@ -7,6 +7,7 @@ import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.database.mybatis.mappers.*;
 import org.example.protic.infrastructure.database.mybatis.records.*;
+import org.javamoney.moneta.Money;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
@@ -42,24 +43,8 @@ public class WorkExperienceRepositoryAdapterSync {
 
   @Transactional
   public void create(WorkExperience workExperience) {
-    WorkExperienceRecord workExperienceRecord = new WorkExperienceRecord();
-    workExperienceRecord.idWorkExperience = UuidAdapter.getBytesFromUUID(workExperience.getId());
-    workExperienceRecord.createdAt = workExperience.getCreatedAt();
-    workExperienceRecord.userId = workExperience.getUserId().getValue();
-    workExperienceRecord.binding = workExperience.getBinding();
-    workExperienceRecord.idJobTitle =
-        createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
-    workExperienceRecord.visibilityJobTitle = workExperience.getJobTitle().isPublic();
-    workExperienceRecord.idCompany =
-        createCompanyIfNotExist(workExperience.getCompany().getValue());
-    workExperienceRecord.visibilityCompany = workExperience.getCompany().isPublic();
-    workExperienceRecord.visibilityTechnologies = workExperience.getTechnologies().isPublic();
-    workExperienceRecord.startDate =
-        Date.valueOf(workExperience.getWorkPeriod().getValue().getStartDate());
-    workExperienceRecord.endDate =
-        workExperience.getWorkPeriod().getValue().getEndDate().map(Date::valueOf).orElse(null);
-    workExperienceRecord.visibilityWorkPeriod = workExperience.getWorkPeriod().isPublic();
-    checkInsertion(workExperienceRecordMapper.insert(workExperienceRecord));
+    WorkExperienceRecord workExperienceRecord = toWorkExperienceRecord(workExperience);
+    checkOneModification(workExperienceRecordMapper.insert(workExperienceRecord));
     insertTechnologies(workExperience.getId(), workExperience.getTechnologies().getValue());
   }
 
@@ -76,6 +61,39 @@ public class WorkExperienceRepositoryAdapterSync {
     return ListUtils.emptyIfNull(workExperienceRecordMapper.select(workExperienceFilters)).stream()
         .map(this::recoverWorkExperience)
         .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void updateWorkExperience(WorkExperience workExperience) {
+    WorkExperienceRecord workExperienceRecord = toWorkExperienceRecord(workExperience);
+    checkOneModification(workExperienceRecordMapper.update(workExperienceRecord));
+    // TODO: Remove old technologies!!!!
+    insertTechnologies(workExperience.getId(), workExperience.getTechnologies().getValue());
+  }
+
+  private WorkExperienceRecord toWorkExperienceRecord(WorkExperience workExperience) {
+    WorkExperienceRecord workExperienceRecord = new WorkExperienceRecord();
+    workExperienceRecord.idWorkExperience = UuidAdapter.getBytesFromUUID(workExperience.getId());
+    workExperienceRecord.createdAt = workExperience.getCreatedAt();
+    workExperienceRecord.userId = workExperience.getUserId().getValue();
+    workExperienceRecord.binding = workExperience.getBinding();
+    workExperienceRecord.idJobTitle =
+            createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
+    workExperienceRecord.visibilityJobTitle = workExperience.getJobTitle().isPublic();
+    workExperienceRecord.idCompany =
+            createCompanyIfNotExist(workExperience.getCompany().getValue());
+    workExperienceRecord.visibilityCompany = workExperience.getCompany().isPublic();
+    workExperienceRecord.visibilityTechnologies = workExperience.getTechnologies().isPublic();
+    workExperienceRecord.startDate =
+            Date.valueOf(workExperience.getWorkPeriod().getValue().getStartDate());
+    workExperienceRecord.endDate =
+            workExperience.getWorkPeriod().getValue().getEndDate().map(Date::valueOf).orElse(null);
+    workExperienceRecord.visibilityWorkPeriod = workExperience.getWorkPeriod().isPublic();
+    workExperienceRecord.visibilitySalary = workExperience.getSalary().isPublic();
+    workExperienceRecord.salary = workExperience.getSalary().getValue().getNumberStripped();
+    workExperienceRecord.currency =
+            workExperience.getSalary().getValue().getCurrency().getCurrencyCode();
+    return workExperienceRecord;
   }
 
   private static WorkExperienceFilterRecord mapToWorkExperienceFilters(
@@ -132,6 +150,11 @@ public class WorkExperienceRepositoryAdapterSync {
         workExperienceRecord.visibilityWorkPeriod
             ? WorkExperienceField.ofPublic(workPeriod)
             : WorkExperienceField.ofPrivate(workPeriod));
+    Money salary = Money.of(workExperienceRecord.salary, workExperienceRecord.currency);
+    builder.withSalary(
+        workExperienceRecord.visibilitySalary
+            ? WorkExperienceField.ofPublic(salary)
+            : WorkExperienceField.ofPrivate(salary));
     return builder.build();
   }
 
@@ -181,7 +204,7 @@ public class WorkExperienceRepositoryAdapterSync {
               return workExperienceTechnologyRecord;
             })
         .map(workExperienceTechnologyRecordMapper::insert)
-        .forEach(WorkExperienceRepositoryAdapterSync::checkInsertion);
+        .forEach(WorkExperienceRepositoryAdapterSync::checkOneModification);
   }
 
   private long createJobTitleIfNotExist(JobTitle jobTitle) {
@@ -192,7 +215,7 @@ public class WorkExperienceRepositoryAdapterSync {
         .map(record -> record.idJobTitle)
         .orElseGet(
             () -> {
-              checkInsertion(jobTitleRecordMapper.insert(jobTitleRecord));
+              checkOneModification(jobTitleRecordMapper.insert(jobTitleRecord));
               return jobTitleRecord.idJobTitle;
             });
   }
@@ -205,7 +228,7 @@ public class WorkExperienceRepositoryAdapterSync {
         .map(record -> record.idCompany)
         .orElseGet(
             () -> {
-              checkInsertion(companyRecordMapper.insert(companyRecord));
+              checkOneModification(companyRecordMapper.insert(companyRecord));
               return companyRecord.idCompany;
             });
   }
@@ -218,12 +241,12 @@ public class WorkExperienceRepositoryAdapterSync {
         .map(record -> record.idTechnology)
         .orElseGet(
             () -> {
-              checkInsertion(technologyRecordMapper.insert(technologyRecord));
+              checkOneModification(technologyRecordMapper.insert(technologyRecord));
               return technologyRecord.idTechnology;
             });
   }
 
-  private static void checkInsertion(long insertedRecords) {
+  private static void checkOneModification(long insertedRecords) {
     if (insertedRecords != 1) {
       // TODO: Change this.
       throw new RuntimeException("Insertion failed.");

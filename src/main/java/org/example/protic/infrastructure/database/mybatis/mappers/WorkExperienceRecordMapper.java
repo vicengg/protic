@@ -11,7 +11,9 @@ public interface WorkExperienceRecordMapper {
 
   WorkExperienceRecord selectById(WorkExperienceRecord workExperienceRecord);
 
+  List<WorkExperienceRecord> select(WorkExperienceFilterRecord workExperienceFilterRecord);
+
   int insert(WorkExperienceRecord workExperienceRecord);
 
-  List<WorkExperienceRecord> select(WorkExperienceFilterRecord workExperienceFilterRecord);
+  int update(WorkExperienceRecord workExperienceRecord);
 }

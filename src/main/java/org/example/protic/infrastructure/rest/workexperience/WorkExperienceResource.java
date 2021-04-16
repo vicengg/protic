@@ -7,6 +7,7 @@ import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.rest.ExceptionMapper;
 import org.example.protic.infrastructure.rest.IdResponseDto;
+import org.javamoney.moneta.Money;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 
@@ -18,10 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,9 +55,10 @@ public class WorkExperienceResource {
       @Suspended final AsyncResponse asyncResponse,
       @DefaultValue("all") @QueryParam("scope") String scope,
       @QueryParam("jobTitle") String jobTitle,
-      @QueryParam("company") String company) {
+      @QueryParam("company") String company,
+      @QueryParam("technologies") Set<String> technologies) {
     GetWorkExperiencesQuery query =
-        mapToGetWorkExperiencesQuery(securityContext, scope, jobTitle, company);
+        mapToGetWorkExperiencesQuery(securityContext, scope, jobTitle, company, technologies);
     workExperienceService
         .getWorkExperiences(query)
         .thenApply(WorkExperienceResource::toResponse)
@@ -105,17 +104,29 @@ public class WorkExperienceResource {
                 Optional.ofNullable(workPeriodDto.endDate)
                     .map(date -> WorkPeriod.from(workPeriodDto.startDate).to(date))
                     .orElse(WorkPeriod.from(workPeriodDto.startDate).toPresent()));
+    command.salary =
+        toWorkExperienceField(
+            dto.salary, salaryDto -> Money.of(salaryDto.value, salaryDto.currency));
     return command;
   }
 
   private static GetWorkExperiencesQuery mapToGetWorkExperiencesQuery(
-      SecurityContext securityContext, String scope, String jobTitle, String company) {
+      SecurityContext securityContext,
+      String scope,
+      String jobTitle,
+      String company,
+      Set<String> technologies) {
     UserId userId = getUserId(securityContext);
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
     query.userId = userId;
     query.scope = GetWorkExperiencesQuery.Scope.of(scope);
     query.jobTitle = Optional.ofNullable(jobTitle).map(JobTitle::of).orElse(null);
     query.company = Optional.ofNullable(company).map(Company::of).orElse(null);
+    query.technologies =
+        Optional.ofNullable(technologies)
+            .map(Collection::stream)
+            .map(a -> a.map(Technology::of).collect(Collectors.toSet()))
+            .orElse(null);
     return query;
   }
 

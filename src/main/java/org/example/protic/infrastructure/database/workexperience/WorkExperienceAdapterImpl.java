@@ -2,6 +2,7 @@ package org.example.protic.infrastructure.database.workexperience;
 
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
+import org.javamoney.moneta.Money;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
   private final WorkExperienceField<Company> company;
   private final WorkExperienceField<Set<Technology>> technologies;
   private final WorkExperienceField<WorkPeriod> workPeriod;
+  private final WorkExperienceField<Money> salary;
 
   private WorkExperienceAdapterImpl(Builder builder) {
     this.id = builder.id;
@@ -27,6 +29,7 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
     this.company = builder.company;
     this.technologies = builder.technologies;
     this.workPeriod = builder.workPeriod;
+    this.salary = builder.salary;
   }
 
   @Override
@@ -69,6 +72,11 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
     return workPeriod;
   }
 
+  @Override
+  public WorkExperienceField<Money> getSalary() {
+    return salary;
+  }
+
   public static Builder builder() {
     return new Builder();
   }
@@ -82,6 +90,7 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
     private WorkExperienceField<Company> company;
     private WorkExperienceField<Set<Technology>> technologies;
     private WorkExperienceField<WorkPeriod> workPeriod;
+    private WorkExperienceField<Money> salary;
 
     public Builder withId(UUID id) {
       this.id = id;
@@ -120,6 +129,11 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
 
     public Builder withWorkPeriod(WorkExperienceField<WorkPeriod> workPeriod) {
       this.workPeriod = workPeriod;
+      return this;
+    }
+
+    public Builder withSalary(WorkExperienceField<Money> salary) {
+      this.salary = salary;
       return this;
     }
 

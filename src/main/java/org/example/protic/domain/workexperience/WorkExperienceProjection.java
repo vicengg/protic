@@ -1,6 +1,7 @@
 package org.example.protic.domain.workexperience;
 
 import org.example.protic.domain.UserId;
+import org.javamoney.moneta.Money;
 
 import java.util.Optional;
 import java.util.Set;
@@ -19,4 +20,6 @@ public interface WorkExperienceProjection {
   Optional<Set<Technology>> getTechnologies();
 
   Optional<WorkPeriod> getWorkPeriod();
+
+  Optional<Money> getSalary();
 }
