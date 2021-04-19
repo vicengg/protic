@@ -113,22 +113,23 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     Objects.requireNonNull(userId, "Null input user ID.");
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
     workExperienceProjection.id = this.getId();
-    if (this.userId.equals(userId) || this.binding) {
+    boolean isOwner = this.userId.equals(userId);
+    if (isOwner || this.binding) {
       workExperienceProjection.userId = this.userId;
     }
-    if (this.userId.equals(userId) || this.jobTitle.isPublic()) {
+    if (isOwner || this.jobTitle.isPublic()) {
       workExperienceProjection.jobTitle = this.jobTitle;
     }
-    if (this.userId.equals(userId) || this.company.isPublic()) {
+    if (isOwner || this.company.isPublic()) {
       workExperienceProjection.company = this.company;
     }
-    if (this.userId.equals(userId) || this.technologies.isPublic()) {
+    if (isOwner || this.technologies.isPublic()) {
       workExperienceProjection.technologies = this.technologies;
     }
-    if (this.userId.equals(userId) || this.workPeriod.isPublic()) {
+    if (isOwner || this.workPeriod.isPublic()) {
       workExperienceProjection.workPeriod = this.workPeriod;
     }
-    if (this.userId.equals(userId) || this.salary.isPublic()) {
+    if (isOwner || this.salary.isPublic()) {
       workExperienceProjection.salary = this.salary;
     }
     return workExperienceProjection;

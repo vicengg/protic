@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.NegotiationRecordMapper">
+    <sql id="negotiation_columns">
+        ID_NEGOTIATION idNegotiation,
+        CREATED_AT createdAt,
+        ID_OFFERED_DATA idOfferedData,
+        ID_DEMANDED_DATA idDemandedData,
+        STATE state
+    </sql>
+    <select id="selectById"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        select
+        <include refid="negotiation_columns"/>
+        from NEGOTIATION
+        <where>
+            ID_NEGOTIATION = #{idNegotiation,jdbcType=VARBINARY}
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        insert into NEGOTIATION (
+        ID_NEGOTIATION,
+        CREATED_AT,
+        ID_OFFERED_DATA,
+        ID_DEMANDED_DATA,
+        STATE
+        ) values (
+        #{idNegotiation,jdbcType=VARBINARY},
+        #{createdAt,jdbcType=TIMESTAMP},
+        #{idOfferedData,jdbcType=INTEGER},
+        #{idDemandedData,jdbcType=INTEGER},
+        #{state,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="update" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        update NEGOTIATION set
+        ID_OFFERED_DATA=#{idOfferedData,jdbcType=INTEGER},
+        ID_DEMANDED_DATA=#{idDemandedData,jdbcType=INTEGER},
+        STATE=#{state,jdbcType=VARCHAR},
+        where ID_NEGOTIATION=#{idNegotiation,jdbcType=VARBINARY}
+    </update>
+</mapper>

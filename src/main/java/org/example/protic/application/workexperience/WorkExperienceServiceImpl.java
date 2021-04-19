@@ -6,6 +6,7 @@ import org.example.protic.domain.workexperience.WorkExperienceProjection;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   private final WorkExperienceRepository repository;
 
   public WorkExperienceServiceImpl(WorkExperienceRepository repository) {
-    this.repository = repository;
+    this.repository = Objects.requireNonNull(repository, "Null work experience repository.");
   }
 
   @Override

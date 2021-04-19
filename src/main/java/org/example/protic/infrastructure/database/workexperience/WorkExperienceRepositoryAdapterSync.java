@@ -129,45 +129,45 @@ public class WorkExperienceRepositoryAdapterSync {
     return filters;
   }
 
-  private WorkExperienceAdapterImpl recoverWorkExperience(
+  private WorkExperienceAdapterDto recoverWorkExperience(
       WorkExperienceRecord workExperienceRecord) {
-    WorkExperienceAdapterImpl.Builder builder = WorkExperienceAdapterImpl.builder();
+    WorkExperienceAdapterDto workExperience = new WorkExperienceAdapterDto();
     JobTitle jobTitle = findJobTitleById(workExperienceRecord.idJobTitle);
-    builder.withId(UuidAdapter.getUUIDFromBytes(workExperienceRecord.idWorkExperience));
-    builder.withCreatedAt(workExperienceRecord.createdAt);
-    builder.withUserId(UserId.of(workExperienceRecord.userId));
-    builder.withBinding(workExperienceRecord.binding);
-    builder.withJobTitle(
+    workExperience.id = UuidAdapter.getUUIDFromBytes(workExperienceRecord.idWorkExperience);
+    workExperience.createdAt = workExperienceRecord.createdAt;
+    workExperience.userId = UserId.of(workExperienceRecord.userId);
+    workExperience.binding = workExperienceRecord.binding;
+    workExperience.jobTitle =
         workExperienceRecord.visibilityJobTitle
             ? RestrictedField.ofPublic(jobTitle)
-            : RestrictedField.ofPrivate(jobTitle));
+            : RestrictedField.ofPrivate(jobTitle);
     Company company = findCompanyById(workExperienceRecord.idCompany);
-    builder.withCompany(
+    workExperience.company =
         workExperienceRecord.visibilityCompany
             ? RestrictedField.ofPublic(company)
-            : RestrictedField.ofPrivate(company));
+            : RestrictedField.ofPrivate(company);
     Set<Technology> technologies =
         findTechnologiesByWorkExperienceId(workExperienceRecord.idWorkExperience);
-    builder.withTechnologies(
+    workExperience.technologies =
         workExperienceRecord.visibilityTechnologies
             ? RestrictedField.ofPublic(technologies)
-            : RestrictedField.ofPrivate(technologies));
+            : RestrictedField.ofPrivate(technologies);
     WorkPeriod.Builder workPeriodStartDate =
         WorkPeriod.from(workExperienceRecord.startDate.toLocalDate());
     WorkPeriod workPeriod =
         Optional.ofNullable(workExperienceRecord.endDate)
             .map(date -> workPeriodStartDate.to(date.toLocalDate()))
             .orElse(workPeriodStartDate.toPresent());
-    builder.withWorkPeriod(
+    workExperience.workPeriod =
         workExperienceRecord.visibilityWorkPeriod
             ? RestrictedField.ofPublic(workPeriod)
-            : RestrictedField.ofPrivate(workPeriod));
+            : RestrictedField.ofPrivate(workPeriod);
     Money salary = Money.of(workExperienceRecord.salary, workExperienceRecord.currency);
-    builder.withSalary(
+    workExperience.salary =
         workExperienceRecord.visibilitySalary
             ? RestrictedField.ofPublic(salary)
-            : RestrictedField.ofPrivate(salary));
-    return builder.build();
+            : RestrictedField.ofPrivate(salary);
+    return workExperience;
   }
 
   private JobTitle findJobTitleById(long id) {
