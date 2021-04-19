@@ -1,8 +1,7 @@
 package org.example.protic.infrastructure.rest.workexperience;
 
-import org.example.protic.application.workexperience.CreateWorkExperienceCommand;
-import org.example.protic.application.workexperience.GetWorkExperiencesQuery;
-import org.example.protic.application.workexperience.WorkExperienceService;
+import org.example.protic.application.workexperience.*;
+import org.example.protic.commons.CurrencyContext;
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.rest.ExceptionMapper;
@@ -19,12 +18,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Path("/work-experience")
 public class WorkExperienceResource {
+
+  private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   private final WorkExperienceService workExperienceService;
 
@@ -39,7 +43,7 @@ public class WorkExperienceResource {
   public void createWorkExperience(
       @Context SecurityContext securityContext,
       @Suspended final AsyncResponse asyncResponse,
-      WorkExperienceRequestDto requestDto) {
+      WorkExperienceDto requestDto) {
     UserId id = getUserId(securityContext);
     workExperienceService
         .createWorkExperience(mapToCreateWorkExperienceCommand(id, requestDto))
@@ -56,12 +60,62 @@ public class WorkExperienceResource {
       @DefaultValue("all") @QueryParam("scope") String scope,
       @QueryParam("jobTitle") String jobTitle,
       @QueryParam("company") String company,
-      @QueryParam("technologies") Set<String> technologies) {
+      @QueryParam("technologies") Set<String> technologies,
+      @QueryParam("startDate") String startDate,
+      @QueryParam("endDate") String endDate,
+      @QueryParam("minSalary") BigDecimal minSalary,
+      @QueryParam("maxSalary") BigDecimal maxSalary) {
     GetWorkExperiencesQuery query =
-        mapToGetWorkExperiencesQuery(securityContext, scope, jobTitle, company, technologies);
+        mapToGetWorkExperiencesQuery(
+            securityContext,
+            scope,
+            jobTitle,
+            company,
+            technologies,
+            startDate,
+            endDate,
+            minSalary,
+            maxSalary);
     workExperienceService
         .getWorkExperiences(query)
         .thenApply(WorkExperienceResource::toResponse)
+        .exceptionally(ExceptionMapper::map)
+        .thenAccept(asyncResponse::resume);
+  }
+
+  @PUT
+  @Path("/{workExperienceId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void updateWorkExperience(
+      @Context SecurityContext securityContext,
+      @Suspended final AsyncResponse asyncResponse,
+      @PathParam("workExperienceId") String workExperienceId,
+      WorkExperienceDto requestDto) {
+    UserId id = getUserId(securityContext);
+    workExperienceService
+        .updateWorkExperience(
+            mapToUpdateWorkExperienceCommand(UUID.fromString(workExperienceId), id, requestDto))
+        .thenApply(ignore -> Response.ok().build())
+        .exceptionally(ExceptionMapper::map)
+        .thenAccept(asyncResponse::resume);
+  }
+
+  @DELETE
+  @Path("/{workExperienceId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void deleteWorkExperience(
+      @Context SecurityContext securityContext,
+      @Suspended final AsyncResponse asyncResponse,
+      @PathParam("workExperienceId") String workExperienceId) {
+
+    DeleteWorkExperienceCommand command = new DeleteWorkExperienceCommand();
+    command.id = UUID.fromString(workExperienceId);
+    command.userId = getUserId(securityContext);
+    workExperienceService
+        .deleteWorkExperience(command)
+        .thenApply(ignore -> Response.ok().build())
         .exceptionally(ExceptionMapper::map)
         .thenAccept(asyncResponse::resume);
   }
@@ -79,15 +133,39 @@ public class WorkExperienceResource {
 
   private static Response toResponse(List<WorkExperienceProjection> workExperiences) {
     return Response.ok(
-            workExperiences.stream()
-                .map(WorkExperienceProjectionDto::of)
-                .collect(Collectors.toList()))
+            workExperiences.stream().map(WorkExperienceDto::of).collect(Collectors.toList()))
         .build();
   }
 
   private static CreateWorkExperienceCommand mapToCreateWorkExperienceCommand(
-      UserId userId, WorkExperienceRequestDto dto) {
+      UserId userId, WorkExperienceDto dto) {
     CreateWorkExperienceCommand command = new CreateWorkExperienceCommand();
+    command.userId = userId;
+    command.binding = dto.binding;
+    command.jobTitle = toWorkExperienceField(dto.jobTitle, JobTitle::of);
+    command.company = toWorkExperienceField(dto.company, Company::of);
+    command.technologies =
+        toWorkExperienceField(
+            dto.technologies,
+            technologySet ->
+                technologySet.stream().map(Technology::of).collect(Collectors.toSet()));
+    command.workPeriod =
+        toWorkExperienceField(
+            dto.workPeriod,
+            workPeriodDto ->
+                Optional.ofNullable(workPeriodDto.endDate)
+                    .map(date -> WorkPeriod.from(workPeriodDto.startDate).to(date))
+                    .orElse(WorkPeriod.from(workPeriodDto.startDate).toPresent()));
+    command.salary =
+        toWorkExperienceField(
+            dto.salary, salaryDto -> Money.of(salaryDto.value, salaryDto.currency));
+    return command;
+  }
+
+  private static UpdateWorkExperienceCommand mapToUpdateWorkExperienceCommand(
+      UUID workExperienceId, UserId userId, WorkExperienceDto dto) {
+    UpdateWorkExperienceCommand command = new UpdateWorkExperienceCommand();
+    command.id = workExperienceId;
     command.userId = userId;
     command.binding = dto.binding;
     command.jobTitle = toWorkExperienceField(dto.jobTitle, JobTitle::of);
@@ -115,7 +193,11 @@ public class WorkExperienceResource {
       String scope,
       String jobTitle,
       String company,
-      Set<String> technologies) {
+      Set<String> technologies,
+      String startDate,
+      String endDate,
+      BigDecimal minSalary,
+      BigDecimal maxSalary) {
     UserId userId = getUserId(securityContext);
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
     query.userId = userId;
@@ -127,13 +209,17 @@ public class WorkExperienceResource {
             .map(Collection::stream)
             .map(a -> a.map(Technology::of).collect(Collectors.toSet()))
             .orElse(null);
+    query.startDate = LocalDate.parse(startDate, FORMATTER);
+    query.endDate = LocalDate.parse(endDate, FORMATTER);
+    query.minSalary = Money.of(minSalary, CurrencyContext.getPrototypeAllowedCurrency());
+    query.maxSalary = Money.of(maxSalary, CurrencyContext.getPrototypeAllowedCurrency());
     return query;
   }
 
   private static <R, S extends WorkExperienceFieldDto<R>, T>
-      WorkExperienceField<T> toWorkExperienceField(S dto, Function<R, T> mappingFunction) {
+      RestrictedField<T> toWorkExperienceField(S dto, Function<R, T> mappingFunction) {
     return dto.isPublic
-        ? WorkExperienceField.ofPublic((mappingFunction.apply(dto.content)))
-        : WorkExperienceField.ofPrivate((mappingFunction.apply(dto.content)));
+        ? RestrictedField.ofPublic((mappingFunction.apply(dto.content)))
+        : RestrictedField.ofPrivate((mappingFunction.apply(dto.content)));
   }
 }

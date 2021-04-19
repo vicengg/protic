@@ -6,6 +6,7 @@ import org.example.protic.domain.workexperience.Company;
 import org.example.protic.domain.workexperience.JobTitle;
 import org.example.protic.domain.workexperience.Technology;
 import org.example.protic.domain.workexperience.WorkExperienceProjection;
+import org.javamoney.moneta.Money;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -34,4 +35,6 @@ public class GetWorkExperiencesQuery implements Query<List<WorkExperienceProject
   public Set<Technology> technologies;
   public LocalDate startDate;
   public LocalDate endDate;
+  public Money minSalary;
+  public Money maxSalary;
 }

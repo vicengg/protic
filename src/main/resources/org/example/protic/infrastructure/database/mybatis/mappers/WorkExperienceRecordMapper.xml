@@ -62,6 +62,22 @@
                     AND T.NAME_VALUE LIKE #{technologyPattern,jdbcType=VARCHAR}
                 </foreach>
             </if>
+            <if test="startDate!=null">
+                AND WE.VISIBILITY_WORK_PERIOD = TRUE
+                AND #{startDate,jdbcType=DATE} &lt;= WE.START_DATE
+            </if>
+            <if test="endDate!=null">
+                AND WE.VISIBILITY_WORK_PERIOD = TRUE
+                AND #{endDate,jdbcType=DATE} &gt;= We.START_DATE
+            </if>
+            <if test="minSalary!=null">
+                AND WE.VISIBILITY_SALARY = TRUE
+                AND #{minSalary,jdbcType=DATE} &lt;= WE.SALARY
+            </if>
+            <if test="endDate!=null">
+                AND WE.VISIBILITY_SALARY = TRUE
+                AND #{maxSalary,jdbcType=DATE} &gt;= We.SALARY
+            </if>
         </where>
     </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
@@ -105,7 +121,7 @@
         ID_JOB_TITLE=#{idJobTitle,jdbcType=INTEGER},
         VISIBILITY_JOB_TITLE=#{visibilityJobTitle,jdbcType=INTEGER,javaType=java.lang.Boolean},
         ID_COMPANY=#{idCompany,jdbcType=INTEGER},
-        VISIBILITY=COMPANY=#{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        VISIBILITY_COMPANY=#{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
         VISIBILITY_TECHNOLOGIES=#{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
         START_DATE=#{startDate,jdbcType=DATE},
         END_DATE=#{endDate,jdbcType=DATE},
@@ -115,4 +131,8 @@
         VISIBILITY_SALARY=#{visibilitySalary,jdbcType=INTEGER,javaType=java.lang.Boolean}
         where ID_WORK_EXPERIENCE=#{idWorkExperience,jdbcType=VARBINARY}
     </update>
+    <delete id="delete" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        delete WORK_EXPERIENCE where
+        ID_WORK_EXPERIENCE = #{idWorkExperience,jdbcType=VARBINARY}
+    </delete>
 </mapper>

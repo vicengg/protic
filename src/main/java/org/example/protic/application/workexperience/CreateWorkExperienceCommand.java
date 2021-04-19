@@ -12,9 +12,9 @@ public class CreateWorkExperienceCommand implements Command<UUID> {
 
   public UserId userId;
   public boolean binding;
-  public WorkExperienceField<JobTitle> jobTitle;
-  public WorkExperienceField<Company> company;
-  public WorkExperienceField<Set<Technology>> technologies;
-  public WorkExperienceField<WorkPeriod> workPeriod;
-  public WorkExperienceField<Money> salary;
+  public RestrictedField<JobTitle> jobTitle;
+  public RestrictedField<Company> company;
+  public RestrictedField<Set<Technology>> technologies;
+  public RestrictedField<WorkPeriod> workPeriod;
+  public RestrictedField<Money> salary;
 }

@@ -17,30 +17,30 @@ class WorkExperienceEntityTest {
 
   private static final UserId USER_ID = UserId.of("user_id");
   private static final UserId ANOTHER_USER_ID = UserId.of("another_user_id");
-  private static final WorkExperienceField<JobTitle> JOB_TITLE_PRIVATE =
-      WorkExperienceField.ofPrivate(JobTitle.of("job title private"));
-  private static final WorkExperienceField<Company> COMPANY_PRIVATE =
-      WorkExperienceField.ofPrivate(Company.of("company private"));
-  private static final WorkExperienceField<Set<Technology>> TECHNOLOGIES_PRIVATE =
-      WorkExperienceField.ofPrivate(Set.of(Technology.of("technology private")));
-  public static final WorkExperienceField<WorkPeriod> WORK_PERIOD_PRIVATE =
-      WorkExperienceField.ofPrivate(
+  private static final RestrictedField<JobTitle> JOB_TITLE_PRIVATE =
+      RestrictedField.ofPrivate(JobTitle.of("job title private"));
+  private static final RestrictedField<Company> COMPANY_PRIVATE =
+      RestrictedField.ofPrivate(Company.of("company private"));
+  private static final RestrictedField<Set<Technology>> TECHNOLOGIES_PRIVATE =
+      RestrictedField.ofPrivate(Set.of(Technology.of("technology private")));
+  public static final RestrictedField<WorkPeriod> WORK_PERIOD_PRIVATE =
+      RestrictedField.ofPrivate(
           WorkPeriod.from(LocalDate.now().minus(1, ChronoUnit.DAYS)).toPresent());
-  private static final WorkExperienceField<Money> SALARY_PRIVATE =
-      WorkExperienceField.ofPrivate(Money.of(1000, "EUR"));
-  private static final WorkExperienceField<JobTitle> JOB_TITLE_PUBLIC =
-      WorkExperienceField.ofPublic(JobTitle.of("job title public"));
-  private static final WorkExperienceField<Company> COMPANY_PUBLIC =
-      WorkExperienceField.ofPublic(Company.of("company public"));
-  private static final WorkExperienceField<Set<Technology>> TECHNOLOGIES_PUBLIC =
-      WorkExperienceField.ofPublic(Set.of(Technology.of("technology public")));
-  public static final WorkExperienceField<WorkPeriod> WORK_PERIOD_PUBLIC =
-      WorkExperienceField.ofPublic(
+  private static final RestrictedField<Money> SALARY_PRIVATE =
+      RestrictedField.ofPrivate(Money.of(1000, "EUR"));
+  private static final RestrictedField<JobTitle> JOB_TITLE_PUBLIC =
+      RestrictedField.ofPublic(JobTitle.of("job title public"));
+  private static final RestrictedField<Company> COMPANY_PUBLIC =
+      RestrictedField.ofPublic(Company.of("company public"));
+  private static final RestrictedField<Set<Technology>> TECHNOLOGIES_PUBLIC =
+      RestrictedField.ofPublic(Set.of(Technology.of("technology public")));
+  public static final RestrictedField<WorkPeriod> WORK_PERIOD_PUBLIC =
+      RestrictedField.ofPublic(
           WorkPeriod.from(LocalDate.now().minus(2, ChronoUnit.DAYS)).toPresent());
-  private static final WorkExperienceField<Money> SALARY_PUBLIC =
-      WorkExperienceField.ofPrivate(Money.of(2000, "EUR"));
-  private static final WorkExperienceField<Money> INVALID_CURRENCY_SALARY =
-      WorkExperienceField.ofPrivate(Money.of(1000, "CZK"));
+  private static final RestrictedField<Money> SALARY_PUBLIC =
+      RestrictedField.ofPrivate(Money.of(2000, "EUR"));
+  private static final RestrictedField<Money> INVALID_CURRENCY_SALARY =
+      RestrictedField.ofPrivate(Money.of(1000, "CZK"));
 
   @Test
   @DisplayName("It tries to create a work experience entity without user id.")
@@ -128,7 +128,7 @@ class WorkExperienceEntityTest {
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
-                    .withTechnologies(WorkExperienceField.ofPrivate(SetUtils.emptySet()))
+                    .withTechnologies(RestrictedField.ofPrivate(SetUtils.emptySet()))
                     .withWorkPeriod(WORK_PERIOD_PRIVATE)
                     .withSalary(SALARY_PRIVATE)
                     .build());
@@ -258,15 +258,15 @@ class WorkExperienceEntityTest {
     assertTrue(workExperienceProjection.getUserId().isPresent());
     assertEquals(USER_ID, workExperienceProjection.getUserId().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
-    assertEquals(JOB_TITLE_PUBLIC.getValue(), workExperienceProjection.getJobTitle().get());
+    assertEquals(JOB_TITLE_PUBLIC, workExperienceProjection.getJobTitle().get());
     assertTrue(workExperienceProjection.getCompany().isPresent());
-    assertEquals(COMPANY_PUBLIC.getValue(), workExperienceProjection.getCompany().get());
+    assertEquals(COMPANY_PUBLIC, workExperienceProjection.getCompany().get());
     assertTrue(workExperienceProjection.getTechnologies().isPresent());
-    assertEquals(TECHNOLOGIES_PUBLIC.getValue(), workExperienceProjection.getTechnologies().get());
+    assertEquals(TECHNOLOGIES_PUBLIC, workExperienceProjection.getTechnologies().get());
     assertTrue(workExperienceProjection.getWorkPeriod().isPresent());
-    assertEquals(WORK_PERIOD_PUBLIC.getValue(), workExperienceProjection.getWorkPeriod().get());
+    assertEquals(WORK_PERIOD_PUBLIC, workExperienceProjection.getWorkPeriod().get());
     assertTrue(workExperienceProjection.getSalary().isPresent());
-    assertEquals(SALARY_PUBLIC.getValue(), workExperienceProjection.getSalary().get());
+    assertEquals(SALARY_PUBLIC, workExperienceProjection.getSalary().get());
   }
 
   @Test
@@ -288,15 +288,15 @@ class WorkExperienceEntityTest {
     assertTrue(workExperienceProjection.getUserId().isPresent());
     assertEquals(USER_ID, workExperienceProjection.getUserId().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
-    assertEquals(JOB_TITLE_PRIVATE.getValue(), workExperienceProjection.getJobTitle().get());
+    assertEquals(JOB_TITLE_PRIVATE, workExperienceProjection.getJobTitle().get());
     assertTrue(workExperienceProjection.getCompany().isPresent());
-    assertEquals(COMPANY_PRIVATE.getValue(), workExperienceProjection.getCompany().get());
+    assertEquals(COMPANY_PRIVATE, workExperienceProjection.getCompany().get());
     assertTrue(workExperienceProjection.getTechnologies().isPresent());
-    assertEquals(TECHNOLOGIES_PRIVATE.getValue(), workExperienceProjection.getTechnologies().get());
+    assertEquals(TECHNOLOGIES_PRIVATE, workExperienceProjection.getTechnologies().get());
     assertTrue(workExperienceProjection.getWorkPeriod().isPresent());
-    assertEquals(WORK_PERIOD_PRIVATE.getValue(), workExperienceProjection.getWorkPeriod().get());
+    assertEquals(WORK_PERIOD_PRIVATE, workExperienceProjection.getWorkPeriod().get());
     assertTrue(workExperienceProjection.getSalary().isPresent());
-    assertEquals(SALARY_PRIVATE.getValue(), workExperienceProjection.getSalary().get());
+    assertEquals(SALARY_PRIVATE, workExperienceProjection.getSalary().get());
   }
 
   @Test

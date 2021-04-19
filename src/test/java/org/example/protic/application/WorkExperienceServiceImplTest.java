@@ -42,13 +42,13 @@ class WorkExperienceServiceImplTest {
     CreateWorkExperienceCommand command = new CreateWorkExperienceCommand();
     command.userId = UserId.of("another_user_id");
     command.binding = true;
-    command.jobTitle = WorkExperienceField.ofPrivate(JobTitle.of("job title"));
-    command.company = WorkExperienceField.ofPrivate(Company.of("company"));
-    command.technologies = WorkExperienceField.ofPrivate(Set.of(Technology.of("technology")));
+    command.jobTitle = RestrictedField.ofPrivate(JobTitle.of("job title"));
+    command.company = RestrictedField.ofPrivate(Company.of("company"));
+    command.technologies = RestrictedField.ofPrivate(Set.of(Technology.of("technology")));
     command.workPeriod =
-        WorkExperienceField.ofPrivate(
+        RestrictedField.ofPrivate(
             WorkPeriod.from(LocalDate.now().minus(1, ChronoUnit.DAYS)).toPresent());
-    command.salary = WorkExperienceField.ofPrivate(Money.of(1000, "EUR"));
+    command.salary = RestrictedField.ofPrivate(Money.of(1000, "EUR"));
     return command;
   }
 

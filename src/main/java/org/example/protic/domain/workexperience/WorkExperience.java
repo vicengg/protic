@@ -13,13 +13,13 @@ public interface WorkExperience extends Identifiable, TimeTraceable {
 
   boolean getBinding();
 
-  WorkExperienceField<JobTitle> getJobTitle();
+  RestrictedField<JobTitle> getJobTitle();
 
-  WorkExperienceField<Company> getCompany();
+  RestrictedField<Company> getCompany();
 
-  WorkExperienceField<Set<Technology>> getTechnologies();
+  RestrictedField<Set<Technology>> getTechnologies();
 
-  WorkExperienceField<WorkPeriod> getWorkPeriod();
+  RestrictedField<WorkPeriod> getWorkPeriod();
 
-  WorkExperienceField<Money> getSalary();
+  RestrictedField<Money> getSalary();
 }

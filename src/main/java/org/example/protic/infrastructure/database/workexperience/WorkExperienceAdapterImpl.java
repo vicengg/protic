@@ -14,11 +14,11 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
   private final Timestamp createdAt;
   private final UserId userId;
   private final boolean binding;
-  private final WorkExperienceField<JobTitle> jobTitle;
-  private final WorkExperienceField<Company> company;
-  private final WorkExperienceField<Set<Technology>> technologies;
-  private final WorkExperienceField<WorkPeriod> workPeriod;
-  private final WorkExperienceField<Money> salary;
+  private final RestrictedField<JobTitle> jobTitle;
+  private final RestrictedField<Company> company;
+  private final RestrictedField<Set<Technology>> technologies;
+  private final RestrictedField<WorkPeriod> workPeriod;
+  private final RestrictedField<Money> salary;
 
   private WorkExperienceAdapterImpl(Builder builder) {
     this.id = builder.id;
@@ -53,27 +53,27 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
   }
 
   @Override
-  public WorkExperienceField<JobTitle> getJobTitle() {
+  public RestrictedField<JobTitle> getJobTitle() {
     return jobTitle;
   }
 
   @Override
-  public WorkExperienceField<Company> getCompany() {
+  public RestrictedField<Company> getCompany() {
     return company;
   }
 
   @Override
-  public WorkExperienceField<Set<Technology>> getTechnologies() {
+  public RestrictedField<Set<Technology>> getTechnologies() {
     return technologies;
   }
 
   @Override
-  public WorkExperienceField<WorkPeriod> getWorkPeriod() {
+  public RestrictedField<WorkPeriod> getWorkPeriod() {
     return workPeriod;
   }
 
   @Override
-  public WorkExperienceField<Money> getSalary() {
+  public RestrictedField<Money> getSalary() {
     return salary;
   }
 
@@ -86,11 +86,11 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
     private Timestamp createdAt;
     private UserId userId;
     private boolean binding;
-    private WorkExperienceField<JobTitle> jobTitle;
-    private WorkExperienceField<Company> company;
-    private WorkExperienceField<Set<Technology>> technologies;
-    private WorkExperienceField<WorkPeriod> workPeriod;
-    private WorkExperienceField<Money> salary;
+    private RestrictedField<JobTitle> jobTitle;
+    private RestrictedField<Company> company;
+    private RestrictedField<Set<Technology>> technologies;
+    private RestrictedField<WorkPeriod> workPeriod;
+    private RestrictedField<Money> salary;
 
     public Builder withId(UUID id) {
       this.id = id;
@@ -112,27 +112,27 @@ public class WorkExperienceAdapterImpl implements WorkExperience {
       return this;
     }
 
-    public Builder withJobTitle(WorkExperienceField<JobTitle> jobTitle) {
+    public Builder withJobTitle(RestrictedField<JobTitle> jobTitle) {
       this.jobTitle = jobTitle;
       return this;
     }
 
-    public Builder withCompany(WorkExperienceField<Company> company) {
+    public Builder withCompany(RestrictedField<Company> company) {
       this.company = company;
       return this;
     }
 
-    public Builder withTechnologies(WorkExperienceField<Set<Technology>> technologies) {
+    public Builder withTechnologies(RestrictedField<Set<Technology>> technologies) {
       this.technologies = technologies;
       return this;
     }
 
-    public Builder withWorkPeriod(WorkExperienceField<WorkPeriod> workPeriod) {
+    public Builder withWorkPeriod(RestrictedField<WorkPeriod> workPeriod) {
       this.workPeriod = workPeriod;
       return this;
     }
 
-    public Builder withSalary(WorkExperienceField<Money> salary) {
+    public Builder withSalary(RestrictedField<Money> salary) {
       this.salary = salary;
       return this;
     }

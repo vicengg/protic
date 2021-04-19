@@ -52,16 +52,16 @@ public class WorkExperienceRepositoryAdapterIntegrationTest {
     when(workExperience.getUserId()).thenReturn(UserId.of("USER_ID"));
     when(workExperience.getBinding()).thenReturn(true);
     when(workExperience.getJobTitle())
-        .thenReturn(WorkExperienceField.ofPublic(JobTitle.of("JOB_TITLE")));
+        .thenReturn(RestrictedField.ofPublic(JobTitle.of("JOB_TITLE")));
     when(workExperience.getCompany())
-        .thenReturn(WorkExperienceField.ofPublic(Company.of("COMPANY")));
+        .thenReturn(RestrictedField.ofPublic(Company.of("COMPANY")));
     when(workExperience.getTechnologies())
         .thenReturn(
-            WorkExperienceField.ofPublic(
+            RestrictedField.ofPublic(
                 Set.of(Technology.of("TECHNOLOGY1"), Technology.of("TECHNOLOGY2"))));
     when(workExperience.getWorkPeriod())
         .thenReturn(
-            WorkExperienceField.ofPublic(
+            RestrictedField.ofPublic(
                 WorkPeriod.from(LocalDate.now().minus(2, ChronoUnit.DAYS))
                     .to(LocalDate.now().minus(1, ChronoUnit.DAYS))));
     return workExperience;

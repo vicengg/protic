@@ -13,13 +13,13 @@ public interface WorkExperienceProjection {
 
   Optional<UserId> getUserId();
 
-  Optional<JobTitle> getJobTitle();
+  Optional<RestrictedField<JobTitle>> getJobTitle();
 
-  Optional<Company> getCompany();
+  Optional<RestrictedField<Company>> getCompany();
 
-  Optional<Set<Technology>> getTechnologies();
+  Optional<RestrictedField<Set<Technology>>> getTechnologies();
 
-  Optional<WorkPeriod> getWorkPeriod();
+  Optional<RestrictedField<WorkPeriod>> getWorkPeriod();
 
-  Optional<Money> getSalary();
+  Optional<RestrictedField<Money>> getSalary();
 }

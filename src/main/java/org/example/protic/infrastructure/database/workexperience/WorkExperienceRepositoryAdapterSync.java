@@ -67,8 +67,16 @@ public class WorkExperienceRepositoryAdapterSync {
   public void updateWorkExperience(WorkExperience workExperience) {
     WorkExperienceRecord workExperienceRecord = toWorkExperienceRecord(workExperience);
     checkOneModification(workExperienceRecordMapper.update(workExperienceRecord));
-    // TODO: Remove old technologies!!!!
+    deleteTechnologies(workExperience.getId());
     insertTechnologies(workExperience.getId(), workExperience.getTechnologies().getValue());
+  }
+
+  @Transactional
+  public void deleteWorkExperience(UUID id) {
+    WorkExperienceRecord workExperienceQuery = new WorkExperienceRecord();
+    workExperienceQuery.idWorkExperience = UuidAdapter.getBytesFromUUID(id);
+    deleteTechnologies(id);
+    checkOneModification(workExperienceRecordMapper.delete(workExperienceQuery));
   }
 
   private WorkExperienceRecord toWorkExperienceRecord(WorkExperience workExperience) {
@@ -78,21 +86,21 @@ public class WorkExperienceRepositoryAdapterSync {
     workExperienceRecord.userId = workExperience.getUserId().getValue();
     workExperienceRecord.binding = workExperience.getBinding();
     workExperienceRecord.idJobTitle =
-            createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
+        createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
     workExperienceRecord.visibilityJobTitle = workExperience.getJobTitle().isPublic();
     workExperienceRecord.idCompany =
-            createCompanyIfNotExist(workExperience.getCompany().getValue());
+        createCompanyIfNotExist(workExperience.getCompany().getValue());
     workExperienceRecord.visibilityCompany = workExperience.getCompany().isPublic();
     workExperienceRecord.visibilityTechnologies = workExperience.getTechnologies().isPublic();
     workExperienceRecord.startDate =
-            Date.valueOf(workExperience.getWorkPeriod().getValue().getStartDate());
+        Date.valueOf(workExperience.getWorkPeriod().getValue().getStartDate());
     workExperienceRecord.endDate =
-            workExperience.getWorkPeriod().getValue().getEndDate().map(Date::valueOf).orElse(null);
+        workExperience.getWorkPeriod().getValue().getEndDate().map(Date::valueOf).orElse(null);
     workExperienceRecord.visibilityWorkPeriod = workExperience.getWorkPeriod().isPublic();
     workExperienceRecord.visibilitySalary = workExperience.getSalary().isPublic();
     workExperienceRecord.salary = workExperience.getSalary().getValue().getNumberStripped();
     workExperienceRecord.currency =
-            workExperience.getSalary().getValue().getCurrency().getCurrencyCode();
+        workExperience.getSalary().getValue().getCurrency().getCurrencyCode();
     return workExperienceRecord;
   }
 
@@ -114,6 +122,10 @@ public class WorkExperienceRepositoryAdapterSync {
             .orElse(null);
     filters.startDate = Optional.ofNullable(query.startDate).map(Date::valueOf).orElse(null);
     filters.endDate = Optional.ofNullable(query.endDate).map(Date::valueOf).orElse(null);
+    filters.minSalary =
+        Optional.ofNullable(query.minSalary).map(Money::getNumberStripped).orElse(null);
+    filters.maxSalary =
+        Optional.ofNullable(query.maxSalary).map(Money::getNumberStripped).orElse(null);
     return filters;
   }
 
@@ -127,19 +139,19 @@ public class WorkExperienceRepositoryAdapterSync {
     builder.withBinding(workExperienceRecord.binding);
     builder.withJobTitle(
         workExperienceRecord.visibilityJobTitle
-            ? WorkExperienceField.ofPublic(jobTitle)
-            : WorkExperienceField.ofPrivate(jobTitle));
+            ? RestrictedField.ofPublic(jobTitle)
+            : RestrictedField.ofPrivate(jobTitle));
     Company company = findCompanyById(workExperienceRecord.idCompany);
     builder.withCompany(
         workExperienceRecord.visibilityCompany
-            ? WorkExperienceField.ofPublic(company)
-            : WorkExperienceField.ofPrivate(company));
+            ? RestrictedField.ofPublic(company)
+            : RestrictedField.ofPrivate(company));
     Set<Technology> technologies =
         findTechnologiesByWorkExperienceId(workExperienceRecord.idWorkExperience);
     builder.withTechnologies(
         workExperienceRecord.visibilityTechnologies
-            ? WorkExperienceField.ofPublic(technologies)
-            : WorkExperienceField.ofPrivate(technologies));
+            ? RestrictedField.ofPublic(technologies)
+            : RestrictedField.ofPrivate(technologies));
     WorkPeriod.Builder workPeriodStartDate =
         WorkPeriod.from(workExperienceRecord.startDate.toLocalDate());
     WorkPeriod workPeriod =
@@ -148,13 +160,13 @@ public class WorkExperienceRepositoryAdapterSync {
             .orElse(workPeriodStartDate.toPresent());
     builder.withWorkPeriod(
         workExperienceRecord.visibilityWorkPeriod
-            ? WorkExperienceField.ofPublic(workPeriod)
-            : WorkExperienceField.ofPrivate(workPeriod));
+            ? RestrictedField.ofPublic(workPeriod)
+            : RestrictedField.ofPrivate(workPeriod));
     Money salary = Money.of(workExperienceRecord.salary, workExperienceRecord.currency);
     builder.withSalary(
         workExperienceRecord.visibilitySalary
-            ? WorkExperienceField.ofPublic(salary)
-            : WorkExperienceField.ofPrivate(salary));
+            ? RestrictedField.ofPublic(salary)
+            : RestrictedField.ofPrivate(salary));
     return builder.build();
   }
 
@@ -189,6 +201,12 @@ public class WorkExperienceRepositoryAdapterSync {
         .stream()
         .map(record -> findTechnologyById(record.idTechnology))
         .collect(Collectors.toSet());
+  }
+
+  private void deleteTechnologies(UUID idWorkExperience) {
+    WorkExperienceTechnologyRecord record = new WorkExperienceTechnologyRecord();
+    record.idWorkExperience = UuidAdapter.getBytesFromUUID(idWorkExperience);
+    workExperienceTechnologyRecordMapper.deleteByWorkExperienceId(record);
   }
 
   private void insertTechnologies(UUID idWorkExperience, Set<Technology> technologies) {

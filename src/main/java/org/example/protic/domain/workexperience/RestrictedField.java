@@ -5,11 +5,11 @@ import org.example.protic.domain.ValueObject;
 
 import java.util.Objects;
 
-public abstract class WorkExperienceField<S> implements ValueObject {
+public abstract class RestrictedField<S> implements ValueObject {
 
   private final S value;
 
-  private WorkExperienceField(S value) {
+  private RestrictedField(S value) {
     if (Objects.isNull(value)) {
       throw new ValidationException("Null work experience field value.");
     }
@@ -22,8 +22,8 @@ public abstract class WorkExperienceField<S> implements ValueObject {
 
   public abstract boolean isPublic();
 
-  private static final class PrivateWorkExperienceField<T> extends WorkExperienceField<T> {
-    private PrivateWorkExperienceField(T value) {
+  private static final class PrivateField<T> extends RestrictedField<T> {
+    private PrivateField(T value) {
       super(value);
     }
 
@@ -33,8 +33,8 @@ public abstract class WorkExperienceField<S> implements ValueObject {
     }
   }
 
-  private static final class PublicWorkExperienceField<T> extends WorkExperienceField<T> {
-    private PublicWorkExperienceField(T value) {
+  private static final class PublicField<T> extends RestrictedField<T> {
+    private PublicField(T value) {
       super(value);
     }
 
@@ -44,12 +44,12 @@ public abstract class WorkExperienceField<S> implements ValueObject {
     }
   }
 
-  public static <T> PrivateWorkExperienceField<T> ofPrivate(T value) {
-    return new PrivateWorkExperienceField<>(value);
+  public static <T> PrivateField<T> ofPrivate(T value) {
+    return new PrivateField<>(value);
   }
 
-  public static <T> PublicWorkExperienceField<T> ofPublic(T value) {
-    return new PublicWorkExperienceField<>(value);
+  public static <T> PublicField<T> ofPublic(T value) {
+    return new PublicField<>(value);
   }
 
   @Override
@@ -60,7 +60,7 @@ public abstract class WorkExperienceField<S> implements ValueObject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    WorkExperienceField<?> that = (WorkExperienceField<?>) o;
+    RestrictedField<?> that = (RestrictedField<?>) o;
     return Objects.equals(value, that.value);
   }
 

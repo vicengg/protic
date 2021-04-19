@@ -14,5 +14,7 @@ public interface WorkExperienceRepository {
 
   CompletableFuture<List<WorkExperience>> find(GetWorkExperiencesQuery query);
 
-  CompletableFuture<Void> updateWorkExperience(WorkExperience workExperience);
+  CompletableFuture<Void> update(WorkExperience workExperience);
+
+  CompletableFuture<Void> delete(UUID id);
 }

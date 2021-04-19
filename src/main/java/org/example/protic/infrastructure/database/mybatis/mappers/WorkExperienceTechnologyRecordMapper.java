@@ -12,4 +12,6 @@ public interface WorkExperienceTechnologyRecordMapper {
       WorkExperienceTechnologyRecord workExperienceTechnologyRecord);
 
   int insert(WorkExperienceTechnologyRecord workExperienceTechnologyRecord);
+
+  int deleteByWorkExperienceId(WorkExperienceTechnologyRecord workExperienceTechnologyRecord);
 }

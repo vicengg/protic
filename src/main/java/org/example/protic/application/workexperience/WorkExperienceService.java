@@ -13,6 +13,7 @@ public interface WorkExperienceService {
   CompletableFuture<List<WorkExperienceProjection>> getWorkExperiences(
       GetWorkExperiencesQuery query);
 
-  CompletableFuture<Void> updateWorkExperience(
-      UpdateWorkExperienceCommand command);
+  CompletableFuture<Void> updateWorkExperience(UpdateWorkExperienceCommand command);
+
+  CompletableFuture<Void> deleteWorkExperience(DeleteWorkExperienceCommand command);
 }

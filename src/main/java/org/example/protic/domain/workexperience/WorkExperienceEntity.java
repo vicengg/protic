@@ -20,11 +20,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
 
   private final UserId userId;
   private final boolean binding;
-  private final WorkExperienceField<JobTitle> jobTitle;
-  private final WorkExperienceField<Company> company;
-  private final WorkExperienceField<Set<Technology>> technologies;
-  private final WorkExperienceField<WorkPeriod> workPeriod;
-  private final WorkExperienceField<Money> salary;
+  private final RestrictedField<JobTitle> jobTitle;
+  private final RestrictedField<Company> company;
+  private final RestrictedField<Set<Technology>> technologies;
+  private final RestrictedField<WorkPeriod> workPeriod;
+  private final RestrictedField<Money> salary;
 
   private WorkExperienceEntity(Builder builder) {
     super(Objects.requireNonNull(builder.id), Objects.requireNonNull(builder.createdAt));
@@ -85,27 +85,27 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   }
 
   @Override
-  public WorkExperienceField<JobTitle> getJobTitle() {
+  public RestrictedField<JobTitle> getJobTitle() {
     return jobTitle;
   }
 
   @Override
-  public WorkExperienceField<Company> getCompany() {
+  public RestrictedField<Company> getCompany() {
     return company;
   }
 
   @Override
-  public WorkExperienceField<Set<Technology>> getTechnologies() {
+  public RestrictedField<Set<Technology>> getTechnologies() {
     return technologies;
   }
 
   @Override
-  public WorkExperienceField<WorkPeriod> getWorkPeriod() {
+  public RestrictedField<WorkPeriod> getWorkPeriod() {
     return workPeriod;
   }
 
   @Override
-  public WorkExperienceField<Money> getSalary() {
+  public RestrictedField<Money> getSalary() {
     return salary;
   }
 
@@ -117,19 +117,19 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
       workExperienceProjection.userId = this.userId;
     }
     if (this.userId.equals(userId) || this.jobTitle.isPublic()) {
-      workExperienceProjection.jobTitle = this.jobTitle.getValue();
+      workExperienceProjection.jobTitle = this.jobTitle;
     }
     if (this.userId.equals(userId) || this.company.isPublic()) {
-      workExperienceProjection.company = this.company.getValue();
+      workExperienceProjection.company = this.company;
     }
     if (this.userId.equals(userId) || this.technologies.isPublic()) {
-      workExperienceProjection.technologies = this.technologies.getValue();
+      workExperienceProjection.technologies = this.technologies;
     }
     if (this.userId.equals(userId) || this.workPeriod.isPublic()) {
-      workExperienceProjection.workPeriod = this.workPeriod.getValue();
+      workExperienceProjection.workPeriod = this.workPeriod;
     }
     if (this.userId.equals(userId) || this.salary.isPublic()) {
-      workExperienceProjection.salary = this.salary.getValue();
+      workExperienceProjection.salary = this.salary;
     }
     return workExperienceProjection;
   }
@@ -141,8 +141,17 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   public Builder update(UserId userId) {
     if (!this.userId.equals(userId)) {
       throw new ForbiddenException();
+    } else {
+      return new Builder(this.getId(), this.getCreatedAt());
     }
-    return new Builder(this.getId(), this.getCreatedAt());
+  }
+
+  public UUID checkForDelete(UserId userId) {
+    if (!this.userId.equals(userId)) {
+      throw new ForbiddenException();
+    } else {
+      return getId();
+    }
   }
 
   public static Builder builder() {
@@ -154,11 +163,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     private final Timestamp createdAt;
     private UserId userId;
     private boolean binding;
-    public WorkExperienceField<Money> salary;
-    private WorkExperienceField<JobTitle> jobTitle;
-    private WorkExperienceField<Company> company;
-    private WorkExperienceField<Set<Technology>> technologies;
-    private WorkExperienceField<WorkPeriod> workPeriod;
+    public RestrictedField<Money> salary;
+    private RestrictedField<JobTitle> jobTitle;
+    private RestrictedField<Company> company;
+    private RestrictedField<Set<Technology>> technologies;
+    private RestrictedField<WorkPeriod> workPeriod;
 
     public Builder(UUID id, Timestamp createdAt) {
       this.id = id;
@@ -175,27 +184,27 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
       return this;
     }
 
-    public Builder withJobTitle(WorkExperienceField<JobTitle> jobTitle) {
+    public Builder withJobTitle(RestrictedField<JobTitle> jobTitle) {
       this.jobTitle = jobTitle;
       return this;
     }
 
-    public Builder withCompany(WorkExperienceField<Company> company) {
+    public Builder withCompany(RestrictedField<Company> company) {
       this.company = company;
       return this;
     }
 
-    public Builder withTechnologies(WorkExperienceField<Set<Technology>> technologies) {
+    public Builder withTechnologies(RestrictedField<Set<Technology>> technologies) {
       this.technologies = technologies;
       return this;
     }
 
-    public Builder withWorkPeriod(WorkExperienceField<WorkPeriod> workPeriod) {
+    public Builder withWorkPeriod(RestrictedField<WorkPeriod> workPeriod) {
       this.workPeriod = workPeriod;
       return this;
     }
 
-    public Builder withSalary(WorkExperienceField<Money> salary) {
+    public Builder withSalary(RestrictedField<Money> salary) {
       this.salary = salary;
       return this;
     }
@@ -209,11 +218,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
 
     private UUID id;
     private UserId userId;
-    private JobTitle jobTitle;
-    private Company company;
-    private Set<Technology> technologies;
-    private WorkPeriod workPeriod;
-    private Money salary;
+    private RestrictedField<JobTitle> jobTitle;
+    private RestrictedField<Company> company;
+    private RestrictedField<Set<Technology>> technologies;
+    private RestrictedField<WorkPeriod> workPeriod;
+    private RestrictedField<Money> salary;
 
     @Override
     public UUID getId() {
@@ -226,27 +235,27 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     }
 
     @Override
-    public Optional<JobTitle> getJobTitle() {
+    public Optional<RestrictedField<JobTitle>> getJobTitle() {
       return Optional.ofNullable(jobTitle);
     }
 
     @Override
-    public Optional<Company> getCompany() {
+    public Optional<RestrictedField<Company>> getCompany() {
       return Optional.ofNullable(company);
     }
 
     @Override
-    public Optional<Set<Technology>> getTechnologies() {
+    public Optional<RestrictedField<Set<Technology>>> getTechnologies() {
       return Optional.ofNullable(technologies);
     }
 
     @Override
-    public Optional<WorkPeriod> getWorkPeriod() {
+    public Optional<RestrictedField<WorkPeriod>> getWorkPeriod() {
       return Optional.ofNullable(workPeriod);
     }
 
     @Override
-    public Optional<Money> getSalary() {
+    public Optional<RestrictedField<Money>> getSalary() {
       return Optional.ofNullable(salary);
     }
   }

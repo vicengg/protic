@@ -20,4 +20,9 @@
         insert into WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) values
         (#{idWorkExperience,jdbcType=VARBINARY}, #{idTechnology,jdbcType=INTEGER})
     </insert>
+    <delete id="deleteByWorkExperienceId"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceTechnologyRecord">
+        delete from WORK_EXPERIENCE_TECHNOLOGY
+        where ID_WORK_EXPERIENCE = #{idWorkExperience,jdbcType=VARBINARY}
+    </delete>
 </mapper>

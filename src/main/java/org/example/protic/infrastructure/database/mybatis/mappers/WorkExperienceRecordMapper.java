@@ -16,4 +16,6 @@ public interface WorkExperienceRecordMapper {
   int insert(WorkExperienceRecord workExperienceRecord);
 
   int update(WorkExperienceRecord workExperienceRecord);
+
+  int delete(WorkExperienceRecord workExperienceRecord);
 }

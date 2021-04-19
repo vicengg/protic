@@ -65,7 +65,16 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                     .withWorkPeriod(command.workPeriod)
                     .withSalary(command.salary)
                     .build())
-        .thenCompose(repository::updateWorkExperience);
+        .thenCompose(repository::update);
+  }
+
+  @Override
+  public CompletableFuture<Void> deleteWorkExperience(DeleteWorkExperienceCommand command) {
+    return repository
+        .findById(command.id)
+        .thenApply(WorkExperienceEntity::copy)
+        .thenApply(workExperienceEntity -> workExperienceEntity.checkForDelete(command.userId))
+        .thenCompose(repository::delete);
   }
 
   private static Comparator<WorkExperience> moreRecent() {
