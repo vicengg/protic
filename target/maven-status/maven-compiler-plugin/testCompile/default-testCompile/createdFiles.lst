@@ -1,0 +1,10 @@
+org\example\protic\domain\UserIdTest.class
+org\example\protic\commons\UuidAdapterTest.class
+org\example\protic\domain\workexperience\JobTitleTest.class
+org\example\protic\domain\workexperience\RestrictedFieldTest.class
+org\example\protic\commons\ValidationExceptionTest.class
+org\example\protic\domain\workexperience\TechnologyTest.class
+org\example\protic\domain\workexperience\WorkExperienceEntityTest.class
+org\example\protic\domain\workexperience\CompanyTest.class
+org\example\protic\application\WorkExperienceServiceImplTest.class
+org\example\protic\domain\workexperience\WorkPeriodTest.class

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.WorkExperienceRecordMapper">
+    <sql id="work_experience_columns">
+        WE.ID_WORK_EXPERIENCE idWorkExperience,
+        WE.CREATED_AT createdAt,
+        WE.USER_ID userId,
+        WE.BINDING binding,
+        WE.ID_JOB_TITLE idJobTitle,
+        WE.VISIBILITY_JOB_TITLE visibilityJobTitle,
+        WE.ID_COMPANY idCompany,
+        WE.VISIBILITY_COMPANY visibilityCompany,
+        WE.VISIBILITY_TECHNOLOGIES visibilityTechnologies,
+        WE.START_DATE startDate,
+        WE.END_DATE endDate,
+        WE.VISIBILITY_WORK_PERIOD visibilityWorkPeriod,
+        WE.SALARY salary,
+        WE.CURRENCY currency,
+        WE.VISIBILITY_SALARY visibilitySalary
+    </sql>
+    <select id="selectById"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        select
+        <include refid="work_experience_columns"/>
+        from WORK_EXPERIENCE WE
+        <where>
+            WE.ID_WORK_EXPERIENCE = #{idWorkExperience,jdbcType=VARBINARY}
+        </where>
+    </select>
+    <select id="select"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceFilterRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        select distinct
+        <include refid="work_experience_columns"/>
+        from WORK_EXPERIENCE WE, JOB_TITLE JT, COMPANY C, WORK_EXPERIENCE_TECHNOLOGY WET, TECHNOLOGY T
+        <where>
+            1 = 1
+            <if test='"own".equalsIgnoreCase(scope)'>
+                AND WE.USER_ID = #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test='"foreign".equalsIgnoreCase(scope)'>
+                AND WE.USER_ID != #{userId,jdbcType=VARCHAR}
+            </if>
+            <if test="jobTitle!=null">
+                <bind name="jobTitlePattern" value="'%' + jobTitle + '%'"/>
+                AND WE.VISIBILITY_JOB_TITLE = TRUE
+                AND WE.ID_JOB_TITLE = JT.ID_JOB_TITLE
+                AND JT.NAME_VALUE LIKE #{jobTitlePattern,jdbcType=VARCHAR}
+            </if>
+            <if test="company!=null">
+                <bind name="companyPattern" value="'%' + company + '%'"/>
+                AND WE.VISIBILITY_COMPANY = TRUE
+                AND WE.ID_COMPANY = C.ID_COMPANY
+                AND C.NAME_VALUE LIKE #{companyPattern,jdbcType=VARCHAR}
+            </if>
+            <if test="technologies!=null">
+                <foreach item="technology" index="index" collection="technologies">
+                    <bind name="technologyPattern" value="'%' + technology + '%'"/>
+                    AND WE.ID_WORK_EXPERIENCE = WET.ID_WORK_EXPERIENCE
+                    AND T.ID_TECHNOLOGY = WET.ID_TECHNOLOGY
+                    AND T.NAME_VALUE LIKE #{technologyPattern,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+            <if test="startDate!=null">
+                AND WE.VISIBILITY_WORK_PERIOD = TRUE
+                AND #{startDate,jdbcType=DATE} &lt;= WE.START_DATE
+            </if>
+            <if test="endDate!=null">
+                AND WE.VISIBILITY_WORK_PERIOD = TRUE
+                AND #{endDate,jdbcType=DATE} &gt;= We.START_DATE
+            </if>
+            <if test="minSalary!=null">
+                AND WE.VISIBILITY_SALARY = TRUE
+                AND #{minSalary,jdbcType=DATE} &lt;= WE.SALARY
+            </if>
+            <if test="endDate!=null">
+                AND WE.VISIBILITY_SALARY = TRUE
+                AND #{maxSalary,jdbcType=DATE} &gt;= We.SALARY
+            </if>
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        insert into WORK_EXPERIENCE (
+        ID_WORK_EXPERIENCE,
+        CREATED_AT,
+        USER_ID,
+        BINDING,
+        ID_JOB_TITLE,
+        VISIBILITY_JOB_TITLE,
+        ID_COMPANY,
+        VISIBILITY_COMPANY,
+        VISIBILITY_TECHNOLOGIES,
+        START_DATE,
+        END_DATE,
+        VISIBILITY_WORK_PERIOD,
+        SALARY,
+        CURRENCY,
+        VISIBILITY_SALARY
+        ) values (
+        #{idWorkExperience,jdbcType=VARBINARY},
+        #{createdAt,jdbcType=TIMESTAMP},
+        #{userId,jdbcType=INTEGER},
+        #{binding,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{idJobTitle,jdbcType=INTEGER},
+        #{visibilityJobTitle,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{idCompany,jdbcType=INTEGER},
+        #{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{startDate,jdbcType=DATE},
+        #{endDate,jdbcType=DATE},
+        #{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        #{salary,jdbcType=DECIMAL},
+        #{currency,jdbcType=VARCHAR},
+        #{visibilitySalary,jdbcType=INTEGER,javaType=java.lang.Boolean}
+        )
+    </insert>
+    <update id="update" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        update WORK_EXPERIENCE set
+        BINDING=#{binding,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        ID_JOB_TITLE=#{idJobTitle,jdbcType=INTEGER},
+        VISIBILITY_JOB_TITLE=#{visibilityJobTitle,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        ID_COMPANY=#{idCompany,jdbcType=INTEGER},
+        VISIBILITY_COMPANY=#{visibilityCompany,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        VISIBILITY_TECHNOLOGIES=#{visibilityTechnologies,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        START_DATE=#{startDate,jdbcType=DATE},
+        END_DATE=#{endDate,jdbcType=DATE},
+        VISIBILITY_WORK_PERIOD=#{visibilityWorkPeriod,jdbcType=INTEGER,javaType=java.lang.Boolean},
+        SALARY=#{salary,jdbcType=DECIMAL},
+        CURRENCY=#{currency,jdbcType=VARCHAR},
+        VISIBILITY_SALARY=#{visibilitySalary,jdbcType=INTEGER,javaType=java.lang.Boolean}
+        where ID_WORK_EXPERIENCE=#{idWorkExperience,jdbcType=VARBINARY}
+    </update>
+    <delete id="delete" parameterType="org.example.protic.infrastructure.database.mybatis.records.WorkExperienceRecord">
+        delete WORK_EXPERIENCE where
+        ID_WORK_EXPERIENCE = #{idWorkExperience,jdbcType=VARBINARY}
+    </delete>
+</mapper>

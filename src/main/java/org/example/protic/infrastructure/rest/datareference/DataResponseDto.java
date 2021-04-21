@@ -1,8 +1,10 @@
 package org.example.protic.infrastructure.rest.datareference;
 
+import org.example.protic.infrastructure.rest.RestDto;
+
 import java.util.List;
 
-public class DataResponseDto {
+public class DataResponseDto implements RestDto {
 
   public List<String> data;
 

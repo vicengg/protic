@@ -4,137 +4,112 @@ import org.example.protic.application.workexperience.*;
 import org.example.protic.commons.CurrencyContext;
 import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
-import org.example.protic.infrastructure.rest.ExceptionMapper;
-import org.example.protic.infrastructure.rest.IdResponseDto;
+import org.example.protic.infrastructure.rest.*;
 import org.javamoney.moneta.Money;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Path("/work-experience")
-public class WorkExperienceResource {
+@RestController
+@RequestMapping("/work-experience")
+public class WorkExperienceController {
 
   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   private final WorkExperienceService workExperienceService;
 
-  @Inject
-  public WorkExperienceResource(WorkExperienceService workExperienceService) {
+  @Autowired
+  public WorkExperienceController(WorkExperienceService workExperienceService) {
     this.workExperienceService = workExperienceService;
   }
 
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void createWorkExperience(
-      @Context SecurityContext securityContext,
-      @Suspended final AsyncResponse asyncResponse,
-      WorkExperienceDto requestDto) {
-    UserId id = getUserId(securityContext);
-    workExperienceService
+  @RequestMapping(
+      method = RequestMethod.POST,
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public CompletableFuture<ResponseEntity<RestDto>> createWorkExperience(
+      @RequestBody WorkExperienceDto requestDto) {
+    UserId id = getUserId();
+    return workExperienceService
         .createWorkExperience(mapToCreateWorkExperienceCommand(id, requestDto))
-        .thenApply(WorkExperienceResource::toResponse)
-        .exceptionally(ExceptionMapper::map)
-        .thenAccept(asyncResponse::resume);
+        .thenApply(WorkExperienceController::toResponse)
+        .exceptionally(ExceptionMapper::map);
   }
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public void getWorkExperiences(
-      @Context SecurityContext securityContext,
-      @Suspended final AsyncResponse asyncResponse,
-      @DefaultValue("all") @QueryParam("scope") String scope,
-      @QueryParam("jobTitle") String jobTitle,
-      @QueryParam("company") String company,
-      @QueryParam("technologies") Set<String> technologies,
-      @QueryParam("startDate") String startDate,
-      @QueryParam("endDate") String endDate,
-      @QueryParam("minSalary") BigDecimal minSalary,
-      @QueryParam("maxSalary") BigDecimal maxSalary) {
+  @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+  public CompletableFuture<ResponseEntity<RestDto>> getWorkExperiences(
+      @RequestParam(value = "scope", defaultValue = "all", required = false) String scope,
+      @RequestParam(value = "jobTitle", required = false) String jobTitle,
+      @RequestParam(value = "company", required = false) String company,
+      @RequestParam(value = "technologies", required = false) Set<String> technologies,
+      @RequestParam(value = "startDate", required = false) String startDate,
+      @RequestParam(value = "endDate", required = false) String endDate,
+      @RequestParam(value = "minSalary", required = false) BigDecimal minSalary,
+      @RequestParam(value = "maxSalary", required = false) BigDecimal maxSalary) {
     GetWorkExperiencesQuery query =
         mapToGetWorkExperiencesQuery(
-            securityContext,
-            scope,
-            jobTitle,
-            company,
-            technologies,
-            startDate,
-            endDate,
-            minSalary,
-            maxSalary);
-    workExperienceService
+            scope, jobTitle, company, technologies, startDate, endDate, minSalary, maxSalary);
+    return workExperienceService
         .getWorkExperiences(query)
-        .thenApply(WorkExperienceResource::toResponse)
-        .exceptionally(ExceptionMapper::map)
-        .thenAccept(asyncResponse::resume);
+        .thenApply(WorkExperienceController::toResponse)
+        .exceptionally(ExceptionMapper::map);
   }
 
-  @PUT
-  @Path("/{workExperienceId}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void updateWorkExperience(
-      @Context SecurityContext securityContext,
-      @Suspended final AsyncResponse asyncResponse,
-      @PathParam("workExperienceId") String workExperienceId,
-      WorkExperienceDto requestDto) {
-    UserId id = getUserId(securityContext);
-    workExperienceService
+  @RequestMapping(
+      value = "/{workExperienceId}",
+      method = RequestMethod.PUT,
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public CompletableFuture<ResponseEntity<RestDto>> updateWorkExperience(
+      @PathVariable("workExperienceId") String workExperienceId,
+      @RequestBody WorkExperienceDto requestDto) {
+    UserId id = getUserId();
+    return workExperienceService
         .updateWorkExperience(
             mapToUpdateWorkExperienceCommand(UUID.fromString(workExperienceId), id, requestDto))
-        .thenApply(ignore -> Response.ok().build())
-        .exceptionally(ExceptionMapper::map)
-        .thenAccept(asyncResponse::resume);
+        .thenApply(RestControllerUtils::toOkResponse)
+        .exceptionally(ExceptionMapper::map);
   }
 
-  @DELETE
-  @Path("/{workExperienceId}")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void deleteWorkExperience(
-      @Context SecurityContext securityContext,
-      @Suspended final AsyncResponse asyncResponse,
-      @PathParam("workExperienceId") String workExperienceId) {
+  @RequestMapping(
+      value = "/{workExperienceId}",
+      method = RequestMethod.DELETE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public CompletableFuture<ResponseEntity<RestDto>> deleteWorkExperience(
+      @PathVariable("workExperienceId") String workExperienceId) {
 
     DeleteWorkExperienceCommand command = new DeleteWorkExperienceCommand();
     command.id = UUID.fromString(workExperienceId);
-    command.userId = getUserId(securityContext);
-    workExperienceService
+    command.userId = getUserId();
+    return workExperienceService
         .deleteWorkExperience(command)
-        .thenApply(ignore -> Response.ok().build())
-        .exceptionally(ExceptionMapper::map)
-        .thenAccept(asyncResponse::resume);
+        .thenApply(RestControllerUtils::toOkResponse)
+        .exceptionally(ExceptionMapper::map);
   }
 
-  private static UserId getUserId(@Context SecurityContext securityContext) {
-    OAuth2AuthenticationToken authenticationToken =
-        (OAuth2AuthenticationToken) securityContext.getUserPrincipal();
-    OAuth2AuthenticatedPrincipal authenticatedPrincipal = authenticationToken.getPrincipal();
-    return UserId.of(Objects.requireNonNull(authenticatedPrincipal.getAttribute("id")).toString());
+  private static UserId getUserId() {
+    return UserId.of(
+        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("id")).toString());
   }
 
-  private static Response toResponse(UUID uuid) {
-    return Response.ok(IdResponseDto.of(uuid)).build();
+  private static ResponseEntity<RestDto> toResponse(UUID uuid) {
+    return RestControllerUtils.toOkResponse(IdResponseDto.of(uuid));
   }
 
-  private static Response toResponse(List<WorkExperienceProjection> workExperiences) {
-    return Response.ok(
-            workExperiences.stream().map(WorkExperienceDto::of).collect(Collectors.toList()))
-        .build();
+  private static ResponseEntity<RestDto> toResponse(
+      List<WorkExperienceProjection> workExperiences) {
+    return RestControllerUtils.toOkResponse(
+        CollectionDto.of(
+            workExperiences.stream().map(WorkExperienceDto::of).collect(Collectors.toList())));
   }
 
   private static CreateWorkExperienceCommand mapToCreateWorkExperienceCommand(
@@ -189,7 +164,6 @@ public class WorkExperienceResource {
   }
 
   private static GetWorkExperiencesQuery mapToGetWorkExperiencesQuery(
-      SecurityContext securityContext,
       String scope,
       String jobTitle,
       String company,
@@ -198,7 +172,7 @@ public class WorkExperienceResource {
       String endDate,
       BigDecimal minSalary,
       BigDecimal maxSalary) {
-    UserId userId = getUserId(securityContext);
+    UserId userId = getUserId();
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
     query.userId = userId;
     query.scope = GetWorkExperiencesQuery.Scope.of(scope);
@@ -209,10 +183,18 @@ public class WorkExperienceResource {
             .map(Collection::stream)
             .map(a -> a.map(Technology::of).collect(Collectors.toSet()))
             .orElse(null);
-    query.startDate = LocalDate.parse(startDate, FORMATTER);
-    query.endDate = LocalDate.parse(endDate, FORMATTER);
-    query.minSalary = Money.of(minSalary, CurrencyContext.getPrototypeAllowedCurrency());
-    query.maxSalary = Money.of(maxSalary, CurrencyContext.getPrototypeAllowedCurrency());
+    query.startDate =
+        Optional.ofNullable(startDate).map(date -> LocalDate.parse(date, FORMATTER)).orElse(null);
+    query.endDate =
+        Optional.ofNullable(endDate).map(date -> LocalDate.parse(date, FORMATTER)).orElse(null);
+    query.minSalary =
+        Optional.ofNullable(minSalary)
+            .map(salary -> Money.of(salary, CurrencyContext.getPrototypeAllowedCurrency()))
+            .orElse(null);
+    query.maxSalary =
+        Optional.ofNullable(maxSalary)
+            .map(salary -> Money.of(salary, CurrencyContext.getPrototypeAllowedCurrency()))
+            .orElse(null);
     return query;
   }
 

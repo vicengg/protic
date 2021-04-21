@@ -5,11 +5,12 @@ import org.example.protic.domain.workexperience.Company;
 import org.example.protic.domain.workexperience.JobTitle;
 import org.example.protic.domain.workexperience.Technology;
 import org.example.protic.domain.workexperience.WorkExperienceProjection;
+import org.example.protic.infrastructure.rest.RestDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class WorkExperienceDto {
+public class WorkExperienceDto implements RestDto {
 
   public String id;
   public String userId;

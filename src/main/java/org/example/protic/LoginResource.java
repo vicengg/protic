@@ -1,35 +1,35 @@
 package org.example.protic;
 
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
-
-@Path("/")
+@Controller
+@RequestMapping("/")
 public class LoginResource {
 
   public LoginResource() {}
 
-  @GET
-  @Path("login")
-  @Produces(MediaType.TEXT_HTML)
-  public String login() {
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "/login",
+      produces = MediaType.TEXT_HTML_VALUE)
+  public @ResponseBody String login() {
     return "Log in with <a href=\"/oauth2/authorization/github\">GitHub</a>";
   }
 
-  @GET
-  @Produces(MediaType.TEXT_PLAIN)
-  public String home(@Context SecurityContext securityContext) {
-    OAuth2AuthenticationToken authenticationToken =
-        (OAuth2AuthenticationToken) securityContext.getUserPrincipal();
-    OAuth2AuthenticatedPrincipal authenticatedPrincipal = authenticationToken.getPrincipal();
-    String userName = authenticatedPrincipal.getAttribute("login");
-    return "Hello " + userName;
+  @RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+  public @ResponseBody String home() {
+    DefaultOAuth2User user = getUser();
+    return "Hello " + user.getAttribute("login");
+  }
+
+  private static DefaultOAuth2User getUser() {
+    return (DefaultOAuth2User)
+        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   }
 }

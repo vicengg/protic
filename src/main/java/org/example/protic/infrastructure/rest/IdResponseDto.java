@@ -2,7 +2,7 @@ package org.example.protic.infrastructure.rest;
 
 import java.util.UUID;
 
-public class IdResponseDto {
+public class IdResponseDto implements RestDto {
 
   public String id;
 

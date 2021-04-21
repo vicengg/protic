@@ -1,6 +1,6 @@
 package org.example.protic.infrastructure.rest;
 
-public class ErrorResponse {
+public class ErrorResponse implements RestDto {
 
   public enum ErrorCode {
     GENERIC_ERROR
