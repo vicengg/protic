@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.example.protic.application.WorkExperienceServiceImplTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.94 s - in org.example.protic.application.WorkExperienceServiceImplTest
