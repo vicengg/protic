@@ -24,6 +24,6 @@ public class HomeController {
         "message",
         MessageFormat.format(
             "Hola {0}", Objects.requireNonNull(user.getAttribute("login")).toString()));
-    return "home";
+    return "index";
   }
 }

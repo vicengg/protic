@@ -1,0 +1,16 @@
+.component-autocomplete > .input-container > .suggestions {
+    position: fixed;
+    background-color: white;
+}
+
+.component-autocomplete > .input-container > .suggestions > .suggestion {
+    cursor: pointer;
+    border: solid;
+    border-width: 0px 1px 1px 1px;
+    border-color: lightgrey;
+}
+
+.component-autocomplete > .input-container > .suggestions > .suggestion:hover {
+    background-color: lightgrey;
+}
+
