@@ -1,28 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
+import { ClosableChip } from './ClosableChip';
 
-export const AutocompleteMultiple = ({ url, placeholder, label, footer, values, setValues }) => {
+export const AutocompleteMultiple = ({ url, placeholder, footer, values, setValues }) => {
 
     const [temporalValue, setTemporalValue] = useState('');
-
     const addValue = (newValue) => {
-        setValues([...values, newValue])
+        setValues(Array.from(new Set([...values, newValue])));
         setTemporalValue('');
+    }
+
+    const removeFromValues = (valueToRemove) => {
+        setValues(values.filter(element => element !== valueToRemove));
     }
 
     return (
         <>
-            <Autocomplete 
-                url={ url }
-                label={ label }
-                placeholder={ placeholder }
-                footer={ footer }
-                value={ temporalValue }
-                onChange={ setTemporalValue }
-                onSelect={ addValue }
-                onSubmit={ addValue }/>
+            <Autocomplete
+                url={url}
+                placeholder={placeholder}
+                footer={footer}
+                value={temporalValue}
+                onChange={setTemporalValue}
+                onSelect={addValue}
+                onSubmit={addValue} />
             {!!values && values.map(value => {
-                return <span className="badge badge-primary badge-pill" key={ value }>{ value }</span>;
+                return <ClosableChip value={value} key={value} onClose={removeFromValues} />
             })}
         </>
     );

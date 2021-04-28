@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 
 export const useResize = (myRef) => {
-    const getDimensions = () => ({
-        width: myRef.current.offsetWidth,
-        height: myRef.current.offsetHeight
-    })
 
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
     useEffect(() => {
         const handleResize = () => {
-            setDimensions(getDimensions())
+            setDimensions({
+                width: myRef.current.offsetWidth,
+                height: myRef.current.offsetHeight
+            })
         }
 
         if (myRef.current) {
-            setDimensions(getDimensions())
+            setDimensions({
+                width: myRef.current.offsetWidth,
+                height: myRef.current.offsetHeight
+            })
         }
 
         window.addEventListener("resize", handleResize)

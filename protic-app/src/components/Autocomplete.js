@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useFetch } from '../hooks/useFetch'
 import { useResize } from '../hooks/useResize'
 
-export const Autocomplete = ({ url, placeholder, label, footer, value, onChange, onSelect, onSubmit }) => {
+export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSelect, onSubmit }) => {
 
     const [suggestionsMenuVisibility, setSuggestionsMenuVisibility] = useState(false);
-    const {loading, data} = useFetch(`${url}${value}`);
+    const { loading, data } = useFetch(`${url}${value}`);
     const [suggestions, setSuggestions] = useState([]);
     const [keyboardSelection, setKeyboardSelection] = useState(null);
     const inputRef = useRef();
@@ -44,31 +44,33 @@ export const Autocomplete = ({ url, placeholder, label, footer, value, onChange,
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
-        onSubmit(keyboardSelection);
+        onSubmit(!!keyboardSelection ? keyboardSelection : value);
         closeSuggestionsMenu();
     };
 
     const handleInputKeyDown = (event) => {
         console.log(inputRef);
-        switch(event.key) {
+        switch (event.key) {
             case "ArrowUp":
                 changeKeyboardSelecction(-1);
                 break;
             case "ArrowDown":
                 changeKeyboardSelecction(1);
                 break;
+            default:
+                break;
         }
     };
 
     const changeKeyboardSelecction = (increasement) => {
         if (!!suggestions && suggestions.length > 0) {
-            if(!!keyboardSelection) {
+            if (!!keyboardSelection) {
                 const index = suggestions.indexOf(keyboardSelection);
                 setKeyboardSelection(suggestions[index + increasement >= 0 ? index + increasement : suggestions.length - increasement]);
             } else {
-                if(increasement === 1) {
+                if (increasement === 1) {
                     setKeyboardSelection(suggestions[0]);
-                } else if(increasement === -1) {
+                } else if (increasement === -1) {
                     setKeyboardSelection(suggestions[suggestions.length - 1]);
                 }
             }
@@ -76,43 +78,35 @@ export const Autocomplete = ({ url, placeholder, label, footer, value, onChange,
     }
 
     useEffect(() => {
-        if(!loading) {
+        if (!loading) {
             setSuggestions(data.data);
         }
-    }, [loading]);
-
-    useEffect(() => {
-        if(!loading) {
-            setSuggestions(data.data);
-        }
-    }, [loading]);
-
+    }, [loading, data]);
 
     return (
         <>
-            <form onSubmit={ handleFormSubmit } autoComplete="off" className="component-autocomplete">
+            <form onSubmit={handleFormSubmit} autoComplete="off" className="component-autocomplete">
                 <div className="input-container form-group">
-                        <label>{ label }</label>
-                        <input 
-                            ref={ inputRef }
-                            className="form-control" 
-                            type="text" 
-                            value={ value } 
-                            onChange={ handleInputChange } 
-                            placeholder={ placeholder }
-                            onFocus={ handleInputFocus }
-                            onKeyDown={ handleInputKeyDown }
-                            onBlur={ handleInputBlur }
-                        />
-                        <div className="suggestions" style={{width: suggestionsSize.width}}>
+                    <input
+                        ref={inputRef}
+                        className="form-control"
+                        type="text"
+                        value={value}
+                        onChange={handleInputChange}
+                        placeholder={placeholder}
+                        onFocus={handleInputFocus}
+                        onKeyDown={handleInputKeyDown}
+                        onBlur={handleInputBlur}
+                    />
+                    <div className="suggestions" style={{ width: suggestionsSize.width }}>
                         {!!suggestionsMenuVisibility && !!suggestions && suggestions.map(element => {
-                                return <div 
-                                onMouseDown={ handleSuggestionClick } 
-                                className={ element === keyboardSelection ? "suggestion p-1 bg-primary" : "suggestion p-1"}
+                            return <div
+                                onMouseDown={handleSuggestionClick}
+                                className={element === keyboardSelection ? "suggestion p-1 bg-primary" : "suggestion p-1"}
                                 key={element}>{element}</div>
-                            })
+                        })
                         }</div>
-                        {!!footer && <small className="form-text text-muted">{ footer }</small>}
+                    {!!footer && <small className="form-text text-muted">{footer}</small>}
                 </div>
             </form>
         </>

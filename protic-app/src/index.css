@@ -1,6 +1,7 @@
 .component-autocomplete > .input-container > .suggestions {
     position: fixed;
     background-color: white;
+    z-index: 100;
 }
 
 .component-autocomplete > .input-container > .suggestions > .suggestion {
@@ -14,3 +15,32 @@
     background-color: lightgrey;
 }
 
+.component-closable-chip {
+    display: inline-block;
+    padding: 0 15px;
+    height: 25px;
+    font-size: 12px;
+    line-height: 22px;
+    border-radius: 25px;
+    background-color: lightgrey;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+
+  
+ .component-closable-chip .chip-text {
+    line-height: 26px;
+  }
+
+ .component-closable-chip .close-btn {
+    padding-left: 10px;
+    color: grey;
+    font-weight: bold;
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+.component-closable-chip .close-btn:hover {
+    color: black;
+  }
