@@ -13,12 +13,12 @@ public class WorkPeriodDto {
 
   @JsonDeserialize(using = LocalDateDeserializer.class)
   @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonFormat(pattern = "dd/MM/yyyy")
+  @JsonFormat(pattern = "yyyy-MM-dd")
   public LocalDate startDate;
 
   @JsonDeserialize(using = LocalDateDeserializer.class)
   @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonFormat(pattern = "dd/MM/yyyy")
+  @JsonFormat(pattern = "yyyy-MM-dd")
   public LocalDate endDate;
 
   public static WorkPeriodDto of(WorkPeriod workPeriod) {

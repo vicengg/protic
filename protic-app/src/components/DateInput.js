@@ -1,10 +1,8 @@
 import React from 'react';
 
-export const DateInput = ({ placeholder, footer, value, onChange }) => {
-
+export const DateInput = ({ footer, value, onChange, disabled = false }) => {
 
     const handleInputChange = (event) => {
-        console.log(event.target.value);
         onChange(event.target.value);
     };
 
@@ -19,10 +17,10 @@ export const DateInput = ({ placeholder, footer, value, onChange }) => {
                     <div className="input-group">
                         <input
                             className="form-control"
-                            placeholder={placeholder}
                             type="date"
                             value={value}
                             onChange={handleInputChange}
+                            readOnly={disabled}
                         />
                     </div>
                     {!!footer && <small className="form-text text-muted">{footer}</small>}

@@ -3,53 +3,27 @@ import { Autocomplete } from '../Autocomplete';
 import { AutocompleteMultiple } from '../AutocompleteMultiple';
 import { DateInput } from '../DateInput';
 import { MoneyInput } from '../MoneyInput';
-import { Switch } from '../Switch';
+import { Checkbox } from '../Checkbox';
+import { emptyIfNull } from '../../helpers/nullHelpers';
+import { useWorkExperience } from '../../hooks/useWorkExperience';
+import { Radio } from '../Radio';
 
 
 export const AddWorkExperienceView = () => {
 
-    const [form, setForm] = useState({
-        jobTitle: {
-            public: false,
-            content: ''
-        },
-        company: {
-            public: false,
-            content: ''
-        },
-        technologies: {
-            public: false,
-            content: []
-        },
-        salary: {
-            public: false,
-            content: 0
-        },
-        workPeriod: {
-            public: false,
-            content: {
-                startDate: '',
-                endDate: null
-            }
-        }
-    });
+    const [form, changeField, toggleVisibility, changeWorkPeriodDate] = useWorkExperience();
 
+    const workPeriodOptions = {
+        "until_now": "Hasta la actualidad",
+        "select_date": "Hasta..."
+    };
 
-    const setStartDate = () => {
-        return (value) => {
-            setForm({ ...form, workPeriod: { ...form.workPeriod, content: { ...form.workPeriod.content, startDate: value } } });
-        }
-    }
+    const [workPeriodSelectedOption, setWorkPeriodSelectedOption] = useState(workPeriodOptions["until_now"]);
 
-    const changeField = (field) => {
-        return (value) => {
-            setForm({ ...form, [field]: { ...form[field], content: value } });
-        }
-    }
-
-    const toggleVisibility = (field) => {
-        return () => {
-            setForm({ ...form, [field]: { ...form[field], public: !form[field].public } });
+    const changeWorkPeriodOption = (key) => {
+        setWorkPeriodSelectedOption(workPeriodOptions[key]);
+        if(key === "until_now") {
+            changeWorkPeriodDate("endDate")(null);
         }
     }
 
@@ -68,11 +42,12 @@ export const AddWorkExperienceView = () => {
                             url="/data/job-titles?name="
                             placeholder="Introduce tu profesión"
                             footer="Haz click para obtener sugerencias de profesiones."
-                            value={form.jobTitle.content}
+                            value={emptyIfNull(form.jobTitle.content)}
                             onChange={changeField('jobTitle')}
                             onSelect={changeField('jobTitle')}
                             onSubmit={changeField('jobTitle')} />
-                        <Switch
+                        <Checkbox
+                            type="switch"
                             value={form.jobTitle.public}
                             setValue={toggleVisibility('jobTitle')}
                             labelOn="Público"
@@ -84,11 +59,12 @@ export const AddWorkExperienceView = () => {
                             url="/data/companies?name="
                             placeholder="Introduzca una empresa"
                             footer="Haz click para obtener sugerencias de empresas."
-                            value={form.company.content}
+                            value={emptyIfNull(form.company.content)}
                             onChange={changeField('company')}
                             onSelect={changeField('company')}
                             onSubmit={changeField('company')} />
-                        <Switch
+                        <Checkbox
+                            type="switch"
                             value={form.company.public}
                             setValue={toggleVisibility('company')}
                             labelOn="Público"
@@ -102,7 +78,8 @@ export const AddWorkExperienceView = () => {
                             footer="Haz click para obtener sugerencias de tecnologías."
                             values={form.technologies.content}
                             setValues={changeField('technologies')} />
-                        <Switch
+                        <Checkbox
+                            type="switch"
                             value={form.technologies.public}
                             setValue={toggleVisibility('technologies')}
                             labelOn="Público"
@@ -115,20 +92,8 @@ export const AddWorkExperienceView = () => {
                             footer="Salario bruto anual en Euros."
                             value={form.salary.content}
                             onChange={changeField('salary')} />
-                        <Switch
-                            value={form.salary.public}
-                            setValue={toggleVisibility('salary')}
-                            labelOn="Público"
-                            labelOff="Privado" />
-                    </div>
-                    <div className="col-md-4">
-                        <label>Salario bruto anual</label>
-                        <MoneyInput
-                            placeholder="Introduzca su salario"
-                            footer="Salario bruto anual en Euros."
-                            value={form.salary.content}
-                            onChange={changeField('salary')} />
-                        <Switch
+                        <Checkbox
+                            type="switch"
                             value={form.salary.public}
                             setValue={toggleVisibility('salary')}
                             labelOn="Público"
@@ -137,11 +102,19 @@ export const AddWorkExperienceView = () => {
                     <div className="col-md-4">
                         <label>Fecha de inicio</label>
                         <DateInput
-                            placeholder="Introduzca fecha de inicio"
+                            type="switch"
                             footer="Fecha de inicio."
-                            value={form.workPeriod.content.startDate}
-                            onChange={setStartDate} />
-                        <Switch
+                            value={emptyIfNull(form.workPeriod.content.startDate)}
+                            onChange={changeWorkPeriodDate("startDate")} />
+                        <Radio options={workPeriodOptions} selected={workPeriodSelectedOption} changeOption={changeWorkPeriodOption} />
+                        <DateInput
+                            type="switch"
+                            footer="Fecha de inicio."
+                            value={emptyIfNull(form.workPeriod.content.endDate)}
+                            onChange={changeWorkPeriodDate("endDate")}
+                            disabled={workPeriodSelectedOption !== workPeriodOptions["select_date"]} />
+                        <Checkbox
+                            type="switch"
                             value={form.workPeriod.public}
                             setValue={toggleVisibility('workPeriod')}
                             labelOn="Público"
