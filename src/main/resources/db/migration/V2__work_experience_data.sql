@@ -35,7 +35,7 @@ INSERT INTO WORK_EXPERIENCE (
 ) VALUES (
     '4C714C8E9D5F11EBA8B30242AC130003',
     current_timestamp,
-    'TEST_USER_1',
+    '5689851',
     true,
     1,
     true,
@@ -78,19 +78,19 @@ INSERT INTO WORK_EXPERIENCE (
 ) VALUES (
     'B6B3705E9E0411EBA8B30242AC130003',
     current_timestamp,
-    'TEST_USER_1',
-    true,
+    '5689851',
+    false,
     1,
-    true,
+    false,
     2,
-    true,
-    true,
+    false,
+    false,
     TO_DATE('28/01/2017', 'DD/MM/YYYY'),
     null,
-    true,
+    false,
     34000,
     'EUR',
-    true
+    false
 );
 
 INSERT INTO WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) VALUES

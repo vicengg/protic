@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { HomeView } from '../components/views/HomeView'
 import { AddWorkExperienceView } from '../components/views/AddWorkExperienceView'
+import { MyWorkExperiencesView } from '../components/views/MyWorkExperiencesView'
 
 export default function AppRouter() {
   return (
@@ -20,6 +21,9 @@ export default function AppRouter() {
             <li>
               <Link to="/add-work-experience">Add work experience</Link>
             </li>
+            <li>
+              <Link to="/my-work-experiences">My work experiences</Link>
+            </li>
           </ul>
         </nav>
 
@@ -28,6 +32,9 @@ export default function AppRouter() {
         <Switch>
           <Route path="/add-work-experience">
             <AddWorkExperienceView />
+          </Route>
+          <Route path="/my-work-experiences">
+            <MyWorkExperiencesView />
           </Route>
           <Route path="/">
             <HomeView />

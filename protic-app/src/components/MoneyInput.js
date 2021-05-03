@@ -1,10 +1,10 @@
 import React from 'react';
 
-export const MoneyInput = ({ placeholder, footer, value, onChange }) => {
+export const MoneyInput = ({ placeholder, footer, value, onChange, currency = "EUR" }) => {
 
 
     const handleInputChange = (event) => {
-        onChange(event.target.value);
+        onChange({ value: event.target.value, currency });
     };
 
     const handleFormSubmit = (event) => {
@@ -21,7 +21,7 @@ export const MoneyInput = ({ placeholder, footer, value, onChange }) => {
                             type="number"
                             min="0"
                             step="1000"
-                            value={value}
+                            value={value.value}
                             onChange={handleInputChange}
                             placeholder={placeholder}
                         />

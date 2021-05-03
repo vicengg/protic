@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useFetch } from '../hooks/useFetch'
+import { useGetData } from '../hooks/useGetData'
 import { useResize } from '../hooks/useResize'
 
 export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSelect, onSubmit }) => {
 
     const [suggestionsMenuVisibility, setSuggestionsMenuVisibility] = useState(false);
-    const { loading, data } = useFetch(`${url}${value}`);
+    const { loading, data } = useGetData(`${url}${value}`);
     const [suggestions, setSuggestions] = useState([]);
     const [keyboardSelection, setKeyboardSelection] = useState(null);
     const inputRef = useRef();

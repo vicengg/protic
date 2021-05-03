@@ -18,7 +18,10 @@ export const useWorkExperience = () =>  {
         },
         salary: {
             public: false,
-            content: 0
+            content: {
+                value: 0,
+                currency: "EUR"
+            }
         },
         workPeriod: {
             public: false,
@@ -26,7 +29,8 @@ export const useWorkExperience = () =>  {
                 startDate: null,
                 endDate: null
             }
-        }
+        },
+        binding: false
     });
 
     const changeField = (field) => {
@@ -56,5 +60,9 @@ export const useWorkExperience = () =>  {
         }
     }
 
-    return [workExperience, changeField, toggleVisibility, changeWorkPeriodDate];
+    const toggleBinding = () => {
+        setWorkExperience({ ...workExperience, binding: !workExperience.binding});
+    }
+
+    return [workExperience, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding];
 };

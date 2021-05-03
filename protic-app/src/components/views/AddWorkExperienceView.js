@@ -7,11 +7,12 @@ import { Checkbox } from '../Checkbox';
 import { emptyIfNull } from '../../helpers/nullHelpers';
 import { useWorkExperience } from '../../hooks/useWorkExperience';
 import { Radio } from '../Radio';
+import { RequestButton } from '../RequestButton';
 
 
 export const AddWorkExperienceView = () => {
 
-    const [form, changeField, toggleVisibility, changeWorkPeriodDate] = useWorkExperience();
+    const [form, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding] = useWorkExperience();
 
     const workPeriodOptions = {
         "until_now": "Hasta la actualidad",
@@ -22,20 +23,17 @@ export const AddWorkExperienceView = () => {
 
     const changeWorkPeriodOption = (key) => {
         setWorkPeriodSelectedOption(workPeriodOptions[key]);
-        if(key === "until_now") {
+        if (key === "until_now") {
             changeWorkPeriodDate("endDate")(null);
         }
     }
 
     return (
         <>
+
             <div className="container">
+                <h1>Crear experiencia laboral</h1>
                 <div className="row mb-5">
-                    <div className="col-md-12">
-                        <code>{JSON.stringify(form)}</code>
-                    </div>
-                </div>
-                <div className="row">
                     <div className="col-md-4">
                         <label>Profesión</label>
                         <Autocomplete
@@ -85,6 +83,8 @@ export const AddWorkExperienceView = () => {
                             labelOn="Público"
                             labelOff="Privado" />
                     </div>
+                </div>
+                <div className="row mb-5">
                     <div className="col-md-4">
                         <label>Salario bruto anual</label>
                         <MoneyInput
@@ -119,6 +119,23 @@ export const AddWorkExperienceView = () => {
                             setValue={toggleVisibility('workPeriod')}
                             labelOn="Público"
                             labelOff="Privado" />
+                    </div>
+                    <div className="col-md-4">
+                        <label>Vincular experiencia con perfil de usuario</label>
+                        <Checkbox
+                            value={form.binding}
+                            setValue={toggleBinding}
+                            labelOn="Vinculada"
+                            labelOff="No vinculada" />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <RequestButton
+                            text="Crear experiencia laboral"
+                            url="/work-experience"
+                            method="POST"
+                            body={form} />
                     </div>
                 </div>
             </div>

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/work-experience")
 public class WorkExperienceController {
 
-  private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   private final WorkExperienceService workExperienceService;
 
