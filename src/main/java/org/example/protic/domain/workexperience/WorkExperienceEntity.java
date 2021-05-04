@@ -108,7 +108,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return salary;
   }
 
-  public WorkExperienceProjection toWorkExperienceResponse(User user) {
+  public WorkExperienceProjection toWorkExperienceProjection(User user) {
     Objects.requireNonNull(user, "Null input user ID.");
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
     workExperienceProjection.id = this.getId();

@@ -254,7 +254,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PUBLIC)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER);
     assertTrue(workExperienceProjection.getUser().isPresent());
     assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
@@ -284,7 +284,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER);
     assertTrue(workExperienceProjection.getUser().isPresent());
     assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
@@ -314,7 +314,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER);
     assertFalse(workExperienceProjection.getUser().isPresent());
     assertFalse(workExperienceProjection.getJobTitle().isPresent());
     assertFalse(workExperienceProjection.getCompany().isPresent());

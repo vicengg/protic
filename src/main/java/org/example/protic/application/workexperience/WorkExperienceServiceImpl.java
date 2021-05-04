@@ -44,9 +44,21 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
               workExperiences.sort(moreRecent());
               return workExperiences.stream()
                   .map(WorkExperienceEntity::copy)
-                  .map(workExperienceEntity -> workExperienceEntity.toWorkExperienceResponse(query.user))
+                  .map(
+                      workExperienceEntity ->
+                          workExperienceEntity.toWorkExperienceProjection(query.user))
                   .collect(Collectors.toList());
             });
+  }
+
+  @Override
+  public CompletableFuture<WorkExperienceProjection> getWorkExperience(
+      GetWorkExperienceQuery query) {
+    return repository
+        .findById(query.id)
+        .thenApply(WorkExperienceEntity::copy)
+        .thenApply(
+            workExperienceEntity -> workExperienceEntity.toWorkExperienceProjection(query.user));
   }
 
   @Override

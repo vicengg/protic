@@ -66,6 +66,21 @@ public class WorkExperienceController {
 
   @RequestMapping(
       value = "/{workExperienceId}",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public CompletableFuture<ResponseEntity<RestDto>> getWorkExperience(
+      @PathVariable("workExperienceId") String workExperienceId) {
+    GetWorkExperienceQuery query = new GetWorkExperienceQuery();
+    query.id = UUID.fromString(workExperienceId);
+    query.user = getUser();
+    return workExperienceService
+        .getWorkExperience(query)
+        .thenApply(WorkExperienceController::toResponse)
+        .exceptionally(ExceptionMapper::map);
+  }
+
+  @RequestMapping(
+      value = "/{workExperienceId}",
       method = RequestMethod.PUT,
       produces = MediaType.APPLICATION_JSON_VALUE,
       consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -114,6 +129,10 @@ public class WorkExperienceController {
     return RestControllerUtils.toOkResponse(
         CollectionDto.of(
             workExperiences.stream().map(WorkExperienceDto::of).collect(Collectors.toList())));
+  }
+
+  private static ResponseEntity<RestDto> toResponse(WorkExperienceProjection workExperience) {
+    return RestControllerUtils.toOkResponse(WorkExperienceDto.of(workExperience));
   }
 
   private static CreateWorkExperienceCommand mapToCreateWorkExperienceCommand(
