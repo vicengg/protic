@@ -1,7 +1,8 @@
-package org.example.protic.domain;
+package org.example.protic.domain.user;
 
 import org.apache.commons.lang.StringUtils;
 import org.example.protic.commons.ValidationException;
+import org.example.protic.domain.ValueObject;
 
 import java.util.Objects;
 

@@ -30,7 +30,7 @@ public class NegotiationServiceImpl implements NegotiationService {
             workExperienceRepository.findById(command.demandedWorkExperienceId),
             (offeredWorkExperience, demandedWorkExperience) ->
                 NegotiationEntity.create(
-                    command.userId,
+                    command.user,
                     offeredWorkExperience,
                     demandedWorkExperience,
                     command.offeredData,
@@ -52,7 +52,7 @@ public class NegotiationServiceImpl implements NegotiationService {
                             negotiation.getDemandedWorkExperienceId()),
                         (offeredWorkExperience, demandedWorkExperience) ->
                             negotiation.update(
-                                command.userId,
+                                command.user,
                                 offeredWorkExperience,
                                 demandedWorkExperience,
                                 command.offeredData,
@@ -74,7 +74,7 @@ public class NegotiationServiceImpl implements NegotiationService {
                             negotiation.getDemandedWorkExperienceId()),
                         (offeredWorkExperience, demandedWorkExperience) ->
                             negotiation.accept(
-                                command.userId, offeredWorkExperience, demandedWorkExperience))
+                                command.user, offeredWorkExperience, demandedWorkExperience))
                     .toCompletableFuture())
         .thenCompose(negotiationRepository::update);
   }
@@ -92,7 +92,7 @@ public class NegotiationServiceImpl implements NegotiationService {
                             negotiation.getDemandedWorkExperienceId()),
                         (offeredWorkExperience, demandedWorkExperience) ->
                             negotiation.cancel(
-                                command.userId, offeredWorkExperience, demandedWorkExperience))
+                                command.user, offeredWorkExperience, demandedWorkExperience))
                     .toCompletableFuture())
         .thenCompose(negotiationRepository::update);
   }

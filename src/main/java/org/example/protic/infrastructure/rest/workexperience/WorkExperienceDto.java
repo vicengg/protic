@@ -1,11 +1,11 @@
 package org.example.protic.infrastructure.rest.workexperience;
 
-import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.Company;
 import org.example.protic.domain.workexperience.JobTitle;
 import org.example.protic.domain.workexperience.Technology;
 import org.example.protic.domain.workexperience.WorkExperienceProjection;
 import org.example.protic.infrastructure.rest.RestDto;
+import org.example.protic.infrastructure.rest.user.UserDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class WorkExperienceDto implements RestDto {
 
   public String id;
-  public String userId;
+  public UserDto user;
   public boolean binding;
   public WorkExperienceFieldDto<String> jobTitle;
   public WorkExperienceFieldDto<String> company;
@@ -24,8 +24,8 @@ public class WorkExperienceDto implements RestDto {
   public static WorkExperienceDto of(WorkExperienceProjection workExperienceProjection) {
     WorkExperienceDto workExperienceProjectionDto = new WorkExperienceDto();
     workExperienceProjectionDto.id = workExperienceProjection.getId().toString();
-    workExperienceProjectionDto.userId =
-        workExperienceProjection.getUserId().map(UserId::getValue).orElse(null);
+    workExperienceProjectionDto.user =
+        workExperienceProjection.getUser().map(UserDto::of).orElse(null);
     workExperienceProjectionDto.jobTitle =
         workExperienceProjection
             .getJobTitle()

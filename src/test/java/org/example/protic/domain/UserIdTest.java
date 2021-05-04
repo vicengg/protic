@@ -1,6 +1,7 @@
 package org.example.protic.domain;
 
 import org.example.protic.commons.ValidationException;
+import org.example.protic.domain.user.UserId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

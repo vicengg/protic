@@ -5,7 +5,7 @@ import org.example.protic.commons.CurrencyContext;
 import org.example.protic.commons.ForbiddenException;
 import org.example.protic.commons.ValidationException;
 import org.example.protic.domain.Entity;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
 import org.javamoney.moneta.Money;
 
 import java.sql.Timestamp;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public final class WorkExperienceEntity extends Entity implements WorkExperience {
 
-  private final UserId userId;
+  private final User user;
   private final boolean binding;
   private final RestrictedField<JobTitle> jobTitle;
   private final RestrictedField<Company> company;
@@ -28,10 +28,9 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
 
   private WorkExperienceEntity(Builder builder) {
     super(Objects.requireNonNull(builder.id), Objects.requireNonNull(builder.createdAt));
-    this.userId =
-        Optional.ofNullable(builder.userId)
-            .orElseThrow(
-                () -> new ValidationException("User ID is mandatory for work experience."));
+    this.user =
+        Optional.ofNullable(builder.user)
+            .orElseThrow(() -> new ValidationException("User is mandatory for work experience."));
     this.binding = builder.binding;
     this.jobTitle =
         Optional.ofNullable(builder.jobTitle)
@@ -65,7 +64,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
 
   private WorkExperienceEntity(WorkExperience workExperience) {
     super(workExperience.getId(), workExperience.getCreatedAt());
-    this.userId = workExperience.getUserId();
+    this.user = workExperience.getUser();
     this.binding = workExperience.getBinding();
     this.jobTitle = workExperience.getJobTitle();
     this.company = workExperience.getCompany();
@@ -75,8 +74,8 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   }
 
   @Override
-  public UserId getUserId() {
-    return userId;
+  public User getUser() {
+    return user;
   }
 
   @Override
@@ -109,13 +108,13 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return salary;
   }
 
-  public WorkExperienceProjection toWorkExperienceResponse(UserId userId) {
-    Objects.requireNonNull(userId, "Null input user ID.");
+  public WorkExperienceProjection toWorkExperienceResponse(User user) {
+    Objects.requireNonNull(user, "Null input user ID.");
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
     workExperienceProjection.id = this.getId();
-    boolean isOwner = this.userId.equals(userId);
+    boolean isOwner = this.user.getId().equals(user.getId());
     if (isOwner || this.binding) {
-      workExperienceProjection.userId = this.userId;
+      workExperienceProjection.user = this.user;
     }
     if (isOwner || this.jobTitle.isPublic()) {
       workExperienceProjection.jobTitle = this.jobTitle;
@@ -139,16 +138,16 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return new WorkExperienceEntity(workExperience);
   }
 
-  public Builder update(UserId userId) {
-    if (!this.userId.equals(userId)) {
+  public Builder update(User user) {
+    if (!this.user.getId().equals(user.getId())) {
       throw new ForbiddenException();
     } else {
       return new Builder(this.getId(), this.getCreatedAt());
     }
   }
 
-  public UUID checkForDelete(UserId userId) {
-    if (!this.userId.equals(userId)) {
+  public UUID checkForDelete(User user) {
+    if (!this.user.getId().equals(user.getId())) {
       throw new ForbiddenException();
     } else {
       return getId();
@@ -162,7 +161,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   public static final class Builder {
     private final UUID id;
     private final Timestamp createdAt;
-    private UserId userId;
+    private User user;
     private boolean binding;
     public RestrictedField<Money> salary;
     private RestrictedField<JobTitle> jobTitle;
@@ -175,8 +174,8 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
       this.createdAt = createdAt;
     }
 
-    public Builder withUserId(UserId userId) {
-      this.userId = userId;
+    public Builder withUser(User user) {
+      this.user = user;
       return this;
     }
 
@@ -218,7 +217,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   private static final class WorkExperienceProjectionImpl implements WorkExperienceProjection {
 
     private UUID id;
-    private UserId userId;
+    private User user;
     private RestrictedField<JobTitle> jobTitle;
     private RestrictedField<Company> company;
     private RestrictedField<Set<Technology>> technologies;
@@ -231,8 +230,8 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     }
 
     @Override
-    public Optional<UserId> getUserId() {
-      return Optional.ofNullable(userId);
+    public Optional<User> getUser() {
+      return Optional.ofNullable(user);
     }
 
     @Override

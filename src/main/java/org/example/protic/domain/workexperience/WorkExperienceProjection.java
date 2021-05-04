@@ -1,6 +1,7 @@
 package org.example.protic.domain.workexperience;
 
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
+import org.example.protic.domain.user.UserId;
 import org.javamoney.moneta.Money;
 
 import java.util.Optional;
@@ -11,7 +12,7 @@ public interface WorkExperienceProjection {
 
   UUID getId();
 
-  Optional<UserId> getUserId();
+  Optional<User> getUser();
 
   Optional<RestrictedField<JobTitle>> getJobTitle();
 

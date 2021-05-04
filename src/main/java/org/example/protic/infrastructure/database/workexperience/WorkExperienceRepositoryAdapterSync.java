@@ -3,8 +3,8 @@ package org.example.protic.infrastructure.database.workexperience;
 import org.apache.commons.collections4.ListUtils;
 import org.example.protic.application.workexperience.GetWorkExperiencesQuery;
 import org.example.protic.commons.UuidAdapter;
-import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.*;
+import org.example.protic.infrastructure.connector.UserConnector;
 import org.example.protic.infrastructure.database.mybatis.mappers.*;
 import org.example.protic.infrastructure.database.mybatis.records.*;
 import org.javamoney.moneta.Money;
@@ -21,13 +21,15 @@ public class WorkExperienceRepositoryAdapterSync {
   private final TechnologyRecordMapper technologyRecordMapper;
   private final WorkExperienceRecordMapper workExperienceRecordMapper;
   private final WorkExperienceTechnologyRecordMapper workExperienceTechnologyRecordMapper;
+  private final UserConnector userConnector;
 
   public WorkExperienceRepositoryAdapterSync(
       JobTitleRecordMapper jobTitleRecordMapper,
       CompanyRecordMapper companyRecordMapper,
       TechnologyRecordMapper technologyRecordMapper,
       WorkExperienceRecordMapper workExperienceRecordMapper,
-      WorkExperienceTechnologyRecordMapper workExperienceTechnologyRecordMapper) {
+      WorkExperienceTechnologyRecordMapper workExperienceTechnologyRecordMapper,
+      UserConnector userConnector) {
     this.jobTitleRecordMapper =
         Objects.requireNonNull(jobTitleRecordMapper, "Null job title record mapper.");
     this.companyRecordMapper =
@@ -39,6 +41,7 @@ public class WorkExperienceRepositoryAdapterSync {
     this.workExperienceTechnologyRecordMapper =
         Objects.requireNonNull(
             workExperienceTechnologyRecordMapper, "Null work experience technology record mapper.");
+    this.userConnector = Objects.requireNonNull(userConnector, "Null user connector.");
   }
 
   @Transactional
@@ -83,7 +86,7 @@ public class WorkExperienceRepositoryAdapterSync {
     WorkExperienceRecord workExperienceRecord = new WorkExperienceRecord();
     workExperienceRecord.idWorkExperience = UuidAdapter.getBytesFromUUID(workExperience.getId());
     workExperienceRecord.createdAt = workExperience.getCreatedAt();
-    workExperienceRecord.userId = workExperience.getUserId().getValue();
+    workExperienceRecord.userId = workExperience.getUser().getId();
     workExperienceRecord.binding = workExperience.getBinding();
     workExperienceRecord.idJobTitle =
         createJobTitleIfNotExist(workExperience.getJobTitle().getValue());
@@ -107,7 +110,7 @@ public class WorkExperienceRepositoryAdapterSync {
   private static WorkExperienceFilterRecord mapToWorkExperienceFilters(
       GetWorkExperiencesQuery query) {
     WorkExperienceFilterRecord filters = new WorkExperienceFilterRecord();
-    filters.userId = Optional.ofNullable(query.userId).map(UserId::getValue).orElse(null);
+    filters.userId = Optional.ofNullable(query.user.getId()).orElse(null);
     filters.scope =
         Optional.ofNullable(query.scope)
             .map(Enum::name)
@@ -135,7 +138,7 @@ public class WorkExperienceRepositoryAdapterSync {
     JobTitle jobTitle = findJobTitleById(workExperienceRecord.idJobTitle);
     workExperience.id = UuidAdapter.getUUIDFromBytes(workExperienceRecord.idWorkExperience);
     workExperience.createdAt = workExperienceRecord.createdAt;
-    workExperience.userId = UserId.of(workExperienceRecord.userId);
+    workExperience.user = userConnector.findUserById(workExperienceRecord.userId);
     workExperience.binding = workExperienceRecord.binding;
     workExperience.jobTitle =
         workExperienceRecord.visibilityJobTitle

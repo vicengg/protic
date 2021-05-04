@@ -1,6 +1,7 @@
 package org.example.protic.infrastructure.database.workexperience;
 
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
+import org.example.protic.domain.user.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.javamoney.moneta.Money;
 
@@ -12,7 +13,7 @@ public class WorkExperienceAdapterDto implements WorkExperience {
 
   UUID id;
   Timestamp createdAt;
-  UserId userId;
+  User user;
   boolean binding;
   RestrictedField<JobTitle> jobTitle;
   RestrictedField<Company> company;
@@ -31,8 +32,8 @@ public class WorkExperienceAdapterDto implements WorkExperience {
   }
 
   @Override
-  public UserId getUserId() {
-    return userId;
+  public User getUser() {
+    return user;
   }
 
   @Override

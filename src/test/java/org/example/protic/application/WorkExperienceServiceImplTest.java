@@ -4,7 +4,8 @@ import org.example.protic.application.workexperience.CreateWorkExperienceCommand
 import org.example.protic.application.workexperience.WorkExperienceRepository;
 import org.example.protic.application.workexperience.WorkExperienceService;
 import org.example.protic.application.workexperience.WorkExperienceServiceImpl;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
+import org.example.protic.domain.user.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ class WorkExperienceServiceImplTest {
 
   private static CreateWorkExperienceCommand createWorkExperienceCommand() {
     CreateWorkExperienceCommand command = new CreateWorkExperienceCommand();
-    command.userId = UserId.of("another_user_id");
+    command.user = User.of("another_user_id", "", "");
     command.binding = true;
     command.jobTitle = RestrictedField.ofPrivate(JobTitle.of("job title"));
     command.company = RestrictedField.ofPrivate(Company.of("company"));

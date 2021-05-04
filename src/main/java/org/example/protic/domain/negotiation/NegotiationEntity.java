@@ -4,7 +4,7 @@ import org.example.protic.commons.ForbiddenException;
 import org.example.protic.commons.UnexpectedException;
 import org.example.protic.commons.ValidationException;
 import org.example.protic.domain.Entity;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
 import org.example.protic.domain.workexperience.RestrictedField;
 import org.example.protic.domain.workexperience.WorkExperience;
 
@@ -23,7 +23,7 @@ public class NegotiationEntity extends Entity implements Negotiation {
   private final NegotiationState state;
 
   private NegotiationEntity(
-      UserId userId,
+      User user,
       WorkExperience offeredWorkExperience,
       WorkExperience demandedWorkExperience,
       VisibilityRequest offeredData,
@@ -36,10 +36,10 @@ public class NegotiationEntity extends Entity implements Negotiation {
         offeredData,
         demandedData,
         NegotiationState.DEMANDED_PENDING);
-    Optional.ofNullable(userId)
-        .orElseThrow(() -> new ValidationException("User ID is required to create negotiation."));
-    checkOfferedWorkExperienceOwnership(userId, offeredWorkExperience);
-    checkDemandedWorkExperienceOwnership(userId, demandedWorkExperience);
+    Optional.ofNullable(user)
+        .orElseThrow(() -> new ValidationException("User is required to create negotiation."));
+    checkOfferedWorkExperienceOwnership(user, offeredWorkExperience);
+    checkDemandedWorkExperienceOwnership(user, demandedWorkExperience);
   }
 
   private NegotiationEntity(
@@ -94,13 +94,13 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   public static NegotiationEntity create(
-      UserId userId,
+      User user,
       WorkExperience offeredWorkExperience,
       WorkExperience demandedWorkExperience,
       VisibilityRequest offeredData,
       VisibilityRequest demandedData) {
     return new NegotiationEntity(
-        userId, offeredWorkExperience, demandedWorkExperience, offeredData, demandedData);
+        user, offeredWorkExperience, demandedWorkExperience, offeredData, demandedData);
   }
 
   public static NegotiationEntity copy(Negotiation negotiation) {
@@ -108,13 +108,13 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   public NegotiationEntity update(
-      UserId userId,
+      User user,
       WorkExperience offeredWorkExperience,
       WorkExperience demandedWorkExperience,
       VisibilityRequest offeredData,
       VisibilityRequest demandedData) {
     return modify(
-        userId,
+        user,
         offeredWorkExperience,
         demandedWorkExperience,
         () ->
@@ -138,9 +138,9 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   public NegotiationEntity accept(
-      UserId userId, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
+      User user, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
     return modify(
-        userId,
+        user,
         offeredWorkExperience,
         demandedWorkExperience,
         () ->
@@ -155,9 +155,9 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   public NegotiationEntity cancel(
-      UserId userId, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
+      User user, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
     return modify(
-        userId,
+        user,
         offeredWorkExperience,
         demandedWorkExperience,
         () ->
@@ -172,15 +172,15 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   private NegotiationEntity modify(
-      UserId userId,
+      User user,
       WorkExperience offeredWorkExperience,
       WorkExperience demandedWorkExperience,
       Supplier<NegotiationEntity> supplier) {
-    return modify(userId, offeredWorkExperience, demandedWorkExperience, supplier, supplier);
+    return modify(user, offeredWorkExperience, demandedWorkExperience, supplier, supplier);
   }
 
   private NegotiationEntity modify(
-      UserId userId,
+      User user,
       WorkExperience offeredWorkExperience,
       WorkExperience demandedWorkExperience,
       Supplier<NegotiationEntity> offeringPendingSupplier,
@@ -192,12 +192,12 @@ public class NegotiationEntity extends Entity implements Negotiation {
       case CANCELLED:
         throw new ForbiddenException();
       case OFFERING_PENDING:
-        if (!offeredWorkExperience.getUserId().equals(userId)) {
+        if (!offeredWorkExperience.getUser().getId().equals(user.getId())) {
           throw new ForbiddenException();
         }
         return offeringPendingSupplier.get();
       case DEMANDED_PENDING:
-        if (!demandedWorkExperience.getUserId().equals(userId)) {
+        if (!demandedWorkExperience.getUser().getId().equals(user.getId())) {
           throw new ForbiddenException();
         }
         return demandedPendingSupplier.get();
@@ -235,15 +235,15 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   private static void checkOfferedWorkExperienceOwnership(
-      UserId userId, WorkExperience offeredWorkExperience) {
-    if (!userId.equals(offeredWorkExperience.getUserId())) {
+      User user, WorkExperience offeredWorkExperience) {
+    if (!user.getId().equals(offeredWorkExperience.getUser().getId())) {
       throw new ForbiddenException();
     }
   }
 
   private static void checkDemandedWorkExperienceOwnership(
-      UserId userId, WorkExperience demandedWorkExperience) {
-    if (userId.equals(demandedWorkExperience.getUserId())) {
+      User user, WorkExperience demandedWorkExperience) {
+    if (user.getId().equals(demandedWorkExperience.getUser().getId())) {
       throw new ValidationException("User can't negotiate with own work experiences.");
     }
   }

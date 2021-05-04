@@ -2,14 +2,14 @@ package org.example.protic.domain.workexperience;
 
 import org.example.protic.domain.Identifiable;
 import org.example.protic.domain.TimeTraceable;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
 import org.javamoney.moneta.Money;
 
 import java.util.Set;
 
 public interface WorkExperience extends Identifiable, TimeTraceable {
 
-  UserId getUserId();
+  User getUser();
 
   boolean getBinding();
 

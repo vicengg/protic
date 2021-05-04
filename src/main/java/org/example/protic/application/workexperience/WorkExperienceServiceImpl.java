@@ -23,7 +23,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   public CompletableFuture<UUID> createWorkExperience(CreateWorkExperienceCommand command) {
     WorkExperience workExperience =
         WorkExperienceEntity.builder()
-            .withUserId(command.userId)
+            .withUser(command.user)
             .withBinding(command.binding)
             .withJobTitle(command.jobTitle)
             .withCompany(command.company)
@@ -44,7 +44,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
               workExperiences.sort(moreRecent());
               return workExperiences.stream()
                   .map(WorkExperienceEntity::copy)
-                  .map(a -> a.toWorkExperienceResponse(query.userId))
+                  .map(workExperienceEntity -> workExperienceEntity.toWorkExperienceResponse(query.user))
                   .collect(Collectors.toList());
             });
   }
@@ -54,11 +54,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     return repository
         .findById(command.id)
         .thenApply(WorkExperienceEntity::copy)
-        .thenApply(workExperienceEntity -> workExperienceEntity.update(command.userId))
+        .thenApply(workExperienceEntity -> workExperienceEntity.update(command.user))
         .thenApply(
             updater ->
                 updater
-                    .withUserId(command.userId)
+                    .withUser(command.user)
                     .withBinding(command.binding)
                     .withJobTitle(command.jobTitle)
                     .withCompany(command.company)
@@ -74,7 +74,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     return repository
         .findById(command.id)
         .thenApply(WorkExperienceEntity::copy)
-        .thenApply(workExperienceEntity -> workExperienceEntity.checkForDelete(command.userId))
+        .thenApply(workExperienceEntity -> workExperienceEntity.checkForDelete(command.user))
         .thenCompose(repository::delete);
   }
 

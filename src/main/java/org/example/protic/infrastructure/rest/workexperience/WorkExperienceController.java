@@ -2,7 +2,7 @@ package org.example.protic.infrastructure.rest.workexperience;
 
 import org.example.protic.application.workexperience.*;
 import org.example.protic.commons.CurrencyContext;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
 import org.example.protic.domain.workexperience.*;
 import org.example.protic.infrastructure.rest.*;
 import org.javamoney.moneta.Money;
@@ -38,9 +38,9 @@ public class WorkExperienceController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public CompletableFuture<ResponseEntity<RestDto>> createWorkExperience(
       @RequestBody WorkExperienceDto requestDto) {
-    UserId id = getUserId();
+    User user = getUser();
     return workExperienceService
-        .createWorkExperience(mapToCreateWorkExperienceCommand(id, requestDto))
+        .createWorkExperience(mapToCreateWorkExperienceCommand(user, requestDto))
         .thenApply(WorkExperienceController::toResponse)
         .exceptionally(ExceptionMapper::map);
   }
@@ -72,10 +72,10 @@ public class WorkExperienceController {
   public CompletableFuture<ResponseEntity<RestDto>> updateWorkExperience(
       @PathVariable("workExperienceId") String workExperienceId,
       @RequestBody WorkExperienceDto requestDto) {
-    UserId id = getUserId();
+    User user = getUser();
     return workExperienceService
         .updateWorkExperience(
-            mapToUpdateWorkExperienceCommand(UUID.fromString(workExperienceId), id, requestDto))
+            mapToUpdateWorkExperienceCommand(UUID.fromString(workExperienceId), user, requestDto))
         .thenApply(RestControllerUtils::toOkResponse)
         .exceptionally(ExceptionMapper::map);
   }
@@ -89,16 +89,20 @@ public class WorkExperienceController {
 
     DeleteWorkExperienceCommand command = new DeleteWorkExperienceCommand();
     command.id = UUID.fromString(workExperienceId);
-    command.userId = getUserId();
+    command.user = getUser();
     return workExperienceService
         .deleteWorkExperience(command)
         .thenApply(RestControllerUtils::toOkResponse)
         .exceptionally(ExceptionMapper::map);
   }
 
-  private static UserId getUserId() {
-    return UserId.of(
-        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("id")).toString());
+  private static User getUser() {
+    return User.of(
+        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("id")).toString(),
+        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("login")).toString(),
+        Optional.ofNullable(RestControllerUtils.getUser().getAttribute("avatar_url"))
+            .map(Object::toString)
+            .orElse(null));
   }
 
   private static ResponseEntity<RestDto> toResponse(UUID uuid) {
@@ -113,9 +117,9 @@ public class WorkExperienceController {
   }
 
   private static CreateWorkExperienceCommand mapToCreateWorkExperienceCommand(
-      UserId userId, WorkExperienceDto dto) {
+      User user, WorkExperienceDto dto) {
     CreateWorkExperienceCommand command = new CreateWorkExperienceCommand();
-    command.userId = userId;
+    command.user = user;
     command.binding = dto.binding;
     command.jobTitle = toWorkExperienceField(dto.jobTitle, JobTitle::of);
     command.company = toWorkExperienceField(dto.company, Company::of);
@@ -138,10 +142,10 @@ public class WorkExperienceController {
   }
 
   private static UpdateWorkExperienceCommand mapToUpdateWorkExperienceCommand(
-      UUID workExperienceId, UserId userId, WorkExperienceDto dto) {
+      UUID workExperienceId, User user, WorkExperienceDto dto) {
     UpdateWorkExperienceCommand command = new UpdateWorkExperienceCommand();
     command.id = workExperienceId;
-    command.userId = userId;
+    command.user = user;
     command.binding = dto.binding;
     command.jobTitle = toWorkExperienceField(dto.jobTitle, JobTitle::of);
     command.company = toWorkExperienceField(dto.company, Company::of);
@@ -172,9 +176,9 @@ public class WorkExperienceController {
       String endDate,
       BigDecimal minSalary,
       BigDecimal maxSalary) {
-    UserId userId = getUserId();
+    User user = getUser();
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
-    query.userId = userId;
+    query.user = user;
     query.scope = GetWorkExperiencesQuery.Scope.of(scope);
     query.jobTitle = Optional.ofNullable(jobTitle).map(JobTitle::of).orElse(null);
     query.company = Optional.ofNullable(company).map(Company::of).orElse(null);

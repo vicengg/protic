@@ -2,7 +2,7 @@ package org.example.protic.domain.workexperience;
 
 import org.apache.commons.collections4.SetUtils;
 import org.example.protic.commons.ValidationException;
-import org.example.protic.domain.UserId;
+import org.example.protic.domain.user.User;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WorkExperienceEntityTest {
 
-  private static final UserId USER_ID = UserId.of("user_id");
-  private static final UserId ANOTHER_USER_ID = UserId.of("another_user_id");
+  private static final User USER = User.of("user_id", "", "");
+  private static final User ANOTHER_USER = User.of("another_user_id", "", "");
   private static final RestrictedField<JobTitle> JOB_TITLE_PRIVATE =
       RestrictedField.ofPrivate(JobTitle.of("job title private"));
   private static final RestrictedField<Company> COMPANY_PRIVATE =
@@ -43,14 +43,14 @@ class WorkExperienceEntityTest {
       RestrictedField.ofPrivate(Money.of(1000, "CZK"));
 
   @Test
-  @DisplayName("It tries to create a work experience entity without user id.")
-  void createWorkExperienceEntityWithoutUserId() {
+  @DisplayName("It tries to create a work experience entity without user.")
+  void createWorkExperienceEntityWithoutUser() {
     ValidationException exception =
         assertThrows(
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(null)
+                    .withUser(null)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -58,7 +58,7 @@ class WorkExperienceEntityTest {
                     .withWorkPeriod(WORK_PERIOD_PRIVATE)
                     .withSalary(SALARY_PRIVATE)
                     .build());
-    assertEquals("User ID is mandatory for work experience.", exception.getMessage());
+    assertEquals("User is mandatory for work experience.", exception.getMessage());
   }
 
   @Test
@@ -69,7 +69,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withCompany(COMPANY_PRIVATE)
                     .withTechnologies(TECHNOLOGIES_PRIVATE)
@@ -87,7 +87,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withTechnologies(TECHNOLOGIES_PRIVATE)
@@ -105,7 +105,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -124,7 +124,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -144,7 +144,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -162,7 +162,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -180,7 +180,7 @@ class WorkExperienceEntityTest {
             ValidationException.class,
             () ->
                 WorkExperienceEntity.builder()
-                    .withUserId(USER_ID)
+                    .withUser(USER)
                     .withBinding(true)
                     .withJobTitle(JOB_TITLE_PRIVATE)
                     .withCompany(COMPANY_PRIVATE)
@@ -196,7 +196,7 @@ class WorkExperienceEntityTest {
   void createWorkExperienceEntityWithAllFields() {
     WorkExperienceEntity workExperienceEntity =
         WorkExperienceEntity.builder()
-            .withUserId(USER_ID)
+            .withUser(USER)
             .withBinding(true)
             .withJobTitle(JOB_TITLE_PRIVATE)
             .withCompany(COMPANY_PRIVATE)
@@ -206,7 +206,7 @@ class WorkExperienceEntityTest {
             .build();
     assertNotNull(workExperienceEntity.getId());
     assertNotNull(workExperienceEntity.getCreatedAt());
-    assertEquals(USER_ID, workExperienceEntity.getUserId());
+    assertEquals(USER, workExperienceEntity.getUser());
     assertTrue(workExperienceEntity.getBinding());
     assertEquals(JOB_TITLE_PRIVATE, workExperienceEntity.getJobTitle());
     assertEquals(COMPANY_PRIVATE, workExperienceEntity.getCompany());
@@ -220,7 +220,7 @@ class WorkExperienceEntityTest {
   void copyWorkExperienceEntity() {
     WorkExperienceEntity source =
         WorkExperienceEntity.builder()
-            .withUserId(USER_ID)
+            .withUser(USER)
             .withBinding(true)
             .withJobTitle(JOB_TITLE_PRIVATE)
             .withCompany(COMPANY_PRIVATE)
@@ -231,7 +231,7 @@ class WorkExperienceEntityTest {
     WorkExperienceEntity copy = WorkExperienceEntity.copy(source);
     assertEquals(source.getId(), copy.getId());
     assertEquals(source.getCreatedAt(), copy.getCreatedAt());
-    assertEquals(source.getUserId(), copy.getUserId());
+    assertEquals(source.getUser(), copy.getUser());
     assertEquals(source.getBinding(), copy.getBinding());
     assertEquals(source.getJobTitle(), copy.getJobTitle());
     assertEquals(source.getCompany(), copy.getCompany());
@@ -245,7 +245,7 @@ class WorkExperienceEntityTest {
   void toWorkExperienceProjectionWithEveryFieldPublic() {
     WorkExperienceEntity workExperienceEntity =
         WorkExperienceEntity.builder()
-            .withUserId(USER_ID)
+            .withUser(USER)
             .withBinding(true)
             .withJobTitle(JOB_TITLE_PUBLIC)
             .withCompany(COMPANY_PUBLIC)
@@ -254,9 +254,9 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PUBLIC)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER_ID);
-    assertTrue(workExperienceProjection.getUserId().isPresent());
-    assertEquals(USER_ID, workExperienceProjection.getUserId().get());
+        workExperienceEntity.toWorkExperienceResponse(USER);
+    assertTrue(workExperienceProjection.getUser().isPresent());
+    assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
     assertEquals(JOB_TITLE_PUBLIC, workExperienceProjection.getJobTitle().get());
     assertTrue(workExperienceProjection.getCompany().isPresent());
@@ -275,7 +275,7 @@ class WorkExperienceEntityTest {
   void toWorkExperienceProjectionWithEveryFieldPrivateOwnerUser() {
     WorkExperienceEntity workExperienceEntity =
         WorkExperienceEntity.builder()
-            .withUserId(USER_ID)
+            .withUser(USER)
             .withBinding(true)
             .withJobTitle(JOB_TITLE_PRIVATE)
             .withCompany(COMPANY_PRIVATE)
@@ -284,9 +284,9 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER_ID);
-    assertTrue(workExperienceProjection.getUserId().isPresent());
-    assertEquals(USER_ID, workExperienceProjection.getUserId().get());
+        workExperienceEntity.toWorkExperienceResponse(USER);
+    assertTrue(workExperienceProjection.getUser().isPresent());
+    assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
     assertEquals(JOB_TITLE_PRIVATE, workExperienceProjection.getJobTitle().get());
     assertTrue(workExperienceProjection.getCompany().isPresent());
@@ -305,7 +305,7 @@ class WorkExperienceEntityTest {
   void toWorkExperienceProjectionWithEveryFieldPrivateNonOwnerUser() {
     WorkExperienceEntity workExperienceEntity =
         WorkExperienceEntity.builder()
-            .withUserId(ANOTHER_USER_ID)
+            .withUser(ANOTHER_USER)
             .withBinding(false)
             .withJobTitle(JOB_TITLE_PRIVATE)
             .withCompany(COMPANY_PRIVATE)
@@ -314,8 +314,8 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceResponse(USER_ID);
-    assertFalse(workExperienceProjection.getUserId().isPresent());
+        workExperienceEntity.toWorkExperienceResponse(USER);
+    assertFalse(workExperienceProjection.getUser().isPresent());
     assertFalse(workExperienceProjection.getJobTitle().isPresent());
     assertFalse(workExperienceProjection.getCompany().isPresent());
     assertFalse(workExperienceProjection.getTechnologies().isPresent());

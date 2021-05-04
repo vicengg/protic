@@ -1,7 +1,7 @@
 package org.example.protic.application.workexperience;
 
+import org.example.protic.application.IdentifiedRequest;
 import org.example.protic.application.Query;
-import org.example.protic.domain.UserId;
 import org.example.protic.domain.workexperience.Company;
 import org.example.protic.domain.workexperience.JobTitle;
 import org.example.protic.domain.workexperience.Technology;
@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class GetWorkExperiencesQuery implements Query<List<WorkExperienceProjection>> {
+public class GetWorkExperiencesQuery extends IdentifiedRequest<List<WorkExperienceProjection>>
+    implements Query<List<WorkExperienceProjection>> {
 
   public enum Scope {
     OWN,
@@ -28,7 +29,6 @@ public class GetWorkExperiencesQuery implements Query<List<WorkExperienceProject
     }
   }
 
-  public UserId userId;
   public Scope scope;
   public JobTitle jobTitle;
   public Company company;
