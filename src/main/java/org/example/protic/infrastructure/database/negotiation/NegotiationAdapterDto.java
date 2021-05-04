@@ -2,22 +2,26 @@ package org.example.protic.infrastructure.database.negotiation;
 
 import org.example.protic.domain.Identifiable;
 import org.example.protic.domain.TimeTraceable;
+import org.example.protic.domain.negotiation.Action;
 import org.example.protic.domain.negotiation.Negotiation;
-import org.example.protic.domain.negotiation.NegotiationState;
-import org.example.protic.domain.negotiation.VisibilityRequest;
+import org.example.protic.domain.user.User;
+import org.example.protic.domain.workexperience.WorkExperience;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class NegotiationAdapterDto implements Negotiation, Identifiable, TimeTraceable {
 
   UUID id;
   Timestamp createdAt;
-  UUID offeredWorkExperienceId;
-  UUID demandedWorkExperienceId;
-  VisibilityRequest offeredData;
-  VisibilityRequest demandedData;
-  NegotiationState state;
+  WorkExperience offeredWorkExperience;
+  WorkExperience demandedWorkExperience;
+  User creator;
+  User receiver;
+  User nextActor;
+  List<Action> actions;
 
   @Override
   public UUID getId() {
@@ -30,27 +34,32 @@ public class NegotiationAdapterDto implements Negotiation, Identifiable, TimeTra
   }
 
   @Override
-  public UUID getOfferedWorkExperienceId() {
-    return offeredWorkExperienceId;
+  public WorkExperience getOfferedWorkExperience() {
+    return offeredWorkExperience;
   }
 
   @Override
-  public UUID getDemandedWorkExperienceId() {
-    return demandedWorkExperienceId;
+  public WorkExperience getDemandedWorkExperience() {
+    return demandedWorkExperience;
   }
 
   @Override
-  public VisibilityRequest getOfferedData() {
-    return offeredData;
+  public User getCreator() {
+    return creator;
   }
 
   @Override
-  public VisibilityRequest getDemandedData() {
-    return demandedData;
+  public User getReceiver() {
+    return receiver;
   }
 
   @Override
-  public NegotiationState getState() {
-    return state;
+  public Optional<User> getNextActor() {
+    return Optional.ofNullable(nextActor);
+  }
+
+  @Override
+  public List<Action> getActions() {
+    return actions;
   }
 }

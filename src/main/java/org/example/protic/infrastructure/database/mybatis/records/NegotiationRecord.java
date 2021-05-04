@@ -6,7 +6,9 @@ public class NegotiationRecord {
 
   public byte[] idNegotiation;
   public Timestamp createdAt;
-  public long idOfferedData;
-  public long idDemandedData;
-  public String state;
+  public byte[] idOfferedWorkExperience;
+  public byte[] idDemandedWorkExperience;
+  public String creatorId;
+  public String receiverId;
+  public String nextActor;
 }

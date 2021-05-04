@@ -1,6 +1,9 @@
 package org.example.protic.infrastructure.rest.negotiation;
 
-import org.example.protic.application.negotiation.*;
+import org.example.protic.application.negotiation.CreateNegotiationCommand;
+import org.example.protic.application.negotiation.NegotiationService;
+import org.example.protic.application.negotiation.UpdateNegotiationCommand;
+import org.example.protic.domain.negotiation.Action;
 import org.example.protic.domain.negotiation.Visibility;
 import org.example.protic.domain.negotiation.VisibilityRequest;
 import org.example.protic.domain.user.User;
@@ -37,7 +40,7 @@ public class NegotiationController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public CompletableFuture<ResponseEntity<RestDto>> createNegotiation(
-      @RequestBody NegotiationDto negotiationDto) {
+      @RequestBody CreateNegotiationDto negotiationDto) {
     User user = getUser();
     return negotiationService
         .createNegotiation(mapToCreateNegotiationCommand(user, negotiationDto))
@@ -49,42 +52,13 @@ public class NegotiationController {
       method = RequestMethod.PUT,
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE,
-      value = "/{negotiationId}")
+      value = "/{negotiationId}/action")
   public CompletableFuture<ResponseEntity<RestDto>> updateNegotiation(
-      @PathVariable("negotiationId") String negotiationId,
-      @RequestBody NegotiationDto negotiationDto) {
+      @PathVariable("negotiationId") String negotiationId, @RequestBody ActionDto actionDto) {
     User user = getUser();
     return negotiationService
         .updateNegotiation(
-            mapToUpdateNegotiationCommand(user, UUID.fromString(negotiationId), negotiationDto))
-        .thenApply(RestControllerUtils::toOkResponse)
-        .exceptionally(ExceptionMapper::map);
-  }
-
-  @RequestMapping(
-      method = RequestMethod.PUT,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      value = "/{negotiationId}/accept")
-  public CompletableFuture<ResponseEntity<RestDto>> acceptNegotiation(
-      @PathVariable("negotiationId") String negotiationId) {
-    User user = getUser();
-    return negotiationService
-        .acceptNegotiation(mapToAcceptNegotiationCommand(user, UUID.fromString(negotiationId)))
-        .thenApply(RestControllerUtils::toOkResponse)
-        .exceptionally(ExceptionMapper::map);
-  }
-
-  @RequestMapping(
-      method = RequestMethod.PUT,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      value = "/{negotiationId}/cancel")
-  public CompletableFuture<ResponseEntity<RestDto>> cancelNegotiation(
-      @PathVariable("negotiationId") String negotiationId) {
-    User user = getUser();
-    return negotiationService
-        .cancelNegotiation(mapToCancelNegotiationCommand(user, UUID.fromString(negotiationId)))
+            mapToUpdateNegotiationCommand(user, UUID.fromString(negotiationId), actionDto))
         .thenApply(RestControllerUtils::toOkResponse)
         .exceptionally(ExceptionMapper::map);
   }
@@ -103,44 +77,33 @@ public class NegotiationController {
   }
 
   private static CreateNegotiationCommand mapToCreateNegotiationCommand(
-      User user, NegotiationDto dto) {
+      User user, CreateNegotiationDto dto) {
     CreateNegotiationCommand command = new CreateNegotiationCommand();
     command.user = user;
     command.offeredWorkExperienceId = UUID.fromString(dto.offeredWorkExperienceId);
     command.demandedWorkExperienceId = UUID.fromString(dto.demandedWorkExperienceId);
-    command.offeredData = toVisibilityRequest(dto.offeredData);
-    command.demandedData = toVisibilityRequest(dto.demandedData);
     return command;
   }
 
   private static UpdateNegotiationCommand mapToUpdateNegotiationCommand(
-      User user, UUID negotiationId, NegotiationDto dto) {
+      User user, UUID negotiationId, ActionDto actionDto) {
     UpdateNegotiationCommand command = new UpdateNegotiationCommand();
     command.user = user;
     command.negotiationId = negotiationId;
-    command.offeredData = toVisibilityRequest(dto.offeredData);
-    command.demandedData = toVisibilityRequest(dto.demandedData);
+    command.action = toAction(actionDto, user);
     return command;
   }
 
-  private static AcceptNegotiationCommand mapToAcceptNegotiationCommand(
-      User user, UUID negotiationId) {
-    AcceptNegotiationCommand command = new AcceptNegotiationCommand();
-    command.user = user;
-    command.negotiationId = negotiationId;
-    return command;
-  }
-
-  private static CancelNegotiationCommand mapToCancelNegotiationCommand(
-      User user, UUID negotiationId) {
-    CancelNegotiationCommand command = new CancelNegotiationCommand();
-    command.user = user;
-    command.negotiationId = negotiationId;
-    return command;
+  private static Action toAction(ActionDto actionDto, User issuer) {
+    return Action.of(
+        Action.Type.of(actionDto.type),
+        issuer,
+        toVisibilityRequest(actionDto.offeredData),
+        toVisibilityRequest(actionDto.demandedData));
   }
 
   private static VisibilityRequest toVisibilityRequest(VisibilityRequestDto visibilityRequestDto) {
-    return VisibilityRequest.builder()
+    return VisibilityRequest.builder(UUID.fromString(visibilityRequestDto.workExperienceId))
         .withJobTitle(toVisibility(visibilityRequestDto.jobTitle))
         .withCompany(toVisibility(visibilityRequestDto.company))
         .withTechnologies(toVisibility(visibilityRequestDto.technologies))

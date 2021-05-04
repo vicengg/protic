@@ -20,7 +20,8 @@
             ID_REQUESTED_DATA = #{idRequestedData,jdbcType=INTEGER}
         </where>
     </select>
-    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.RequestedDataRecord">
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.RequestedDataRecord"
+            useGeneratedKeys="true" keyProperty="idRequestedData" keyColumn="ID_REQUESTED_DATA">
         insert into REQUESTED_DATA (
         ID_WORK_EXPERIENCE,
         JOB_TITLE,
@@ -37,14 +38,4 @@
         #{salary,jdbcType=VARCHAR}
         )
     </insert>
-    <update id="update" parameterType="org.example.protic.infrastructure.database.mybatis.records.RequestedDataRecord"
-            useGeneratedKeys="true" keyProperty="idRequestedData" keyColumn="ID_REQUESTED_DATA">
-        update REQUESTED_DATA set
-        JOB_TITLE=#{jobTitle,jdbcType=VARCHAR},
-        COMPANY=#{company,jdbcType=VARCHAR},
-        TECHNOLOGIES=#{technologies,jdbcType=VARCHAR},
-        WORK_PERIOD=#{workPeriod,jdbcType=VARCHAR},
-        SALARY=#{salary,jdbcType=VARCHAR}
-        where ID_REQUESTED_DATA=#{idRequestedData,jdbcType=INTEGER}
-    </update>
 </mapper>

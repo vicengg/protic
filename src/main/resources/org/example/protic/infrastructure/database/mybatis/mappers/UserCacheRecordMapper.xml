@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.UserCacheRecordMapper">
+    <sql id="user_cache_columns">
+        ID_USER_CACHE idUserCache,
+        USER_ID userId,
+        LOGIN login,
+        AVATAR_URL avatarUrl
+    </sql>
+    <select id="selectById"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.UserCacheRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.UserCacheRecord">
+        select
+        <include refid="user_cache_columns"/>
+        from USER_CACHE
+        <where>
+            USER_ID = #{userId,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.UserCacheRecord"
+            useGeneratedKeys="true" keyProperty="idUserCache" keyColumn="ID_USER_CACHE">
+        insert into USER_CACHE (
+        USER_ID,
+        LOGIN,
+        AVATAR_URL
+        ) values (
+        #{userId,jdbcType=VARCHAR},
+        #{login,jdbcType=VARCHAR},
+        #{avatarUrl,jdbcType=VARCHAR}
+        )
+    </insert>
+</mapper>

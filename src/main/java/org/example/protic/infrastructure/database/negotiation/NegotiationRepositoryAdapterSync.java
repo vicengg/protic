@@ -1,103 +1,154 @@
 package org.example.protic.infrastructure.database.negotiation;
 
 import org.example.protic.commons.UuidAdapter;
+import org.example.protic.domain.negotiation.Action;
 import org.example.protic.domain.negotiation.Negotiation;
-import org.example.protic.domain.negotiation.NegotiationState;
 import org.example.protic.domain.negotiation.Visibility;
 import org.example.protic.domain.negotiation.VisibilityRequest;
+import org.example.protic.domain.user.User;
+import org.example.protic.infrastructure.connector.UserConnector;
+import org.example.protic.infrastructure.database.mybatis.mappers.NegotiationActionRecordMapper;
 import org.example.protic.infrastructure.database.mybatis.mappers.NegotiationRecordMapper;
 import org.example.protic.infrastructure.database.mybatis.mappers.RequestedDataRecordMapper;
+import org.example.protic.infrastructure.database.mybatis.records.NegotiationActionRecord;
 import org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord;
 import org.example.protic.infrastructure.database.mybatis.records.RequestedDataRecord;
+import org.example.protic.infrastructure.database.workexperience.WorkExperienceRepositoryAdapterSync;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class NegotiationRepositoryAdapterSync {
 
   private final RequestedDataRecordMapper requestedDataRecordMapper;
   private final NegotiationRecordMapper negotiationRecordMapper;
+  private final NegotiationActionRecordMapper negotiationActionRecordMapper;
+  private final WorkExperienceRepositoryAdapterSync workExperienceRepositoryAdapter;
+  private final UserConnector userConnector;
 
   public NegotiationRepositoryAdapterSync(
       RequestedDataRecordMapper requestedDataRecordMapper,
-      NegotiationRecordMapper negotiationRecordMapper) {
+      NegotiationRecordMapper negotiationRecordMapper,
+      NegotiationActionRecordMapper negotiationActionRecordMapper,
+      WorkExperienceRepositoryAdapterSync workExperienceRepositoryAdapter,
+      UserConnector userConnector) {
     this.requestedDataRecordMapper =
         Objects.requireNonNull(requestedDataRecordMapper, "Null requested data record mapper.");
     this.negotiationRecordMapper =
         Objects.requireNonNull(negotiationRecordMapper, "Null negotiation record mapper.");
+    this.negotiationActionRecordMapper =
+        Objects.requireNonNull(
+            negotiationActionRecordMapper, "Null negotiation action record mapper.");
+    this.workExperienceRepositoryAdapter =
+        Objects.requireNonNull(
+            workExperienceRepositoryAdapter, "Null work experience repository adapter.");
+    this.userConnector = Objects.requireNonNull(userConnector, "Null user connector.");
   }
 
   @Transactional
   public void create(Negotiation negotiation) {
-    NegotiationRecord negotiationRecord = new NegotiationRecord();
-    negotiationRecord.idNegotiation = UuidAdapter.getBytesFromUUID(negotiation.getId());
-    negotiationRecord.createdAt = negotiation.getCreatedAt();
-    negotiationRecord.idOfferedData =
-        requestedDataRecordMapper.insert(
-            toRequestedDataRecord(
-                negotiation.getOfferedWorkExperienceId(), negotiation.getOfferedData()));
-    negotiationRecord.idDemandedData =
-        requestedDataRecordMapper.insert(
-            toRequestedDataRecord(
-                negotiation.getDemandedWorkExperienceId(), negotiation.getDemandedData()));
-    negotiationRecord.state = negotiation.getState().name();
+    NegotiationRecord negotiationRecord = toNegotiationRecord(negotiation);
     checkOneModification(negotiationRecordMapper.insert(negotiationRecord));
   }
 
   @Transactional
   public void update(Negotiation negotiation) {
-    NegotiationRecord negotiationQuery = new NegotiationRecord();
-    negotiationQuery.idNegotiation = UuidAdapter.getBytesFromUUID(negotiation.getId());
-    NegotiationRecord negotiationResult =
-        expectOne(negotiationRecordMapper.selectById(negotiationQuery));
-    negotiationResult.state = negotiation.getState().name();
-    expectOne(negotiationRecordMapper.update(negotiationResult));
-    RequestedDataRecord offeredRequestedDataRecord =
-        toRequestedDataRecord(
-            negotiation.getOfferedWorkExperienceId(), negotiation.getOfferedData());
-    offeredRequestedDataRecord.idRequestedData = negotiationResult.idOfferedData;
-    expectOne(requestedDataRecordMapper.update(offeredRequestedDataRecord));
-    RequestedDataRecord demandedRequestedDataRecord =
-        toRequestedDataRecord(
-            negotiation.getDemandedWorkExperienceId(), negotiation.getDemandedData());
-    demandedRequestedDataRecord.idRequestedData = negotiationResult.idDemandedData;
-    expectOne(requestedDataRecordMapper.update(demandedRequestedDataRecord));
+    NegotiationRecord negotiationRecord = toNegotiationRecord(negotiation);
+    checkOneModification(negotiationRecordMapper.update(negotiationRecord));
+    NegotiationActionRecord negotiationActionQuery = new NegotiationActionRecord();
+    negotiationActionQuery.idNegotiation = negotiationRecord.idNegotiation;
+    int previousActions =
+        negotiationActionRecordMapper.selectByNegotiationId(negotiationActionQuery).size();
+    List<Action> actions =
+        negotiation.getActions().subList(previousActions, negotiation.getActions().size());
+    actions.forEach(action -> persistAction(action, negotiation.getId()));
   }
 
   public Negotiation find(UUID id) {
     NegotiationRecord negotiationQuery = new NegotiationRecord();
     negotiationQuery.idNegotiation = UuidAdapter.getBytesFromUUID(id);
-    NegotiationRecord negotiationResult =
+    NegotiationRecord negotiationRecord =
         expectOne(negotiationRecordMapper.selectById(negotiationQuery));
+    return completeNegotiationRecord(negotiationRecord);
+  }
+
+  private Negotiation completeNegotiationRecord(NegotiationRecord negotiationRecord) {
     NegotiationAdapterDto negotiation = new NegotiationAdapterDto();
-    negotiation.id = UuidAdapter.getUUIDFromBytes(negotiationResult.idNegotiation);
-    negotiation.createdAt = negotiationResult.createdAt;
-    negotiation.state = NegotiationState.of(negotiationResult.state);
-
-    RequestedDataRecord offeredDataQuery = new RequestedDataRecord();
-    offeredDataQuery.idRequestedData = negotiationQuery.idOfferedData;
-    RequestedDataRecord offeredDataResult =
-        expectOne(requestedDataRecordMapper.selectById(offeredDataQuery));
-    negotiation.offeredWorkExperienceId =
-        UuidAdapter.getUUIDFromBytes(offeredDataResult.idWorkExperience);
-    negotiation.offeredData = toVisibilityRequest(offeredDataResult);
-
-    RequestedDataRecord demandedDataQuery = new RequestedDataRecord();
-    offeredDataQuery.idRequestedData = negotiationQuery.idDemandedData;
-    RequestedDataRecord demandedDataResult =
-        expectOne(requestedDataRecordMapper.selectById(demandedDataQuery));
-    negotiation.demandedWorkExperienceId =
-        UuidAdapter.getUUIDFromBytes(demandedDataResult.idWorkExperience);
-    negotiation.demandedData = toVisibilityRequest(demandedDataResult);
-
+    negotiation.id = UuidAdapter.getUUIDFromBytes(negotiationRecord.idNegotiation);
+    negotiation.createdAt = negotiationRecord.createdAt;
+    negotiation.offeredWorkExperience =
+        workExperienceRepositoryAdapter.findById(
+            UuidAdapter.getUUIDFromBytes(negotiationRecord.idOfferedWorkExperience));
+    negotiation.demandedWorkExperience =
+        workExperienceRepositoryAdapter.findById(
+            UuidAdapter.getUUIDFromBytes(negotiationRecord.idDemandedWorkExperience));
+    negotiation.creator = userConnector.findUserById(negotiationRecord.creatorId);
+    negotiation.receiver = userConnector.findUserById(negotiationRecord.receiverId);
+    negotiation.nextActor =
+        Optional.ofNullable(negotiationRecord.nextActor)
+            .map(userConnector::findUserById)
+            .orElse(null);
+    NegotiationActionRecord negotiationActionQuery = new NegotiationActionRecord();
+    negotiationActionQuery.idNegotiation = negotiationRecord.idNegotiation;
+    negotiation.actions =
+        negotiationActionRecordMapper.selectByNegotiationId(negotiationActionQuery).stream()
+            .map(this::toAction)
+            .collect(Collectors.toList());
     return negotiation;
   }
 
-  private static RequestedDataRecord toRequestedDataRecord(
-      UUID workExperienceId, VisibilityRequest visibilityRequest) {
+  private Action toAction(NegotiationActionRecord actionRecord) {
+    RequestedDataRecord offeredDataRecord = new RequestedDataRecord();
+    offeredDataRecord.idRequestedData = actionRecord.idOfferedData;
+    VisibilityRequest offeredVisibility =
+        toVisibilityRequest(expectOne(requestedDataRecordMapper.selectById(offeredDataRecord)));
+    RequestedDataRecord demandedDataRecord = new RequestedDataRecord();
+    demandedDataRecord.idRequestedData = actionRecord.idDemandedData;
+    VisibilityRequest demandedVisibility =
+        toVisibilityRequest(expectOne(requestedDataRecordMapper.selectById(demandedDataRecord)));
+    return Action.of(
+        Action.Type.of(actionRecord.type),
+        userConnector.findUserById(actionRecord.issuerId),
+        offeredVisibility,
+        demandedVisibility);
+  }
+
+  private void persistAction(Action action, UUID negotiationId) {
+    RequestedDataRecord offeredDataRecord = toRequestedDataRecord(action.getOfferedVisibility());
+    RequestedDataRecord demandedDataRecord = toRequestedDataRecord(action.getDemandedVisibility());
+    checkOneModification(requestedDataRecordMapper.insert(offeredDataRecord));
+    checkOneModification(requestedDataRecordMapper.insert(demandedDataRecord));
+    NegotiationActionRecord negotiationActionRecord = new NegotiationActionRecord();
+    negotiationActionRecord.idNegotiation = UuidAdapter.getBytesFromUUID(negotiationId);
+    negotiationActionRecord.actionDate = action.getDate();
+    negotiationActionRecord.type = action.getType().name();
+    negotiationActionRecord.issuerId = action.getIssuer().getId();
+    negotiationActionRecord.idOfferedData = offeredDataRecord.idRequestedData;
+    negotiationActionRecord.idDemandedData = demandedDataRecord.idRequestedData;
+    checkOneModification(negotiationActionRecordMapper.insert(negotiationActionRecord));
+  }
+
+  private static NegotiationRecord toNegotiationRecord(Negotiation negotiation) {
+    NegotiationRecord negotiationRecord = new NegotiationRecord();
+    negotiationRecord.idNegotiation = UuidAdapter.getBytesFromUUID(negotiation.getId());
+    negotiationRecord.createdAt = negotiation.getCreatedAt();
+    negotiationRecord.idOfferedWorkExperience =
+        UuidAdapter.getBytesFromUUID(negotiation.getOfferedWorkExperience().getId());
+    negotiationRecord.idDemandedWorkExperience =
+        UuidAdapter.getBytesFromUUID(negotiation.getDemandedWorkExperience().getId());
+    negotiationRecord.creatorId = negotiation.getCreator().getId();
+    negotiationRecord.receiverId = negotiation.getReceiver().getId();
+    negotiationRecord.nextActor = negotiation.getNextActor().map(User::getId).orElse(null);
+    return negotiationRecord;
+  }
+
+  private static RequestedDataRecord toRequestedDataRecord(VisibilityRequest visibilityRequest) {
     RequestedDataRecord record = new RequestedDataRecord();
-    record.idWorkExperience = UuidAdapter.getBytesFromUUID(workExperienceId);
+    record.idWorkExperience = UuidAdapter.getBytesFromUUID(visibilityRequest.getWorkExperienceId());
     record.jobTitle = visibilityRequest.getJobTitle().name();
     record.company = visibilityRequest.getCompany().name();
     record.technologies = visibilityRequest.getTechnologies().name();
@@ -107,7 +158,7 @@ public class NegotiationRepositoryAdapterSync {
   }
 
   private static VisibilityRequest toVisibilityRequest(RequestedDataRecord record) {
-    return VisibilityRequest.builder()
+    return VisibilityRequest.builder(UuidAdapter.getUUIDFromBytes(record.idWorkExperience))
         .withJobTitle(Visibility.of(record.jobTitle))
         .withCompany(Visibility.of(record.company))
         .withTechnologies(Visibility.of(record.technologies))

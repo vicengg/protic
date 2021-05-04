@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.NegotiationActionRecordMapper">
+    <sql id="negotiation_action_columns">
+        ID_NEGOTIATION_ACTION idNegotiationAction,
+        ID_NEGOTIATION idNegotiation,
+        ACTION_DATE actionDate,
+        TYPE type,
+        ISSUER_ID issuerId,
+        ID_OFFERED_DATA idOfferedData,
+        ID_DEMANDED_DATA idDemandedData
+    </sql>
+    <select id="selectByNegotiationId"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationActionRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationActionRecord">
+        select
+        <include refid="negotiation_action_columns"/>
+        from NEGOTIATION_ACTION
+        <where>
+            ID_NEGOTIATION = #{idNegotiation,jdbcType=VARBINARY}
+        </where>
+    </select>
+    <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationActionRecord"
+            useGeneratedKeys="true" keyProperty="idNegotiationAction" keyColumn="ID_NEGOTIATION_ACTION">
+        insert into NEGOTIATION_ACTION (
+        ID_NEGOTIATION,
+        ACTION_DATE,
+        TYPE,
+        ISSUER_ID,
+        ID_OFFERED_DATA,
+        ID_DEMANDED_DATA
+        ) values (
+        #{idNegotiation,jdbcType=VARBINARY},
+        #{actionDate,jdbcType=TIMESTAMP},
+        #{type,jdbcType=VARCHAR},
+        #{issuerId,jdbcType=VARCHAR},
+        #{idOfferedData,jdbcType=INTEGER},
+        #{idDemandedData,jdbcType=INTEGER}
+        )
+    </insert>
+</mapper>

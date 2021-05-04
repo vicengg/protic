@@ -1,250 +1,173 @@
 package org.example.protic.domain.negotiation;
 
-import org.example.protic.commons.ForbiddenException;
-import org.example.protic.commons.UnexpectedException;
 import org.example.protic.commons.ValidationException;
 import org.example.protic.domain.Entity;
 import org.example.protic.domain.user.User;
-import org.example.protic.domain.workexperience.RestrictedField;
 import org.example.protic.domain.workexperience.WorkExperience;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class NegotiationEntity extends Entity implements Negotiation {
 
-  private final UUID offeredWorkExperienceId;
-  private final UUID demandedWorkExperienceId;
-  private final VisibilityRequest offeredData;
-  private final VisibilityRequest demandedData;
-  private final NegotiationState state;
+  private final WorkExperience offeredWorkExperience;
+  private final WorkExperience demandedWorkExperience;
+  private final User creator;
+  private final User receiver;
+  private final List<Action> actions;
+  private User nextActor;
 
   private NegotiationEntity(
-      User user,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      VisibilityRequest offeredData,
-      VisibilityRequest demandedData) {
-    this(
-        UUID.randomUUID(),
-        Timestamp.from(Instant.now()),
-        offeredWorkExperience,
-        demandedWorkExperience,
-        offeredData,
-        demandedData,
-        NegotiationState.DEMANDED_PENDING);
-    Optional.ofNullable(user)
-        .orElseThrow(() -> new ValidationException("User is required to create negotiation."));
-    checkOfferedWorkExperienceOwnership(user, offeredWorkExperience);
-    checkDemandedWorkExperienceOwnership(user, demandedWorkExperience);
-  }
-
-  private NegotiationEntity(
-      UUID negotiationId,
-      Timestamp createdAt,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      VisibilityRequest offeredData,
-      VisibilityRequest demandedData,
-      NegotiationState negotiationState) {
-    super(negotiationId, createdAt);
-    this.offeredWorkExperienceId = offeredWorkExperience.getId();
-    this.demandedWorkExperienceId = demandedWorkExperience.getId();
-    this.offeredData = adjustVisibilityRequest(offeredData, offeredWorkExperience);
-    this.demandedData = adjustVisibilityRequest(demandedData, demandedWorkExperience);
-    this.state = negotiationState;
+      User creator, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
+    super(UUID.randomUUID(), Timestamp.from(Instant.now()));
+    this.offeredWorkExperience =
+        Optional.ofNullable(offeredWorkExperience)
+            .orElseThrow(
+                () ->
+                    new ValidationException(
+                        "Offered work experience needed to create negotiation."));
+    this.demandedWorkExperience =
+        Optional.ofNullable(demandedWorkExperience)
+            .orElseThrow(
+                () ->
+                    new ValidationException(
+                        "Demanded work experience needed to create negotiation."));
+    checkCreatorIsOwnerOfTheOffer(offeredWorkExperience, creator);
+    this.creator =
+        Optional.ofNullable(creator)
+            .orElseThrow(() -> new ValidationException("Creator needed to create negotiation."));
+    this.receiver =
+        Optional.ofNullable(demandedWorkExperience.getUser())
+            .orElseThrow(() -> new ValidationException("Receiver needed to create negotiation."));
+    this.actions = new ArrayList<>();
+    this.nextActor = creator;
   }
 
   private NegotiationEntity(Negotiation negotiation) {
     super(negotiation.getId(), negotiation.getCreatedAt());
-    this.offeredWorkExperienceId = negotiation.getOfferedWorkExperienceId();
-    this.demandedWorkExperienceId = negotiation.getDemandedWorkExperienceId();
-    this.offeredData = negotiation.getOfferedData();
-    this.demandedData = negotiation.getDemandedData();
-    this.state = negotiation.getState();
-  }
-
-  @Override
-  public UUID getOfferedWorkExperienceId() {
-    return offeredWorkExperienceId;
-  }
-
-  @Override
-  public UUID getDemandedWorkExperienceId() {
-    return demandedWorkExperienceId;
-  }
-
-  @Override
-  public VisibilityRequest getOfferedData() {
-
-    return offeredData;
-  }
-
-  @Override
-  public VisibilityRequest getDemandedData() {
-    return demandedData;
-  }
-
-  @Override
-  public NegotiationState getState() {
-    return state;
+    this.offeredWorkExperience = negotiation.getOfferedWorkExperience();
+    this.demandedWorkExperience = negotiation.getDemandedWorkExperience();
+    this.creator = negotiation.getCreator();
+    this.receiver = negotiation.getReceiver();
+    this.actions = negotiation.getActions();
+    this.nextActor = negotiation.getCreator();
   }
 
   public static NegotiationEntity create(
-      User user,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      VisibilityRequest offeredData,
-      VisibilityRequest demandedData) {
-    return new NegotiationEntity(
-        user, offeredWorkExperience, demandedWorkExperience, offeredData, demandedData);
+      User creator, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
+    return new NegotiationEntity(creator, offeredWorkExperience, demandedWorkExperience);
   }
 
   public static NegotiationEntity copy(Negotiation negotiation) {
     return new NegotiationEntity(negotiation);
   }
 
-  public NegotiationEntity update(
-      User user,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      VisibilityRequest offeredData,
-      VisibilityRequest demandedData) {
-    return modify(
-        user,
-        offeredWorkExperience,
-        demandedWorkExperience,
-        () ->
-            new NegotiationEntity(
-                this.getId(),
-                this.getCreatedAt(),
-                offeredWorkExperience,
-                demandedWorkExperience,
-                offeredData,
-                demandedData,
-                NegotiationState.DEMANDED_PENDING),
-        () ->
-            new NegotiationEntity(
-                this.getId(),
-                this.getCreatedAt(),
-                offeredWorkExperience,
-                demandedWorkExperience,
-                offeredData,
-                demandedData,
-                NegotiationState.OFFERING_PENDING));
-  }
+  public NegotiationEntity addAction(Action action) {
+    checkNegotiationIsOpen();
+    checkActionIssuerIsNextActor(action);
 
-  public NegotiationEntity accept(
-      User user, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
-    return modify(
-        user,
-        offeredWorkExperience,
-        demandedWorkExperience,
-        () ->
-            new NegotiationEntity(
-                this.getId(),
-                this.getCreatedAt(),
-                offeredWorkExperience,
-                demandedWorkExperience,
-                offeredData,
-                demandedData,
-                NegotiationState.ACCEPTED));
-  }
-
-  public NegotiationEntity cancel(
-      User user, WorkExperience offeredWorkExperience, WorkExperience demandedWorkExperience) {
-    return modify(
-        user,
-        offeredWorkExperience,
-        demandedWorkExperience,
-        () ->
-            new NegotiationEntity(
-                this.getId(),
-                this.getCreatedAt(),
-                offeredWorkExperience,
-                demandedWorkExperience,
-                offeredData,
-                demandedData,
-                NegotiationState.CANCELLED));
-  }
-
-  private NegotiationEntity modify(
-      User user,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      Supplier<NegotiationEntity> supplier) {
-    return modify(user, offeredWorkExperience, demandedWorkExperience, supplier, supplier);
-  }
-
-  private NegotiationEntity modify(
-      User user,
-      WorkExperience offeredWorkExperience,
-      WorkExperience demandedWorkExperience,
-      Supplier<NegotiationEntity> offeringPendingSupplier,
-      Supplier<NegotiationEntity> demandedPendingSupplier) {
-    checkWorkExperienceIntegrity(this.offeredWorkExperienceId, offeredWorkExperience);
-    checkWorkExperienceIntegrity(this.demandedWorkExperienceId, demandedWorkExperience);
-    switch (this.state) {
-      case ACCEPTED:
-      case CANCELLED:
-        throw new ForbiddenException();
-      case OFFERING_PENDING:
-        if (!offeredWorkExperience.getUser().getId().equals(user.getId())) {
-          throw new ForbiddenException();
-        }
-        return offeringPendingSupplier.get();
-      case DEMANDED_PENDING:
-        if (!demandedWorkExperience.getUser().getId().equals(user.getId())) {
-          throw new ForbiddenException();
-        }
-        return demandedPendingSupplier.get();
+    switch (action.getType()) {
+      case MODIFY:
+        addModifyAction(action);
+        break;
+      case ACCEPT:
+        addAcceptAction(action);
+        break;
+      case CANCEL:
+        break;
       default:
-        throw new UnexpectedException("Illegal negotiation state.");
+        break;
+    }
+    return this;
+  }
+
+  private void addModifyAction(Action action) {
+    if (this.offeredWorkExperience
+            .getId()
+            .equals(action.getOfferedVisibility().getWorkExperienceId())
+        && this.demandedWorkExperience
+            .getId()
+            .equals(action.getDemandedVisibility().getWorkExperienceId())) {
+      this.actions.add(action);
+      toggleNextActor();
+    } else {
+      throw new ValidationException("Illegal action.");
     }
   }
 
-  private static VisibilityRequest adjustVisibilityRequest(
-      VisibilityRequest visibilityRequest, WorkExperience workExperience) {
-    VisibilityRequest.Builder builder = VisibilityRequest.builder();
-    builder.withJobTitle(
-        calculateVisibility(workExperience.getJobTitle(), visibilityRequest.getJobTitle()));
-    builder.withCompany(
-        calculateVisibility(workExperience.getCompany(), visibilityRequest.getCompany()));
-    builder.withTechnologies(
-        calculateVisibility(workExperience.getTechnologies(), visibilityRequest.getTechnologies()));
-    builder.withWorkPeriod(
-        calculateVisibility(workExperience.getWorkPeriod(), visibilityRequest.getWorkPeriod()));
-    builder.withSalary(
-        calculateVisibility(workExperience.getSalary(), visibilityRequest.getSalary()));
-    return builder.build();
-  }
-
-  private static <S> Visibility calculateVisibility(
-      RestrictedField<S> restrictedField, Visibility visibility) {
-    return restrictedField.isPublic() ? Visibility.ALREADY_VISIBLE : visibility;
-  }
-
-  private static void checkWorkExperienceIntegrity(
-      UUID workExperienceId, WorkExperience workExperience) {
-    if (!workExperienceId.equals(workExperience.getId())) {
-      throw new UnexpectedException("Work experience ID doesn't match.");
+  private void addAcceptAction(Action action) {
+    Action lastAction = this.actions.get(this.actions.size() - 1);
+    if (lastAction.getOfferedVisibility().equals(action.getOfferedVisibility())
+        && lastAction.getDemandedVisibility().equals(action.getDemandedVisibility())) {
+      this.actions.add(action);
+      this.nextActor = null;
+    } else {
+      throw new ValidationException("Illegal action.");
     }
   }
 
-  private static void checkOfferedWorkExperienceOwnership(
-      User user, WorkExperience offeredWorkExperience) {
-    if (!user.getId().equals(offeredWorkExperience.getUser().getId())) {
-      throw new ForbiddenException();
+  @Override
+  public WorkExperience getOfferedWorkExperience() {
+    return offeredWorkExperience;
+  }
+
+  @Override
+  public WorkExperience getDemandedWorkExperience() {
+    return demandedWorkExperience;
+  }
+
+  @Override
+  public User getCreator() {
+    return creator;
+  }
+
+  @Override
+  public User getReceiver() {
+    return receiver;
+  }
+
+  @Override
+  public List<Action> getActions() {
+    return actions;
+  }
+
+  @Override
+  public Optional<User> getNextActor() {
+    return Optional.ofNullable(nextActor);
+  }
+
+  private void toggleNextActor() {
+    if (this.creator.getId().equals(this.nextActor.getId())) {
+      this.nextActor = this.receiver;
+    } else {
+      this.nextActor = this.creator;
     }
   }
 
-  private static void checkDemandedWorkExperienceOwnership(
-      User user, WorkExperience demandedWorkExperience) {
-    if (user.getId().equals(demandedWorkExperience.getUser().getId())) {
-      throw new ValidationException("User can't negotiate with own work experiences.");
+  private void checkNegotiationIsOpen() {
+    if (getNextActor().isEmpty()) {
+      throw new ValidationException("The negotiation does not admit more actions.");
+    }
+  }
+
+  private static void checkCreatorIsOwnerOfTheOffer(
+      WorkExperience offeredWorkExperience, User creator) {
+    if (!offeredWorkExperience.getUser().getId().equals(creator.getId())) {
+      throw new ValidationException(
+          "The negotiation creator must be the offered work experience owner.");
+    }
+  }
+
+  private void checkActionIssuerIsNextActor(Action action) {
+    if (!this.getNextActor()
+        .map(User::getId)
+        .orElseThrow(IllegalStateException::new)
+        .equals(action.getIssuer().getId())) {
+      throw new ValidationException("Action issuer is not the next negotiation actor.");
     }
   }
 }

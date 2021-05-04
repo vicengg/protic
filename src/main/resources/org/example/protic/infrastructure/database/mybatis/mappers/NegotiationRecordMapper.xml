@@ -4,9 +4,11 @@
     <sql id="negotiation_columns">
         ID_NEGOTIATION idNegotiation,
         CREATED_AT createdAt,
-        ID_OFFERED_DATA idOfferedData,
-        ID_DEMANDED_DATA idDemandedData,
-        STATE state
+        ID_OFFERED_WORK_EXPERIENCE idOfferedWorkExperience,
+        ID_DEMANDED_WORK_EXPERIENCE idDemandedWorkExperience,
+        CREATOR_ID creatorId,
+        RECEIVER_ID receiverId,
+        NEXT_ACTOR nextActor
     </sql>
     <select id="selectById"
             parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
@@ -22,22 +24,24 @@
         insert into NEGOTIATION (
         ID_NEGOTIATION,
         CREATED_AT,
-        ID_OFFERED_DATA,
-        ID_DEMANDED_DATA,
-        STATE
+        ID_OFFERED_WORK_EXPERIENCE,
+        ID_DEMANDED_WORK_EXPERIENCE,
+        CREATOR_ID,
+        RECEIVER_ID,
+        NEXT_ACTOR
         ) values (
         #{idNegotiation,jdbcType=VARBINARY},
         #{createdAt,jdbcType=TIMESTAMP},
-        #{idOfferedData,jdbcType=INTEGER},
-        #{idDemandedData,jdbcType=INTEGER},
-        #{state,jdbcType=VARCHAR}
+        #{idOfferedWorkExperience,jdbcType=VARBINARY},
+        #{idDemandedWorkExperience,jdbcType=VARBINARY},
+        #{creatorId,jdbcType=VARCHAR},
+        #{receiverId,jdbcType=VARCHAR},
+        #{nextActor,jdbcType=VARCHAR}
         )
     </insert>
     <update id="update" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
         update NEGOTIATION set
-        ID_OFFERED_DATA=#{idOfferedData,jdbcType=INTEGER},
-        ID_DEMANDED_DATA=#{idDemandedData,jdbcType=INTEGER},
-        STATE=#{state,jdbcType=VARCHAR},
+        NEXT_ACTOR = #{nextActor,jdbcType=VARCHAR}
         where ID_NEGOTIATION=#{idNegotiation,jdbcType=VARBINARY}
     </update>
 </mapper>

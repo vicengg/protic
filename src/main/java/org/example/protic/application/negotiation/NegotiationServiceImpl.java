@@ -30,11 +30,7 @@ public class NegotiationServiceImpl implements NegotiationService {
             workExperienceRepository.findById(command.demandedWorkExperienceId),
             (offeredWorkExperience, demandedWorkExperience) ->
                 NegotiationEntity.create(
-                    command.user,
-                    offeredWorkExperience,
-                    demandedWorkExperience,
-                    command.offeredData,
-                    command.demandedData))
+                    command.user, offeredWorkExperience, demandedWorkExperience))
         .thenCompose(this::createNegotiationAndReturnId)
         .toCompletableFuture();
   }
@@ -44,56 +40,7 @@ public class NegotiationServiceImpl implements NegotiationService {
     return negotiationRepository
         .find(command.negotiationId)
         .thenApply(NegotiationEntity::copy)
-        .thenCompose(
-            negotiation ->
-                CompletableFutures.combine(
-                        workExperienceRepository.findById(negotiation.getOfferedWorkExperienceId()),
-                        workExperienceRepository.findById(
-                            negotiation.getDemandedWorkExperienceId()),
-                        (offeredWorkExperience, demandedWorkExperience) ->
-                            negotiation.update(
-                                command.user,
-                                offeredWorkExperience,
-                                demandedWorkExperience,
-                                command.offeredData,
-                                command.demandedData))
-                    .toCompletableFuture())
-        .thenCompose(negotiationRepository::update);
-  }
-
-  @Override
-  public CompletableFuture<Void> acceptNegotiation(AcceptNegotiationCommand command) {
-    return negotiationRepository
-        .find(command.negotiationId)
-        .thenApply(NegotiationEntity::copy)
-        .thenCompose(
-            negotiation ->
-                CompletableFutures.combine(
-                        workExperienceRepository.findById(negotiation.getOfferedWorkExperienceId()),
-                        workExperienceRepository.findById(
-                            negotiation.getDemandedWorkExperienceId()),
-                        (offeredWorkExperience, demandedWorkExperience) ->
-                            negotiation.accept(
-                                command.user, offeredWorkExperience, demandedWorkExperience))
-                    .toCompletableFuture())
-        .thenCompose(negotiationRepository::update);
-  }
-
-  @Override
-  public CompletableFuture<Void> cancelNegotiation(CancelNegotiationCommand command) {
-    return negotiationRepository
-        .find(command.negotiationId)
-        .thenApply(NegotiationEntity::copy)
-        .thenCompose(
-            negotiation ->
-                CompletableFutures.combine(
-                        workExperienceRepository.findById(negotiation.getOfferedWorkExperienceId()),
-                        workExperienceRepository.findById(
-                            negotiation.getDemandedWorkExperienceId()),
-                        (offeredWorkExperience, demandedWorkExperience) ->
-                            negotiation.cancel(
-                                command.user, offeredWorkExperience, demandedWorkExperience))
-                    .toCompletableFuture())
+        .thenApply(negotiation -> negotiation.addAction(command.action))
         .thenCompose(negotiationRepository::update);
   }
 

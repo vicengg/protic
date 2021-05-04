@@ -2,18 +2,23 @@ package org.example.protic.domain.negotiation;
 
 import org.example.protic.domain.Identifiable;
 import org.example.protic.domain.TimeTraceable;
+import org.example.protic.domain.user.User;
+import org.example.protic.domain.workexperience.WorkExperience;
 
-import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
 public interface Negotiation extends Identifiable, TimeTraceable {
 
-  UUID getOfferedWorkExperienceId();
+  WorkExperience getOfferedWorkExperience();
 
-  UUID getDemandedWorkExperienceId();
+  WorkExperience getDemandedWorkExperience();
 
-  VisibilityRequest getOfferedData();
+  User getCreator();
 
-  VisibilityRequest getDemandedData();
+  User getReceiver();
 
-  NegotiationState getState();
+  Optional<User> getNextActor();
+
+  List<Action> getActions();
 }

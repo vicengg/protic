@@ -8,8 +8,4 @@ public interface NegotiationService {
   CompletableFuture<UUID> createNegotiation(CreateNegotiationCommand command);
 
   CompletableFuture<Void> updateNegotiation(UpdateNegotiationCommand command);
-
-  CompletableFuture<Void> acceptNegotiation(AcceptNegotiationCommand command);
-
-  CompletableFuture<Void> cancelNegotiation(CancelNegotiationCommand command);
 }

@@ -29,4 +29,5 @@ public class NegotiationRepositoryAdapter implements NegotiationRepository {
   public CompletableFuture<Negotiation> find(UUID id) {
     return CompletableFuture.supplyAsync(() -> syncAdapter.find(id));
   }
+
 }

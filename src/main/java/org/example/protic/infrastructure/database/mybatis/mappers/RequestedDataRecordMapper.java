@@ -9,6 +9,4 @@ public interface RequestedDataRecordMapper {
   RequestedDataRecord selectById(RequestedDataRecord record);
 
   int insert(RequestedDataRecord record);
-
-  int update(RequestedDataRecord record);
 }
