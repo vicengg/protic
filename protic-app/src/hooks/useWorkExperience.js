@@ -1,7 +1,7 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {nullIfEmpty} from '../helpers/nullHelpers';
 
-export const useWorkExperience = () =>  {
+export const useWorkExperience = (workExperienceId) =>  {
 
     const [workExperience, setWorkExperience] = useState({
         jobTitle: {
@@ -32,6 +32,20 @@ export const useWorkExperience = () =>  {
         },
         binding: false
     });
+
+
+    useEffect(() => {
+        if(!!workExperienceId) {
+            console.log("GAGAGA");
+            fetch(`/work-experience/${workExperienceId}`)
+            .then(response => response.json())
+            .then(data => {
+                setWorkExperience(data);
+            });
+        }
+    }, [workExperienceId]);
+
+
 
     const changeField = (field) => {
         return (value) => {

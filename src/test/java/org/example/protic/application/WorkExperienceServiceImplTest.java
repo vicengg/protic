@@ -1,11 +1,11 @@
 package org.example.protic.application;
 
+import org.example.protic.application.negotiation.NegotiationRepository;
 import org.example.protic.application.workexperience.CreateWorkExperienceCommand;
 import org.example.protic.application.workexperience.WorkExperienceRepository;
 import org.example.protic.application.workexperience.WorkExperienceService;
 import org.example.protic.application.workexperience.WorkExperienceServiceImpl;
 import org.example.protic.domain.user.User;
-import org.example.protic.domain.user.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.javamoney.moneta.Money;
 import org.junit.jupiter.api.DisplayName;
@@ -27,15 +27,17 @@ class WorkExperienceServiceImplTest {
   @Test
   @DisplayName("Create work experience test.")
   void createWorkExperience() {
-    WorkExperienceRepository repository = mock(WorkExperienceRepository.class);
-    WorkExperienceService service = new WorkExperienceServiceImpl(repository);
+    WorkExperienceRepository workExperienceRepository = mock(WorkExperienceRepository.class);
+    NegotiationRepository negotiationRepository = mock(NegotiationRepository.class);
+    WorkExperienceService service =
+        new WorkExperienceServiceImpl(workExperienceRepository, negotiationRepository);
     CreateWorkExperienceCommand command = createWorkExperienceCommand();
-    when(repository.create(any(WorkExperience.class))).thenReturn(futureOf(null));
+    when(workExperienceRepository.create(any(WorkExperience.class))).thenReturn(futureOf(null));
 
     UUID workExperienceId = service.createWorkExperience(command).join();
 
     ArgumentCaptor<WorkExperience> captor = ArgumentCaptor.forClass(WorkExperience.class);
-    verify(repository).create(captor.capture());
+    verify(workExperienceRepository).create(captor.capture());
     assertEquals(captor.getValue().getId(), workExperienceId);
   }
 

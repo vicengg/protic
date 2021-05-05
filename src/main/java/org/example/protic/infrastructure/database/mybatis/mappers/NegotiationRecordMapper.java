@@ -21,4 +21,6 @@ public interface NegotiationRecordMapper {
   List<NegotiationRecord> selectByOfferedWorkExperience(NegotiationRecord negotiationRecord);
 
   List<NegotiationRecord> selectByDemandedWorkExperience(NegotiationRecord negotiationRecord);
+
+  int delete(NegotiationRecord negotiationRecord);
 }

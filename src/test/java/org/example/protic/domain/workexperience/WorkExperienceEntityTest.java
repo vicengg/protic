@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -254,7 +255,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PUBLIC)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceProjection(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER, List.of());
     assertTrue(workExperienceProjection.getUser().isPresent());
     assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
@@ -284,7 +285,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceProjection(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER, List.of());
     assertTrue(workExperienceProjection.getUser().isPresent());
     assertEquals(USER, workExperienceProjection.getUser().get());
     assertTrue(workExperienceProjection.getJobTitle().isPresent());
@@ -314,7 +315,7 @@ class WorkExperienceEntityTest {
             .withSalary(SALARY_PRIVATE)
             .build();
     WorkExperienceProjection workExperienceProjection =
-        workExperienceEntity.toWorkExperienceProjection(USER);
+        workExperienceEntity.toWorkExperienceProjection(USER, List.of());
     assertFalse(workExperienceProjection.getUser().isPresent());
     assertFalse(workExperienceProjection.getJobTitle().isPresent());
     assertFalse(workExperienceProjection.getCompany().isPresent());

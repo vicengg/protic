@@ -12,4 +12,6 @@ public interface NegotiationActionRecordMapper {
       NegotiationActionRecord negotiationActionRecord);
 
   int insert(NegotiationActionRecord negotiationActionRecord);
+
+  int delete(NegotiationActionRecord negotiationActionRecord);
 }

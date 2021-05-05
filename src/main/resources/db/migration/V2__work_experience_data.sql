@@ -82,16 +82,16 @@ INSERT INTO WORK_EXPERIENCE (
     '19934271',
     false,
     1,
-    false,
+    true,
     2,
     false,
-    false,
+    true,
     TO_DATE('28/01/2017', 'DD/MM/YYYY'),
     null,
     false,
     34000,
     'EUR',
-    false
+    true
 );
 
 INSERT INTO WORK_EXPERIENCE_TECHNOLOGY (ID_WORK_EXPERIENCE, ID_TECHNOLOGY) VALUES

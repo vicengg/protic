@@ -8,6 +8,8 @@ import {
 import { HomeView } from '../components/views/HomeView'
 import { AddWorkExperienceView } from '../components/views/AddWorkExperienceView'
 import { MyWorkExperiencesView } from '../components/views/MyWorkExperiencesView'
+import { ModifyWorkExperienceView } from "../components/views/ModifyWorkExperienceView";
+import { SearchWorkExperiencesView } from "../components/views/SearchWorkExperiencesView";
 
 export default function AppRouter() {
   return (
@@ -24,6 +26,9 @@ export default function AppRouter() {
             <li>
               <Link to="/my-work-experiences">My work experiences</Link>
             </li>
+            <li>
+              <Link to="/search-work-experiences">Search work experiences</Link>
+            </li>
           </ul>
         </nav>
 
@@ -35,6 +40,12 @@ export default function AppRouter() {
           </Route>
           <Route path="/my-work-experiences">
             <MyWorkExperiencesView />
+          </Route>
+          <Route path="/search-work-experiences">
+            <SearchWorkExperiencesView />
+          </Route>
+          <Route path="/modify-work-experience/:workExperienceId">
+            <ModifyWorkExperienceView />
           </Route>
           <Route path="/">
             <HomeView />

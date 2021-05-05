@@ -26,7 +26,7 @@ export const useGetWorkExperiences = (scope, jobTitle) => {
                     data
                 });
             });
-    }, [reload]);
+    }, [reload, queryParams]);
 
     return [state, forceReload];
 };

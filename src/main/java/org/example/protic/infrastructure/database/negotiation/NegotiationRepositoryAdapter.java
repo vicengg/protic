@@ -41,4 +41,9 @@ public class NegotiationRepositoryAdapter implements NegotiationRepository {
   public CompletableFuture<List<Negotiation>> findByWorkExperienceId(UUID workExperienceId) {
     return CompletableFuture.supplyAsync(() -> syncAdapter.findByWorkExperienceId(workExperienceId));
   }
+
+  @Override
+  public CompletableFuture<Void> deleteByWorkExperienceId(UUID workExperienceId) {
+    return CompletableFuture.runAsync(() -> syncAdapter.deleteByWorkExperienceId(workExperienceId));
+  }
 }

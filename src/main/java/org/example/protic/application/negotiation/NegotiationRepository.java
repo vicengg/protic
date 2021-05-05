@@ -14,7 +14,9 @@ public interface NegotiationRepository {
 
   CompletableFuture<Negotiation> findById(UUID id);
 
-  CompletableFuture<List <Negotiation>> find(GetNegotiationsQuery query);
+  CompletableFuture<List<Negotiation>> find(GetNegotiationsQuery query);
 
-  CompletableFuture<List <Negotiation>> findByWorkExperienceId(UUID workExperienceId);
+  CompletableFuture<List<Negotiation>> findByWorkExperienceId(UUID workExperienceId);
+
+  CompletableFuture<Void> deleteByWorkExperienceId(UUID workExperienceId);
 }

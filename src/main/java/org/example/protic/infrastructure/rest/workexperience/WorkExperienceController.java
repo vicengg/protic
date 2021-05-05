@@ -1,5 +1,6 @@
 package org.example.protic.infrastructure.rest.workexperience;
 
+import org.apache.commons.lang.StringUtils;
 import org.example.protic.application.workexperience.*;
 import org.example.protic.commons.CurrencyContext;
 import org.example.protic.domain.user.User;
@@ -199,17 +200,32 @@ public class WorkExperienceController {
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
     query.user = user;
     query.scope = GetWorkExperiencesQuery.Scope.of(scope);
-    query.jobTitle = Optional.ofNullable(jobTitle).map(JobTitle::of).orElse(null);
-    query.company = Optional.ofNullable(company).map(Company::of).orElse(null);
+    query.jobTitle =
+        Optional.ofNullable(jobTitle)
+            .map(WorkExperienceController::setNullOnEmpty)
+            .map(JobTitle::of)
+            .orElse(null);
+    query.company =
+        Optional.ofNullable(company)
+            .map(WorkExperienceController::setNullOnEmpty)
+            .map(Company::of)
+            .orElse(null);
     query.technologies =
         Optional.ofNullable(technologies)
             .map(Collection::stream)
-            .map(a -> a.map(Technology::of).collect(Collectors.toSet()))
+            .map(stream -> stream.filter(StringUtils::isNotBlank))
+            .map(technology -> technology.map(Technology::of).collect(Collectors.toSet()))
             .orElse(null);
     query.startDate =
-        Optional.ofNullable(startDate).map(date -> LocalDate.parse(date, FORMATTER)).orElse(null);
+        Optional.ofNullable(startDate)
+            .map(WorkExperienceController::setNullOnEmpty)
+            .map(date -> LocalDate.parse(date, FORMATTER))
+            .orElse(null);
     query.endDate =
-        Optional.ofNullable(endDate).map(date -> LocalDate.parse(date, FORMATTER)).orElse(null);
+        Optional.ofNullable(endDate)
+            .map(WorkExperienceController::setNullOnEmpty)
+            .map(date -> LocalDate.parse(date, FORMATTER))
+            .orElse(null);
     query.minSalary =
         Optional.ofNullable(minSalary)
             .map(salary -> Money.of(salary, CurrencyContext.getPrototypeAllowedCurrency()))
@@ -226,5 +242,9 @@ public class WorkExperienceController {
     return dto.isPublic
         ? RestrictedField.ofPublic((mappingFunction.apply(dto.content)))
         : RestrictedField.ofPrivate((mappingFunction.apply(dto.content)));
+  }
+
+  private static String setNullOnEmpty(final String text) {
+    return text != null && text.trim().isEmpty() ? null : text;
   }
 }

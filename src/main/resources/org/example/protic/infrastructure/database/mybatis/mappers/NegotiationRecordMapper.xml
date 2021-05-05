@@ -84,4 +84,8 @@
         NEXT_ACTOR = #{nextActor,jdbcType=VARCHAR}
         where ID_NEGOTIATION=#{idNegotiation,jdbcType=VARBINARY}
     </update>
+    <delete id="delete" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        delete NEGOTIATION where
+        ID_NEGOTIATION = #{idNegotiation,jdbcType=VARBINARY}
+    </delete>
 </mapper>

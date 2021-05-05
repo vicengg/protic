@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Chip } from './Chip';
-import { Checkbox } from './Checkbox';
-import { RequestButton } from './RequestButton';
 
-export const WorkExperience = ({ workExperience, afterDelete }) => {
+export const WorkExperience = ({ workExperience }) => {
 
     return (
         <div className="card">
@@ -12,69 +10,54 @@ export const WorkExperience = ({ workExperience, afterDelete }) => {
                     {workExperience.jobTitle.content}
                     {!!workExperience.company && ` (${workExperience.company.content})`}
                 </h5>}
+                {!workExperience.jobTitle && !!workExperience.company && <h5 className="card-title">
+                    {workExperience.company.content}
+                </h5>}
+                {!workExperience.jobTitle && !workExperience.company && 
+                <h5 className="card-title">Experiencia laboral <ion-icon name="lock-closed"></ion-icon></h5>}
                 <div className="d-flex flex-row">
                     <div>
                         <strong>Cargo: </strong>
-                        <span>{workExperience.jobTitle.content}</span>
-                    </div>
-                    <div className="ml-auto">
-                        <Checkbox value={workExperience.jobTitle.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                        {!!workExperience.jobTitle && <span>{workExperience.jobTitle.content}</span>}
+                        {!workExperience.jobTitle && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
                     </div>
                 </div>
                 <div className="d-flex flex-row">
                     <div>
                         <strong>Empresa: </strong>
-                        <span>{workExperience.company.content}</span>
-                    </div>
-                    <div className="ml-auto">
-                        <Checkbox value={workExperience.company.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                        {!!workExperience.company && <span>{workExperience.company.content}</span>}
+                        {!workExperience.company && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
                     </div>
                 </div>
                 <div className="d-flex flex-row">
                     <div>
                         <strong>Período de trabajo: </strong>
-                        <span>
+                        {!!workExperience.workPeriod && <span>
                             {`Desde ${workExperience.workPeriod.content.startDate} hasta 
                             ${!!workExperience.workPeriod.content.endDate ? workExperience.workPeriod.content.endDate : 'la actualidad'}`}
-                        </span>
-                    </div>
-                    <div className="ml-auto">
-                        <Checkbox value={workExperience.workPeriod.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                        </span>}
+                        {!workExperience.workPeriod && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
                     </div>
                 </div>
                 <div className="d-flex flex-row">
                     <div>
                         <strong>Salario bruto anual: </strong>
-                        <span>{workExperience.salary.content.value} {workExperience.salary.content.currency}</span>
-                    </div>
-                    <div className="ml-auto">
-                        <Checkbox value={workExperience.salary.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                        {!!workExperience.salary && <span>{`${workExperience.salary.content.value} ${workExperience.salary.content.currency}`}</span>}
+                        {!workExperience.salary && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
                     </div>
                 </div>
                 <div className="d-flex flex-row">
                     <div>
                         <strong>Tecnologías: </strong>
-                        <div className="mt-1">
-                            {!!workExperience.technologies && <div className="card-text">
+                        {!!workExperience.technologies && <div className="mt-1">
+                             <div className="card-text">
                                 {workExperience.technologies.content.map(technology => <Chip key={technology} value={technology} />)}
-                            </div>}
-                        </div>
-                    </div>
-                    <div className="ml-auto">
-                        <Checkbox value={workExperience.company.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                            </div>
+                        </div>}
+                        {!workExperience.technologies && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
                     </div>
                 </div>
-
             </div>
-            <div className="card-body">
-                <RequestButton
-                    text="Eliminar"
-                    url={`/work-experience/${workExperience.id}`}
-                    method="DELETE"
-                    styleClasses="btn-outline-primary"
-                    onSuccess={afterDelete} />
-            </div>
-
         </div>
     );
 }

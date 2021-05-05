@@ -95,11 +95,16 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
   @Override
   public CompletableFuture<Void> deleteWorkExperience(DeleteWorkExperienceCommand command) {
-    return workExperienceRepository
-        .findById(command.id)
-        .thenApply(WorkExperienceEntity::copy)
-        .thenApply(workExperienceEntity -> workExperienceEntity.checkForDelete(command.user))
-        .thenCompose(workExperienceRepository::delete);
+    return negotiationRepository
+        .deleteByWorkExperienceId(command.id)
+        .thenCompose(
+            ignore ->
+                workExperienceRepository
+                    .findById(command.id)
+                    .thenApply(WorkExperienceEntity::copy)
+                    .thenApply(
+                        workExperienceEntity -> workExperienceEntity.checkForDelete(command.user))
+                    .thenCompose(workExperienceRepository::delete));
   }
 
   private CompletableFuture<WorkExperienceProjection> toWorkExperienceProjection(

@@ -4,8 +4,16 @@ import { useResize } from '../hooks/useResize'
 
 export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSelect, onSubmit }) => {
 
+    const [timeoutHandler, setTimeoutHandler] = useState(null);
+    const [valueWithDelay, setValueWithDelay] = useState(value);
+
+    useEffect(() => {
+        clearTimeout(timeoutHandler);
+        setTimeoutHandler(setTimeout(() => setValueWithDelay(value), 500));
+    }, [value]);
+
     const [suggestionsMenuVisibility, setSuggestionsMenuVisibility] = useState(false);
-    const { loading, data } = useGetData(`${url}${value}`);
+    const { loading, data } = useGetData(`${url}${valueWithDelay}`);
     const [suggestions, setSuggestions] = useState([]);
     const [keyboardSelection, setKeyboardSelection] = useState(null);
     const inputRef = useRef();
@@ -49,7 +57,6 @@ export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSele
     };
 
     const handleInputKeyDown = (event) => {
-        console.log(inputRef);
         switch (event.key) {
             case "ArrowUp":
                 changeKeyboardSelecction(-1);

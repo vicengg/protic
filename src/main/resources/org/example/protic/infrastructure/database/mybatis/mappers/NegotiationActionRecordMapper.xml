@@ -38,4 +38,8 @@
         #{idDemandedData,jdbcType=INTEGER}
         )
     </insert>
+    <delete id="delete" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationActionRecord">
+        delete NEGOTIATION_ACTION where
+        ID_NEGOTIATION = #{idNegotiation,jdbcType=VARBINARY}
+    </delete>
 </mapper>

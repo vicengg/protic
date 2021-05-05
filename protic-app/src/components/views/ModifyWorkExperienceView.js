@@ -8,12 +8,13 @@ import { emptyIfNull } from '../../helpers/nullHelpers';
 import { useWorkExperience } from '../../hooks/useWorkExperience';
 import { Radio } from '../Radio';
 import { RequestButton } from '../RequestButton';
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 
-export const AddWorkExperienceView = () => {
+export const ModifyWorkExperienceView = () => {
 
-    const [form, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding] = useWorkExperience();
+    const { workExperienceId } = useParams();
+    const [form, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding] = useWorkExperience(workExperienceId);
 
     const workPeriodOptions = {
         "until_now": "Hasta la actualidad",
@@ -32,14 +33,14 @@ export const AddWorkExperienceView = () => {
     const history = useHistory();
 
     function redirectTo(path) {
-      return () => history.push(path);
+        return () => history.push(path);
     }
 
     return (
         <>
 
             <div className="container">
-                <h1>Crear experiencia laboral</h1>
+                <h1>Modificar experiencia laboral</h1>
                 <div className="row mb-5">
                     <div className="col-md-4">
                         <label>Profesión</label>
@@ -139,9 +140,9 @@ export const AddWorkExperienceView = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <RequestButton
-                            text="Crear experiencia laboral"
-                            url="/work-experience"
-                            method="POST"
+                            text="Guardar"
+                            url={`/work-experience/${workExperienceId}`}
+                            method="PUT"
                             body={form}
                             onSuccess={redirectTo("/my-work-experiences")} />
                     </div>

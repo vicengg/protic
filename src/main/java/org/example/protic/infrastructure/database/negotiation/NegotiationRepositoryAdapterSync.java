@@ -107,6 +107,27 @@ public class NegotiationRepositoryAdapterSync {
         .collect(Collectors.toList());
   }
 
+  @Transactional
+  public void deleteByWorkExperienceId(UUID workExperienceId) {
+    NegotiationRecord negotiationQuery = new NegotiationRecord();
+    negotiationQuery.idOfferedWorkExperience = UuidAdapter.getBytesFromUUID(workExperienceId);
+    negotiationQuery.idDemandedWorkExperience = UuidAdapter.getBytesFromUUID(workExperienceId);
+    Stream.concat(
+            negotiationRecordMapper.selectByOfferedWorkExperience(negotiationQuery).stream(),
+            negotiationRecordMapper.selectByDemandedWorkExperience(negotiationQuery).stream())
+        .forEach(
+            negotiationRecord -> {
+              deleteNegotiationActions(negotiationRecord);
+              negotiationRecordMapper.delete(negotiationRecord);
+            });
+  }
+
+  private void deleteNegotiationActions(NegotiationRecord negotiationRecord) {
+    NegotiationActionRecord negotiationActionRecord = new NegotiationActionRecord();
+    negotiationActionRecord.idNegotiation = negotiationRecord.idNegotiation;
+    negotiationActionRecordMapper.delete(negotiationActionRecord);
+  }
+
   private Negotiation completeNegotiationRecord(NegotiationRecord negotiationRecord) {
     NegotiationAdapterDto negotiation = new NegotiationAdapterDto();
     negotiation.id = UuidAdapter.getUUIDFromBytes(negotiationRecord.idNegotiation);
