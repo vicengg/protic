@@ -52,8 +52,9 @@ public class ApplicationConfig {
 
   @Bean
   public WorkExperienceService workExperienceService(
-      WorkExperienceRepository workExperienceRepository) {
-    return new WorkExperienceServiceImpl(workExperienceRepository);
+      WorkExperienceRepository workExperienceRepository,
+      NegotiationRepository negotiationRepository) {
+    return new WorkExperienceServiceImpl(workExperienceRepository, negotiationRepository);
   }
 
   @Bean

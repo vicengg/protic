@@ -33,6 +33,13 @@ public class User implements ValueObject {
     return Optional.ofNullable(avatarUrl);
   }
 
+  public static User anonymous() {
+    return new User(
+        "0",
+        "anónimo",
+        "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png");
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

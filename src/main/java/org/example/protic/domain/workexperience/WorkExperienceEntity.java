@@ -5,16 +5,18 @@ import org.example.protic.commons.CurrencyContext;
 import org.example.protic.commons.ForbiddenException;
 import org.example.protic.commons.ValidationException;
 import org.example.protic.domain.Entity;
+import org.example.protic.domain.negotiation.Action;
+import org.example.protic.domain.negotiation.Negotiation;
+import org.example.protic.domain.negotiation.Visibility;
+import org.example.protic.domain.negotiation.VisibilityRequest;
 import org.example.protic.domain.user.User;
 import org.javamoney.moneta.Money;
 
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.Instant;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 public final class WorkExperienceEntity extends Entity implements WorkExperience {
 
@@ -108,30 +110,71 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     return salary;
   }
 
-  public WorkExperienceProjection toWorkExperienceProjection(User user) {
+  public WorkExperienceProjection toWorkExperienceProjection(
+      User user, List<Negotiation> negotiations) {
     Objects.requireNonNull(user, "Null input user ID.");
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
     workExperienceProjection.id = this.getId();
-    boolean isOwner = this.user.getId().equals(user.getId());
-    if (isOwner || this.binding) {
+    workExperienceProjection.createdAt = this.getCreatedAt();
+    if (this.user.getId().equals(user.getId()) || this.binding) {
       workExperienceProjection.user = this.user;
     }
-    if (isOwner || this.jobTitle.isPublic()) {
-      workExperienceProjection.jobTitle = this.jobTitle;
-    }
-    if (isOwner || this.company.isPublic()) {
-      workExperienceProjection.company = this.company;
-    }
-    if (isOwner || this.technologies.isPublic()) {
-      workExperienceProjection.technologies = this.technologies;
-    }
-    if (isOwner || this.workPeriod.isPublic()) {
-      workExperienceProjection.workPeriod = this.workPeriod;
-    }
-    if (isOwner || this.salary.isPublic()) {
-      workExperienceProjection.salary = this.salary;
-    }
+    workExperienceProjection.jobTitle =
+        controlVisibility(user, jobTitle, negotiations, VisibilityRequest::getJobTitle);
+    workExperienceProjection.company =
+        controlVisibility(user, company, negotiations, VisibilityRequest::getCompany);
+    workExperienceProjection.technologies =
+        controlVisibility(user, technologies, negotiations, VisibilityRequest::getTechnologies);
+    workExperienceProjection.workPeriod =
+        controlVisibility(user, workPeriod, negotiations, VisibilityRequest::getWorkPeriod);
+    workExperienceProjection.salary =
+        controlVisibility(user, salary, negotiations, VisibilityRequest::getSalary);
     return workExperienceProjection;
+  }
+
+  private <S, T extends RestrictedField<S>> T controlVisibility(
+      User user,
+      T restrictedField,
+      List<Negotiation> negotiations,
+      Function<VisibilityRequest, Visibility> visibilityFieldAccess) {
+    boolean isOwner = this.user.getId().equals(user.getId());
+    if (isOwner || restrictedField.isPublic()) {
+      return restrictedField;
+    } else {
+      if (getVisibilityFlag(user, negotiations, visibilityFieldAccess) == Visibility.MAKE_PUBLIC
+          || getVisibilityFlag(user, negotiations, visibilityFieldAccess)
+              == Visibility.ALREADY_VISIBLE) {
+        return restrictedField;
+      }
+    }
+    return null;
+  }
+
+  private Visibility getVisibilityFlag(
+      User user,
+      List<Negotiation> negotiations,
+      Function<VisibilityRequest, Visibility> visibilityFieldAccess) {
+    return Visibility.getMostPermissive(
+        negotiations.stream()
+            .filter(Negotiation::isAccepted)
+            .filter(negotiation -> negotiation.getCreator().getId().equals(user.getId()))
+            .filter(
+                negotiation -> negotiation.getDemandedWorkExperience().getId().equals(this.getId()))
+            .map(Negotiation::getActions)
+            .flatMap(Collection::stream)
+            .map(Action::getDemandedVisibility)
+            .map(visibilityFieldAccess)
+            .reduce(Visibility.KEEP_PRIVATE, Visibility::getMostPermissive),
+        negotiations.stream()
+            .filter(Negotiation::isAccepted)
+            .filter(negotiation -> negotiation.getReceiver().getId().equals(user.getId()))
+            .filter(
+                negotiation -> negotiation.getOfferedWorkExperience().getId().equals(this.getId()))
+            .map(Negotiation::getActions)
+            .flatMap(Collection::stream)
+            .map(Action::getOfferedVisibility)
+            .map(visibilityFieldAccess)
+            .reduce(Visibility.KEEP_PRIVATE, Visibility::getMostPermissive));
   }
 
   public static WorkExperienceEntity copy(WorkExperience workExperience) {
@@ -217,6 +260,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
   private static final class WorkExperienceProjectionImpl implements WorkExperienceProjection {
 
     private UUID id;
+    private Timestamp createdAt;
     private User user;
     private RestrictedField<JobTitle> jobTitle;
     private RestrictedField<Company> company;
@@ -227,6 +271,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     @Override
     public UUID getId() {
       return id;
+    }
+
+    @Override
+    public Timestamp getCreatedAt() {
+      return createdAt;
     }
 
     @Override

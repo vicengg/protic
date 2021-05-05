@@ -3,7 +3,6 @@
 <mapper namespace="org.example.protic.infrastructure.database.mybatis.mappers.RequestedDataRecordMapper">
     <sql id="requested_data_columns">
         ID_REQUESTED_DATA idRequestedData,
-        ID_WORK_EXPERIENCE idWorkExperience,
         JOB_TITLE jobTitle,
         COMPANY company,
         TECHNOLOGIES technologies,
@@ -23,14 +22,12 @@
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.RequestedDataRecord"
             useGeneratedKeys="true" keyProperty="idRequestedData" keyColumn="ID_REQUESTED_DATA">
         insert into REQUESTED_DATA (
-        ID_WORK_EXPERIENCE,
         JOB_TITLE,
         COMPANY,
         TECHNOLOGIES,
         WORK_PERIOD,
         SALARY
         ) values (
-        #{idWorkExperience,jdbcType=VARBINARY},
         #{jobTitle,jdbcType=VARCHAR},
         #{company,jdbcType=VARCHAR},
         #{technologies,jdbcType=VARCHAR},

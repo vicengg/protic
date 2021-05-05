@@ -20,6 +20,46 @@
             ID_NEGOTIATION = #{idNegotiation,jdbcType=VARBINARY}
         </where>
     </select>
+    <select id="selectByCreator"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        select
+        <include refid="negotiation_columns"/>
+        from NEGOTIATION
+        <where>
+            CREATOR_ID = #{creatorId,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <select id="selectByReceiver"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        select
+        <include refid="negotiation_columns"/>
+        from NEGOTIATION
+        <where>
+            RECEIVER_ID = #{receiverId,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <select id="selectByOfferedWorkExperience"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        select
+        <include refid="negotiation_columns"/>
+        from NEGOTIATION
+        <where>
+            ID_OFFERED_WORK_EXPERIENCE = #{idOfferedWorkExperience,jdbcType=VARCHAR}
+        </where>
+    </select>
+    <select id="selectByDemandedWorkExperience"
+            parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord"
+            resultType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
+        select
+        <include refid="negotiation_columns"/>
+        from NEGOTIATION
+        <where>
+            ID_DEMANDED_WORK_EXPERIENCE = #{idDemandedWorkExperience,jdbcType=VARCHAR}
+        </where>
+    </select>
     <insert id="insert" parameterType="org.example.protic.infrastructure.database.mybatis.records.NegotiationRecord">
         insert into NEGOTIATION (
         ID_NEGOTIATION,

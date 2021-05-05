@@ -1,5 +1,6 @@
 package org.example.protic.infrastructure.database.negotiation;
 
+import org.example.protic.application.negotiation.GetNegotiationsQuery;
 import org.example.protic.commons.UuidAdapter;
 import org.example.protic.domain.negotiation.Action;
 import org.example.protic.domain.negotiation.Negotiation;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NegotiationRepositoryAdapterSync {
 
@@ -68,12 +70,41 @@ public class NegotiationRepositoryAdapterSync {
     actions.forEach(action -> persistAction(action, negotiation.getId()));
   }
 
-  public Negotiation find(UUID id) {
+  public Negotiation findById(UUID id) {
     NegotiationRecord negotiationQuery = new NegotiationRecord();
     negotiationQuery.idNegotiation = UuidAdapter.getBytesFromUUID(id);
     NegotiationRecord negotiationRecord =
         expectOne(negotiationRecordMapper.selectById(negotiationQuery));
     return completeNegotiationRecord(negotiationRecord);
+  }
+
+  public List<Negotiation> find(GetNegotiationsQuery query) {
+    NegotiationRecord negotiationRecord = new NegotiationRecord();
+    switch (query.scope) {
+      case CREATOR:
+        negotiationRecord.creatorId = query.user.getId();
+        return negotiationRecordMapper.selectByCreator(negotiationRecord).stream()
+            .map(this::completeNegotiationRecord)
+            .collect(Collectors.toList());
+      case RECEIVER:
+        negotiationRecord.receiverId = query.user.getId();
+        return negotiationRecordMapper.selectByReceiver(negotiationRecord).stream()
+            .map(this::completeNegotiationRecord)
+            .collect(Collectors.toList());
+      default:
+        throw new IllegalStateException("Unknown get negotiations query scope.");
+    }
+  }
+
+  public List<Negotiation> findByWorkExperienceId(UUID workExperienceId) {
+    NegotiationRecord negotiationRecord = new NegotiationRecord();
+    negotiationRecord.idOfferedWorkExperience = UuidAdapter.getBytesFromUUID(workExperienceId);
+    negotiationRecord.idDemandedWorkExperience = UuidAdapter.getBytesFromUUID(workExperienceId);
+    return Stream.concat(
+            negotiationRecordMapper.selectByOfferedWorkExperience(negotiationRecord).stream(),
+            negotiationRecordMapper.selectByDemandedWorkExperience(negotiationRecord).stream())
+        .map(this::completeNegotiationRecord)
+        .collect(Collectors.toList());
   }
 
   private Negotiation completeNegotiationRecord(NegotiationRecord negotiationRecord) {
@@ -148,7 +179,6 @@ public class NegotiationRepositoryAdapterSync {
 
   private static RequestedDataRecord toRequestedDataRecord(VisibilityRequest visibilityRequest) {
     RequestedDataRecord record = new RequestedDataRecord();
-    record.idWorkExperience = UuidAdapter.getBytesFromUUID(visibilityRequest.getWorkExperienceId());
     record.jobTitle = visibilityRequest.getJobTitle().name();
     record.company = visibilityRequest.getCompany().name();
     record.technologies = visibilityRequest.getTechnologies().name();
@@ -158,7 +188,7 @@ public class NegotiationRepositoryAdapterSync {
   }
 
   private static VisibilityRequest toVisibilityRequest(RequestedDataRecord record) {
-    return VisibilityRequest.builder(UuidAdapter.getUUIDFromBytes(record.idWorkExperience))
+    return VisibilityRequest.builder()
         .withJobTitle(Visibility.of(record.jobTitle))
         .withCompany(Visibility.of(record.company))
         .withTechnologies(Visibility.of(record.technologies))

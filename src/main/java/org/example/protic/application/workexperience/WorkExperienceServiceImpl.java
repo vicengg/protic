@@ -1,5 +1,8 @@
 package org.example.protic.application.workexperience;
 
+import com.spotify.futures.CompletableFutures;
+import org.example.protic.application.negotiation.NegotiationRepository;
+import org.example.protic.domain.user.User;
 import org.example.protic.domain.workexperience.WorkExperience;
 import org.example.protic.domain.workexperience.WorkExperienceEntity;
 import org.example.protic.domain.workexperience.WorkExperienceProjection;
@@ -13,10 +16,16 @@ import java.util.stream.Collectors;
 
 public class WorkExperienceServiceImpl implements WorkExperienceService {
 
-  private final WorkExperienceRepository repository;
+  private final WorkExperienceRepository workExperienceRepository;
+  private final NegotiationRepository negotiationRepository;
 
-  public WorkExperienceServiceImpl(WorkExperienceRepository repository) {
-    this.repository = Objects.requireNonNull(repository, "Null work experience repository.");
+  public WorkExperienceServiceImpl(
+      WorkExperienceRepository workExperienceRepository,
+      NegotiationRepository negotiationRepository) {
+    this.workExperienceRepository =
+        Objects.requireNonNull(workExperienceRepository, "Null work experience repository.");
+    this.negotiationRepository =
+        Objects.requireNonNull(negotiationRepository, "Null work negotiation repository.");
   }
 
   @Override
@@ -31,39 +40,42 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
             .withWorkPeriod(command.workPeriod)
             .withSalary(command.salary)
             .build();
-    return repository.create(workExperience).thenApply(ignore -> workExperience.getId());
+    return workExperienceRepository
+        .create(workExperience)
+        .thenApply(ignore -> workExperience.getId());
   }
 
   @Override
   public CompletableFuture<List<WorkExperienceProjection>> getWorkExperiences(
       GetWorkExperiencesQuery query) {
-    return repository
+    return workExperienceRepository
         .find(query)
-        .thenApply(
+        .thenCompose(
             workExperiences -> {
               workExperiences.sort(moreRecent());
-              return workExperiences.stream()
-                  .map(WorkExperienceEntity::copy)
-                  .map(
-                      workExperienceEntity ->
-                          workExperienceEntity.toWorkExperienceProjection(query.user))
-                  .collect(Collectors.toList());
+              return CompletableFutures.allAsList(
+                  workExperiences.stream()
+                      .map(WorkExperienceEntity::copy)
+                      .map(
+                          workExperienceEntity ->
+                              toWorkExperienceProjection(workExperienceEntity, query.user))
+                      .collect(Collectors.toList()));
             });
   }
 
   @Override
   public CompletableFuture<WorkExperienceProjection> getWorkExperience(
       GetWorkExperienceQuery query) {
-    return repository
+    return workExperienceRepository
         .findById(query.id)
         .thenApply(WorkExperienceEntity::copy)
-        .thenApply(
-            workExperienceEntity -> workExperienceEntity.toWorkExperienceProjection(query.user));
+        .thenCompose(
+            workExperienceEntity -> toWorkExperienceProjection(workExperienceEntity, query.user));
   }
 
   @Override
   public CompletableFuture<Void> updateWorkExperience(UpdateWorkExperienceCommand command) {
-    return repository
+    return workExperienceRepository
         .findById(command.id)
         .thenApply(WorkExperienceEntity::copy)
         .thenApply(workExperienceEntity -> workExperienceEntity.update(command.user))
@@ -78,16 +90,23 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                     .withWorkPeriod(command.workPeriod)
                     .withSalary(command.salary)
                     .build())
-        .thenCompose(repository::update);
+        .thenCompose(workExperienceRepository::update);
   }
 
   @Override
   public CompletableFuture<Void> deleteWorkExperience(DeleteWorkExperienceCommand command) {
-    return repository
+    return workExperienceRepository
         .findById(command.id)
         .thenApply(WorkExperienceEntity::copy)
         .thenApply(workExperienceEntity -> workExperienceEntity.checkForDelete(command.user))
-        .thenCompose(repository::delete);
+        .thenCompose(workExperienceRepository::delete);
+  }
+
+  private CompletableFuture<WorkExperienceProjection> toWorkExperienceProjection(
+      WorkExperienceEntity workExperience, User user) {
+    return negotiationRepository
+        .findByWorkExperienceId(workExperience.getId())
+        .thenApply(negotiations -> workExperience.toWorkExperienceProjection(user, negotiations));
   }
 
   private static Comparator<WorkExperience> moreRecent() {

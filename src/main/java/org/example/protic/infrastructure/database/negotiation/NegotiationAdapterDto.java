@@ -62,4 +62,9 @@ public class NegotiationAdapterDto implements Negotiation, Identifiable, TimeTra
   public List<Action> getActions() {
     return actions;
   }
+
+  @Override
+  public boolean isAccepted() {
+    return actions.get(actions.size() - 1).getType() == Action.Type.ACCEPT;
+  }
 }

@@ -15,4 +15,14 @@ public enum Visibility {
         .findFirst()
         .orElseThrow(() -> new ValidationException("Invalid visibility code."));
   }
+
+  public static Visibility getMostPermissive(Visibility visibility1, Visibility visibility2) {
+    if (visibility1 == ALREADY_VISIBLE || visibility2 == ALREADY_VISIBLE) {
+      return ALREADY_VISIBLE;
+    } else if (visibility1 == MAKE_PUBLIC || visibility2 == MAKE_PUBLIC) {
+      return MAKE_PUBLIC;
+    } else {
+      return KEEP_PRIVATE;
+    }
+  }
 }

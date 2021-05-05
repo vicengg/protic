@@ -7,10 +7,8 @@ import org.example.protic.domain.workexperience.WorkExperience;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class NegotiationEntity extends Entity implements Negotiation {
 
@@ -54,7 +52,7 @@ public class NegotiationEntity extends Entity implements Negotiation {
     this.creator = negotiation.getCreator();
     this.receiver = negotiation.getReceiver();
     this.actions = negotiation.getActions();
-    this.nextActor = negotiation.getCreator();
+    this.nextActor = negotiation.getNextActor().orElse(null);
   }
 
   public static NegotiationEntity create(
@@ -86,17 +84,8 @@ public class NegotiationEntity extends Entity implements Negotiation {
   }
 
   private void addModifyAction(Action action) {
-    if (this.offeredWorkExperience
-            .getId()
-            .equals(action.getOfferedVisibility().getWorkExperienceId())
-        && this.demandedWorkExperience
-            .getId()
-            .equals(action.getDemandedVisibility().getWorkExperienceId())) {
-      this.actions.add(action);
-      toggleNextActor();
-    } else {
-      throw new ValidationException("Illegal action.");
-    }
+    this.actions.add(action);
+    toggleNextActor();
   }
 
   private void addAcceptAction(Action action) {
@@ -140,6 +129,64 @@ public class NegotiationEntity extends Entity implements Negotiation {
     return Optional.ofNullable(nextActor);
   }
 
+  @Override
+  public boolean isAccepted() {
+    return actions.get(actions.size() - 1).getType() == Action.Type.ACCEPT;
+  }
+
+  public NegotiationProjection toNegotiationProjection(User user) {
+    NegotiationProjectionImpl negotiationProjection = new NegotiationProjectionImpl();
+    negotiationProjection.id = this.getId();
+    negotiationProjection.createdAt = this.getCreatedAt();
+    negotiationProjection.offeredWorkExperienceId = this.offeredWorkExperience.getId();
+    negotiationProjection.demandedWorkExperienceId = this.demandedWorkExperience.getId();
+    negotiationProjection.creator =
+        controlVisibility(user, this.creator, this.offeredWorkExperience);
+    negotiationProjection.receiver =
+        controlVisibility(user, this.receiver, this.demandedWorkExperience);
+    if (Objects.nonNull(this.nextActor)) {
+      if (this.nextActor.getId().equals(this.creator.getId())) {
+        negotiationProjection.nextActor = negotiationProjection.creator;
+      } else {
+        negotiationProjection.nextActor = negotiationProjection.receiver;
+      }
+    }
+    negotiationProjection.actions =
+        this.actions.stream()
+            .map(
+                action ->
+                    controlVisibility(
+                        action,
+                        this.creator,
+                        negotiationProjection.creator,
+                        negotiationProjection.receiver))
+            .collect(Collectors.toList());
+    return negotiationProjection;
+  }
+
+  private Action controlVisibility(
+      Action action, User creator, User maskedCreator, User maskedReceiver) {
+    User issuer;
+    if (action.getIssuer().getId().equals(creator.getId())) {
+      issuer = maskedCreator;
+    } else {
+      issuer = maskedReceiver;
+    }
+    return Action.of(
+        action.getType(), issuer, action.getOfferedVisibility(), action.getDemandedVisibility());
+  }
+
+  private static User controlVisibility(
+      User user, User userToControl, WorkExperience workExperience) {
+    if (user.getId().equals(userToControl.getId())) {
+      return userToControl;
+    }
+    if (workExperience.getBinding()) {
+      return userToControl;
+    }
+    return User.anonymous();
+  }
+
   private void toggleNextActor() {
     if (this.creator.getId().equals(this.nextActor.getId())) {
       this.nextActor = this.receiver;
@@ -168,6 +215,58 @@ public class NegotiationEntity extends Entity implements Negotiation {
         .orElseThrow(IllegalStateException::new)
         .equals(action.getIssuer().getId())) {
       throw new ValidationException("Action issuer is not the next negotiation actor.");
+    }
+  }
+
+  private static final class NegotiationProjectionImpl implements NegotiationProjection {
+
+    private UUID id;
+    private Timestamp createdAt;
+    private UUID offeredWorkExperienceId;
+    private UUID demandedWorkExperienceId;
+    private User creator;
+    private User receiver;
+    private List<Action> actions;
+    private User nextActor;
+
+    @Override
+    public UUID getId() {
+      return id;
+    }
+
+    @Override
+    public Timestamp getCreatedAt() {
+      return createdAt;
+    }
+
+    @Override
+    public UUID getOfferedWorkExperienceId() {
+      return offeredWorkExperienceId;
+    }
+
+    @Override
+    public UUID getDemandedWorkExperienceId() {
+      return demandedWorkExperienceId;
+    }
+
+    @Override
+    public User getCreator() {
+      return creator;
+    }
+
+    @Override
+    public User getReceiver() {
+      return receiver;
+    }
+
+    @Override
+    public Optional<User> getNextActor() {
+      return Optional.ofNullable(nextActor);
+    }
+
+    @Override
+    public List<Action> getActions() {
+      return actions;
     }
   }
 }

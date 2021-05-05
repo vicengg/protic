@@ -7,20 +7,20 @@ import org.example.protic.domain.workexperience.WorkExperience;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface Negotiation extends Identifiable, TimeTraceable {
+public interface NegotiationProjection extends Identifiable, TimeTraceable {
 
-  WorkExperience getOfferedWorkExperience();
+    UUID getOfferedWorkExperienceId();
 
-  WorkExperience getDemandedWorkExperience();
+    UUID getDemandedWorkExperienceId();
 
-  User getCreator();
+    User getCreator();
 
-  User getReceiver();
+    User getReceiver();
 
-  Optional<User> getNextActor();
+    Optional<User> getNextActor();
 
-  List<Action> getActions();
+    List<Action> getActions();
 
-  boolean isAccepted();
 }
