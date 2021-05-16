@@ -57,6 +57,7 @@
             <if test="technologies!=null">
                 <foreach item="technology" index="index" collection="technologies">
                     <bind name="technologyPattern" value="'%' + technology + '%'"/>
+                    AND WE.VISIBILITY_TECHNOLOGIES = TRUE
                     AND WE.ID_WORK_EXPERIENCE = WET.ID_WORK_EXPERIENCE
                     AND T.ID_TECHNOLOGY = WET.ID_TECHNOLOGY
                     AND T.NAME_VALUE LIKE #{technologyPattern,jdbcType=VARCHAR}
@@ -68,15 +69,15 @@
             </if>
             <if test="endDate!=null">
                 AND WE.VISIBILITY_WORK_PERIOD = TRUE
-                AND #{endDate,jdbcType=DATE} &gt;= We.START_DATE
+                AND WE.START_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
             <if test="minSalary!=null">
                 AND WE.VISIBILITY_SALARY = TRUE
-                AND #{minSalary,jdbcType=DATE} &lt;= WE.SALARY
+                AND #{minSalary,jdbcType=INTEGER} &lt;= WE.SALARY
             </if>
-            <if test="endDate!=null">
+            <if test="maxSalary!=null">
                 AND WE.VISIBILITY_SALARY = TRUE
-                AND #{maxSalary,jdbcType=DATE} &gt;= We.SALARY
+                AND #{maxSalary,jdbcType=INTEGER} &gt;= WE.SALARY
             </if>
         </where>
     </select>

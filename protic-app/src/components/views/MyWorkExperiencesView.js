@@ -4,7 +4,7 @@ import { OwnWorkExperience } from '../OwnWorkExperience';
 
 export const MyWorkExperiencesView = () => {
 
-    const [{ loading, data }, reload] = useGetWorkExperiences('own');
+    const [{ loading, data }, reload] = useGetWorkExperiences({scope: 'own'});
 
     return (
         <>

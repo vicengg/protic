@@ -62,7 +62,7 @@ export const OwnWorkExperience = ({ workExperience, afterDelete, editable = fals
                         </div>
                     </div>
                     <div className="ml-auto">
-                        <Checkbox value={workExperience.company.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
+                        <Checkbox value={workExperience.technologies.public} labelOff="Privado" labelOn="Público" type="switch" disabled={true} />
                     </div>
                 </div>
 

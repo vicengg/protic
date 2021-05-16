@@ -10,6 +10,7 @@ import { AddWorkExperienceView } from '../components/views/AddWorkExperienceView
 import { MyWorkExperiencesView } from '../components/views/MyWorkExperiencesView'
 import { ModifyWorkExperienceView } from "../components/views/ModifyWorkExperienceView";
 import { SearchWorkExperiencesView } from "../components/views/SearchWorkExperiencesView";
+import { CreateNegotiationView } from "../components/views/CreateNegotiationView";
 
 export default function AppRouter() {
   return (
@@ -46,6 +47,9 @@ export default function AppRouter() {
           </Route>
           <Route path="/modify-work-experience/:workExperienceId">
             <ModifyWorkExperienceView />
+          </Route>
+          <Route path="/create-information-request/:demandedWorkExperienceId">
+            <CreateNegotiationView />
           </Route>
           <Route path="/">
             <HomeView />

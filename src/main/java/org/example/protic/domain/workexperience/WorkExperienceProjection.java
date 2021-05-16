@@ -13,6 +13,8 @@ public interface WorkExperienceProjection extends Identifiable, TimeTraceable {
 
   Optional<User> getUser();
 
+  boolean isBound();
+
   Optional<RestrictedField<JobTitle>> getJobTitle();
 
   Optional<RestrictedField<Company>> getCompany();

@@ -109,13 +109,11 @@ export const AddWorkExperienceView = () => {
                     <div className="col-md-4">
                         <label>Fecha de inicio</label>
                         <DateInput
-                            type="switch"
                             footer="Fecha de inicio."
                             value={emptyIfNull(form.workPeriod.content.startDate)}
                             onChange={changeWorkPeriodDate("startDate")} />
                         <Radio options={workPeriodOptions} selected={workPeriodSelectedOption} changeOption={changeWorkPeriodOption} />
                         <DateInput
-                            type="switch"
                             footer="Fecha de inicio."
                             value={emptyIfNull(form.workPeriod.content.endDate)}
                             onChange={changeWorkPeriodDate("endDate")}

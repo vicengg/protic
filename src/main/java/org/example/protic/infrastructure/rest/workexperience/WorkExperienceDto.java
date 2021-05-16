@@ -1,5 +1,6 @@
 package org.example.protic.infrastructure.rest.workexperience;
 
+import org.example.protic.domain.user.User;
 import org.example.protic.domain.workexperience.Company;
 import org.example.protic.domain.workexperience.JobTitle;
 import org.example.protic.domain.workexperience.Technology;
@@ -25,7 +26,8 @@ public class WorkExperienceDto implements RestDto {
     WorkExperienceDto workExperienceProjectionDto = new WorkExperienceDto();
     workExperienceProjectionDto.id = workExperienceProjection.getId().toString();
     workExperienceProjectionDto.user =
-        workExperienceProjection.getUser().map(UserDto::of).orElse(null);
+        workExperienceProjection.getUser().map(UserDto::of).orElse(UserDto.of(User.anonymous()));
+    workExperienceProjectionDto.binding = workExperienceProjection.isBound();
     workExperienceProjectionDto.jobTitle =
         workExperienceProjection
             .getJobTitle()

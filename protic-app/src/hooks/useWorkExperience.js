@@ -36,7 +36,6 @@ export const useWorkExperience = (workExperienceId) =>  {
 
     useEffect(() => {
         if(!!workExperienceId) {
-            console.log("GAGAGA");
             fetch(`/work-experience/${workExperienceId}`)
             .then(response => response.json())
             .then(data => {

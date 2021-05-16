@@ -36,8 +36,8 @@ public class User implements ValueObject {
   public static User anonymous() {
     return new User(
         "0",
-        "anónimo",
-        "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png");
+        "Anónimo",
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
   }
 
   @Override

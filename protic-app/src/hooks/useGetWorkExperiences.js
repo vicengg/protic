@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 
-export const useGetWorkExperiences = (scope, jobTitle) => {
+export const useGetWorkExperiences = (filters) => {
 
     const url = '/work-experience?';
-    const params = { scope, jobTitle }
-    Object.keys(params).forEach((k) => params[k] == null && delete params[k]);
-    const queryParams = new URLSearchParams(params).toString();
+    Object.keys(filters).forEach((k) => filters[k] == null && delete filters[k]);
+    const queryParams = new URLSearchParams(filters).toString();
 
     const [state, setState] = useState({ loading: true, error: null, data: null });
     const [reload, setReload] = useState(false);

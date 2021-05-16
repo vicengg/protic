@@ -116,6 +116,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     WorkExperienceProjectionImpl workExperienceProjection = new WorkExperienceProjectionImpl();
     workExperienceProjection.id = this.getId();
     workExperienceProjection.createdAt = this.getCreatedAt();
+    workExperienceProjection.binding = this.getBinding();
     if (this.user.getId().equals(user.getId()) || this.binding) {
       workExperienceProjection.user = this.user;
     }
@@ -262,6 +263,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     private UUID id;
     private Timestamp createdAt;
     private User user;
+    private boolean binding;
     private RestrictedField<JobTitle> jobTitle;
     private RestrictedField<Company> company;
     private RestrictedField<Set<Technology>> technologies;
@@ -271,6 +273,11 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     @Override
     public UUID getId() {
       return id;
+    }
+
+    @Override
+    public boolean isBound() {
+      return binding;
     }
 
     @Override

@@ -17,7 +17,7 @@ export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSele
     const [suggestions, setSuggestions] = useState([]);
     const [keyboardSelection, setKeyboardSelection] = useState(null);
     const inputRef = useRef();
-    const suggestionsSize = useResize(inputRef);
+    const [suggestionsSize, suggestionsPosition] = useResize(inputRef);
 
     const clearKeyboardSelection = () => {
         setKeyboardSelection(null);
@@ -105,7 +105,7 @@ export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSele
                         onKeyDown={handleInputKeyDown}
                         onBlur={handleInputBlur}
                     />
-                    <div className="suggestions" style={{ width: suggestionsSize.width }}>
+                    <div className="suggestions" style={{ width: suggestionsSize.width, top: suggestionsPosition.top }}>
                         {!!suggestionsMenuVisibility && !!suggestions && suggestions.map(element => {
                             return <div
                                 onMouseDown={handleSuggestionClick}
