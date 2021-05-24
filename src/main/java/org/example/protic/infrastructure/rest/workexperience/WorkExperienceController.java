@@ -39,7 +39,7 @@ public class WorkExperienceController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public CompletableFuture<ResponseEntity<RestDto>> createWorkExperience(
       @RequestBody WorkExperienceDto requestDto) {
-    User user = getUser();
+    User user = RestControllerUtils.getUser();
     return workExperienceService
         .createWorkExperience(mapToCreateWorkExperienceCommand(user, requestDto))
         .thenApply(WorkExperienceController::toResponse)
@@ -73,7 +73,7 @@ public class WorkExperienceController {
       @PathVariable("workExperienceId") String workExperienceId) {
     GetWorkExperienceQuery query = new GetWorkExperienceQuery();
     query.id = UUID.fromString(workExperienceId);
-    query.user = getUser();
+    query.user = RestControllerUtils.getUser();
     return workExperienceService
         .getWorkExperience(query)
         .thenApply(WorkExperienceController::toResponse)
@@ -88,7 +88,7 @@ public class WorkExperienceController {
   public CompletableFuture<ResponseEntity<RestDto>> updateWorkExperience(
       @PathVariable("workExperienceId") String workExperienceId,
       @RequestBody WorkExperienceDto requestDto) {
-    User user = getUser();
+    User user = RestControllerUtils.getUser();
     return workExperienceService
         .updateWorkExperience(
             mapToUpdateWorkExperienceCommand(UUID.fromString(workExperienceId), user, requestDto))
@@ -105,20 +105,11 @@ public class WorkExperienceController {
 
     DeleteWorkExperienceCommand command = new DeleteWorkExperienceCommand();
     command.id = UUID.fromString(workExperienceId);
-    command.user = getUser();
+    command.user = RestControllerUtils.getUser();
     return workExperienceService
         .deleteWorkExperience(command)
         .thenApply(RestControllerUtils::toOkResponse)
         .exceptionally(ExceptionMapper::map);
-  }
-
-  private static User getUser() {
-    return User.of(
-        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("id")).toString(),
-        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("login")).toString(),
-        Optional.ofNullable(RestControllerUtils.getUser().getAttribute("avatar_url"))
-            .map(Object::toString)
-            .orElse(null));
   }
 
   private static ResponseEntity<RestDto> toResponse(UUID uuid) {
@@ -196,7 +187,7 @@ public class WorkExperienceController {
       String endDate,
       BigDecimal minSalary,
       BigDecimal maxSalary) {
-    User user = getUser();
+    User user = RestControllerUtils.getUser();
     GetWorkExperiencesQuery query = new GetWorkExperiencesQuery();
     query.user = user;
     query.scope = GetWorkExperiencesQuery.Scope.of(scope);

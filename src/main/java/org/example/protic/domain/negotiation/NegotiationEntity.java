@@ -66,16 +66,17 @@ public class NegotiationEntity extends Entity implements Negotiation {
 
   public NegotiationEntity addAction(Action action) {
     checkNegotiationIsOpen();
-    checkActionIssuerIsNextActor(action);
-
     switch (action.getType()) {
       case MODIFY:
+        checkActionIssuerIsNextActor(action);
         addModifyAction(action);
         break;
       case ACCEPT:
+        checkActionIssuerIsNextActor(action);
         addAcceptAction(action);
         break;
       case CANCEL:
+        addCancelAction(action);
         break;
       default:
         break;
@@ -92,6 +93,17 @@ public class NegotiationEntity extends Entity implements Negotiation {
     Action lastAction = this.actions.get(this.actions.size() - 1);
     if (lastAction.getOfferedVisibility().equals(action.getOfferedVisibility())
         && lastAction.getDemandedVisibility().equals(action.getDemandedVisibility())) {
+      this.actions.add(action);
+      this.nextActor = null;
+    } else {
+      throw new ValidationException("Illegal action.");
+    }
+  }
+
+  private void addCancelAction(Action action) {
+    Action lastAction = this.actions.get(this.actions.size() - 1);
+    if (lastAction.getOfferedVisibility().equals(action.getOfferedVisibility())
+            && lastAction.getDemandedVisibility().equals(action.getDemandedVisibility())) {
       this.actions.add(action);
       this.nextActor = null;
     } else {

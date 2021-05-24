@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-export const NegotiableWorkExperience = ({ workExperience, children }) => {
+export const NegotiableWorkExperience = ({ workExperience, children, visibilityRequest, setVisibilityRequest }) => {
 
     const isPresent = (field) => {
         return !!field;
@@ -9,8 +9,6 @@ export const NegotiableWorkExperience = ({ workExperience, children }) => {
     const isPublic = (field) => {
         return isPresent(field) && !!field.public;
     }
-
-    const [visibilityRequest, setVisibilityRequest] = useState({});
 
     useEffect(() => {
         if (!!workExperience) {
@@ -22,6 +20,7 @@ export const NegotiableWorkExperience = ({ workExperience, children }) => {
                 salary: isPublic(workExperience.salary) ? "already_visible" : "keep_private"
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [workExperience]);
 
     const isChecked = (field) => {

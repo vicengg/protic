@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGetWorkExperiences } from '../../hooks/useGetWorkExperiences';
 import { WorkExperience } from '../WorkExperience';
 import { emptyIfNull, nullIfEmpty } from '../../helpers/nullHelpers';
@@ -6,8 +6,11 @@ import { Autocomplete } from '../Autocomplete';
 import { AutocompleteMultiple } from '../AutocompleteMultiple';
 import { DateInput } from '../DateInput';
 import { MoneyInput } from '../MoneyInput';
+import { CardSkeleton } from '../CardSkeleton';
 
 export const SearchWorkExperiencesView = () => {
+
+    const skeletonPieces = [...Array(5).keys()];
 
     const [searchFilters, setSearchFilters] = useState({
         scope: "foreign",
@@ -99,6 +102,14 @@ export const SearchWorkExperiencesView = () => {
                             setValues={changeField('technologies')} />
                     </div>
                 </div>
+
+                {!!loading && skeletonPieces.map(piece =>
+                    <div className="row mb-2" key={piece}>
+                        <div className="col-md-12">
+                            <CardSkeleton lines={6} />
+                        </div>
+                    </div>
+                )}
 
                 {!loading && !!data && data.result.map(workExperience =>
                     <div className="row mb-2" key={workExperience.id}>

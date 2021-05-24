@@ -1,8 +1,9 @@
 package org.example.protic.infrastructure.rest.user;
 
 import org.example.protic.domain.user.User;
+import org.example.protic.infrastructure.rest.RestDto;
 
-public class UserDto {
+public class UserDto implements RestDto {
 
   public String id;
   public String login;

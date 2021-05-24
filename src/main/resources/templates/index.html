@@ -1,15 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
-<head lang="en">
-    <meta charset="UTF-8"/>
-    <title>ReactJS + Spring Data REST</title>
-    <link rel="stylesheet" href="/main.css" />
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Web site created using create-react-app"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"/>
+    <title>Protic</title>
 </head>
+
 <body>
+<div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <span class="navbar-brand">Protic</span>
 
-<div id="app"></div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
 
-<script src="built/bundle.js"></script>
+</div>
 
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <h5 class="card-title">Bienvenido <span th:text="${user.login}">usuario</span></h5>
+                        <img width="100" height="100" th:src="${user.avatarUrl.get()}" class="rounded"
+                             th:alt="${user.login}"/>
+                    </div>
+                    <div class="text-justify mt-2">
+                        <p class="card-text">Este es Protic, el portal en el que podrás conocer el estado
+                            del mercado laboral del sector TIC y con el que conocerás el verdadero valor que tiene
+                            tu trabajo.</p>
+                        <p class="card-text">Basado en el intercambio de información entre usuarios de la comunidad,
+                            donde tú eliges qué y con quién compartes tus datos.</p>
+                    </div>
+                    <div class="text-center mt-2">
+                        <a href="http://localhost:3000/search-work-experiences" class="btn btn-primary">Empezar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<script type="module" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule="" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>

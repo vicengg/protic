@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 
 export const WorkExperience = ({ workExperience }) => {
 
+    const isUnlocked = (field) => {
+        return !!workExperience[field] && !workExperience[field].public;
+    }
+
     return (
         <div className="card">
             <div className="card-body">
@@ -17,47 +21,52 @@ export const WorkExperience = ({ workExperience }) => {
                             {workExperience.company.content}
                         </h5>}
                         {!workExperience.jobTitle && !workExperience.company &&
-                            <h5 className="card-title">Experiencia laboral <ion-icon name="lock-closed"></ion-icon></h5>}
+                            <h5 className="card-title">Experiencia laboral <ion-icon name="lock-closed-outline"></ion-icon></h5>}
                         <div className="d-flex flex-row">
-                            <div>
+                            <div className={isUnlocked("jobTitle") ? "text-success" : ""}>
                                 <strong>Cargo: </strong>
                                 {!!workExperience.jobTitle && <span>{workExperience.jobTitle.content}</span>}
-                                {!workExperience.jobTitle && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
+                                {!workExperience.jobTitle && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
+                                {isUnlocked("jobTitle") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}
                             </div>
                         </div>
                         <div className="d-flex flex-row">
-                            <div>
+                            <div className={isUnlocked("company") ? "text-success" : ""}>
                                 <strong>Empresa: </strong>
                                 {!!workExperience.company && <span>{workExperience.company.content}</span>}
-                                {!workExperience.company && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
+                                {!workExperience.company && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
+                                {isUnlocked("company") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}
                             </div>
                         </div>
                         <div className="d-flex flex-row">
-                            <div>
+                            <div className={isUnlocked("workPeriod") ? "text-success" : ""}>
                                 <strong>Período de trabajo: </strong>
                                 {!!workExperience.workPeriod && <span>
                                     {`Desde ${workExperience.workPeriod.content.startDate} hasta 
                             ${!!workExperience.workPeriod.content.endDate ? workExperience.workPeriod.content.endDate : 'la actualidad'}`}
                                 </span>}
-                                {!workExperience.workPeriod && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
+                                {!workExperience.workPeriod && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
+                                {isUnlocked("workPeriod") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}
                             </div>
                         </div>
                         <div className="d-flex flex-row">
-                            <div>
+                            <div className={isUnlocked("salary") ? "text-success" : ""}>
                                 <strong>Salario bruto anual: </strong>
                                 {!!workExperience.salary && <span>{`${workExperience.salary.content.value} ${workExperience.salary.content.currency}`}</span>}
-                                {!workExperience.salary && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
+                                {!workExperience.salary && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
+                                {isUnlocked("salary") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}
                             </div>
                         </div>
                         <div className="d-flex flex-row">
-                            <div>
+                            <div className={isUnlocked("technologies") ? "text-success" : ""}>
                                 <strong>Tecnologías: </strong>
+                                {isUnlocked("technologies") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}
                                 {!!workExperience.technologies && <div className="mt-1">
                                     <div className="card-text">
                                         {workExperience.technologies.content.map(technology => <Chip key={technology} value={technology} />)}
                                     </div>
                                 </div>}
-                                {!workExperience.technologies && <span className="">Oculto <ion-icon name="lock-closed"></ion-icon></span>}
+                                {!workExperience.technologies && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
                             </div>
                         </div>
                     </div>
@@ -71,12 +80,12 @@ export const WorkExperience = ({ workExperience }) => {
                     </div>
                 </div>
             </div>
-            {(!workExperience.jobTitle || !workExperience.company || !workExperience.technologies || !workExperience.workPeriod || !workExperience.salary) 
-            && <div className="card-body">
-                <Link to={`/create-information-request/${workExperience.id}`}>
-                    <button className="ml-1 btn btn-primary">Solicitar más información</button>
-                </Link>
-            </div>}
+            {(!workExperience.jobTitle || !workExperience.company || !workExperience.technologies || !workExperience.workPeriod || !workExperience.salary)
+                && <div className="card-body">
+                    <Link to={`/create-information-request/${workExperience.id}`}>
+                        <button className="ml-1 btn btn-primary">Solicitar más información</button>
+                    </Link>
+                </div>}
         </div>
     );
 }

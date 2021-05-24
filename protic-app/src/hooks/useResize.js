@@ -15,9 +15,11 @@ export const useResize = (myRef) => {
         }
 
         const handlePosition = () => {
-            setPosition({...position, 
-                top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top })
- 
+            setPosition({
+                ...position,
+                top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top
+            })
+
         }
 
         if (myRef.current) {
@@ -26,8 +28,10 @@ export const useResize = (myRef) => {
                 width: myRef.current.offsetWidth,
                 height: myRef.current.offsetHeight
             })
-            setPosition({...position, 
-                top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top })
+            setPosition({
+                ...position,
+                top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top
+            })
         }
 
         window.addEventListener("resize", handleResize)
@@ -37,6 +41,7 @@ export const useResize = (myRef) => {
             window.removeEventListener("resize", handleResize);
             window.removeEventListener("scroll", handlePosition);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [myRef])
 
     return [dimensions, position];

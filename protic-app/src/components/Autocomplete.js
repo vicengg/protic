@@ -10,6 +10,7 @@ export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSele
     useEffect(() => {
         clearTimeout(timeoutHandler);
         setTimeoutHandler(setTimeout(() => setValueWithDelay(value), 500));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
 
     const [suggestionsMenuVisibility, setSuggestionsMenuVisibility] = useState(false);

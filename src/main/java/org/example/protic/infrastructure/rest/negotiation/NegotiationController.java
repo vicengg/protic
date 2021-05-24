@@ -39,7 +39,7 @@ public class NegotiationController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public CompletableFuture<ResponseEntity<RestDto>> createNegotiation(
       @RequestBody NegotiationDto negotiationDto) {
-    User user = getUser();
+    User user = RestControllerUtils.getUser();
     return negotiationService
         .createNegotiation(mapToCreateNegotiationCommand(user, negotiationDto))
         .thenApply(NegotiationController::toResponse)
@@ -53,7 +53,7 @@ public class NegotiationController {
       value = "/{negotiationId}/action")
   public CompletableFuture<ResponseEntity<RestDto>> updateNegotiation(
       @PathVariable("negotiationId") String negotiationId, @RequestBody ActionDto actionDto) {
-    User user = getUser();
+    User user = RestControllerUtils.getUser();
     return negotiationService
         .updateNegotiation(
             mapToUpdateNegotiationCommand(user, UUID.fromString(negotiationId), actionDto))
@@ -65,7 +65,7 @@ public class NegotiationController {
   public CompletableFuture<ResponseEntity<RestDto>> getNegotiations(
       @RequestParam(value = "scope", defaultValue = "creator") String scope) {
     GetNegotiationsQuery query = new GetNegotiationsQuery();
-    query.user = getUser();
+    query.user = RestControllerUtils.getUser();
     query.scope = GetNegotiationsQuery.Scope.of(scope);
     return negotiationService
         .getNegotiations(query)
@@ -80,21 +80,12 @@ public class NegotiationController {
   public CompletableFuture<ResponseEntity<RestDto>> getNegotiation(
       @PathVariable("negotiationId") String negotiationId) {
     GetNegotiationQuery query = new GetNegotiationQuery();
-    query.user = getUser();
+    query.user = RestControllerUtils.getUser();
     query.negotiationId = UUID.fromString(negotiationId);
     return negotiationService
         .getNegotiation(query)
         .thenApply(NegotiationController::toResponse)
         .exceptionally(ExceptionMapper::map);
-  }
-
-  private static User getUser() {
-    return User.of(
-        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("id")).toString(),
-        Objects.requireNonNull(RestControllerUtils.getUser().getAttribute("login")).toString(),
-        Optional.ofNullable(RestControllerUtils.getUser().getAttribute("avatar_url"))
-            .map(Object::toString)
-            .orElse(null));
   }
 
   private static ResponseEntity<RestDto> toResponse(UUID uuid) {
