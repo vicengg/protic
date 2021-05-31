@@ -13,9 +13,9 @@ export const CreateNegotiationView = () => {
     const [{ data, loading }] = useGetWorkExperiences({ scope: 'own' });
     const [offeredWorkExperience, setOfferedWorkExperience] = useState(null);
     const { demandedWorkExperienceId } = useParams();
-    const [demandedWorkExperience] = useWorkExperience(demandedWorkExperienceId);
-    const [offeredVisibilityRequest, setOfferedVisibilityRequest] = useState({});
-    const [demandedVisibilityRequest, setDemandedVisibilityRequest] = useState({});
+    const { workExperience: demandedWorkExperience, loading: loadingDemandedWorkExperience } = useWorkExperience(demandedWorkExperienceId);
+    const [offeredVisibilityRequest, setOfferedVisibilityRequest] = useState(null);
+    const [demandedVisibilityRequest, setDemandedVisibilityRequest] = useState(null);
 
     const history = useHistory();
 
@@ -55,7 +55,7 @@ export const CreateNegotiationView = () => {
     const addAction = (response) => {
         if (response.status === 200) {
             response.json().then(negotiation => {
-                actionCreate(negotiation.id, offeredVisibilityRequest, demandedVisibilityRequest, response => {
+                actionCreate(negotiation.id, offeredVisibilityRequest, demandedVisibilityRequest, (response) => {
                     history.replace("/my-negotiations");
                 });
             });
@@ -66,7 +66,7 @@ export const CreateNegotiationView = () => {
         if (!loading) {
             selectWorkExperience(data.result[0].id);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loading, data]);
 
     return (
@@ -99,7 +99,7 @@ export const CreateNegotiationView = () => {
                         </div>}
                     </div>
                     <div className="col-md-6">
-                        {!!demandedWorkExperience && <div className="mt-2">
+                        {!loadingDemandedWorkExperience && !!demandedWorkExperience && <div className="mt-2">
                             <NegotiableWorkExperience workExperience={demandedWorkExperience} visibilityRequest={demandedVisibilityRequest} setVisibilityRequest={setDemandedVisibilityRequest}>
                                 <div className="p1 lead">{workExperienceTitle(demandedWorkExperience)}</div>
                                 <p className="p-1 text-justify">

@@ -1,8 +1,11 @@
 import React from 'react';
 import { formatDateTimeAgo } from '../helpers/dateHelpers';
 import { cancel as actionCancel, accept as actionAccept } from '../helpers/negotationActions';
+import { useHistory } from "react-router-dom";
 
 export const NegotiationSummary = ({ negotiation, user, afterOperate }) => {
+
+    const history = useHistory();
 
     const isUser = (otherUser) => {
         return user.id === otherUser.id;
@@ -85,6 +88,10 @@ export const NegotiationSummary = ({ negotiation, user, afterOperate }) => {
         actionAccept(negotiation.id, getLastAction().offeredData, getLastAction().demandedData, afterOperate);
     }
 
+    const goToDetails = () => {
+        history.push(`/negotiation-details/${negotiation.id}`);
+    }
+
     return (
         <>
 
@@ -162,11 +169,27 @@ export const NegotiationSummary = ({ negotiation, user, afterOperate }) => {
                             </div>
                         </div>
                     }
+                    {!isPending() &&
+                        <div className="row">
+                            <div className="col-md-12 text-right">
+                                <button type="button" className="mr-1 btn btn-outline-primary" onClick={goToDetails}>Ver detalles</button>
+                            </div>
+                        </div>
+                    }
                     {isPending() && isUser(negotiation.nextActor) &&
                         <div className="row">
                             <div className="col-md-12 text-right">
                                 <button type="button" className="mr-1 btn btn-outline-danger" onClick={cancelNegotiation}>Cancelar</button>
-                                <button type="button" className="btn btn-outline-success" onClick={acceptNegotiation}>Aceptar</button>
+                                <button type="button" className="mr-1 btn btn-outline-success" onClick={acceptNegotiation}>Aceptar</button>
+                                <button type="button" className="mr-1 btn btn-outline-primary" onClick={goToDetails}>Negociar</button>
+                            </div>
+                        </div>
+                    }
+                    {isPending() && !isUser(negotiation.nextActor) &&
+                        <div className="row">
+                            <div className="col-md-12 text-right">
+                                <button type="button" className="mr-1 btn btn-outline-danger" onClick={cancelNegotiation}>Cancelar</button>
+                                <button type="button" className="mr-1 btn btn-outline-primary" onClick={goToDetails}>Ver detalles</button>
                             </div>
                         </div>
                     }

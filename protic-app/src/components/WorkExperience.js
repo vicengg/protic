@@ -2,7 +2,7 @@ import React from 'react';
 import { Chip } from './Chip';
 import { Link } from "react-router-dom";
 
-export const WorkExperience = ({ workExperience }) => {
+export const WorkExperience = ({ workExperience, enableNegotiation = true }) => {
 
     const isUnlocked = (field) => {
         return !!workExperience[field] && !workExperience[field].public;
@@ -79,13 +79,15 @@ export const WorkExperience = ({ workExperience }) => {
                         </figure>
                     </div>
                 </div>
+                {(!workExperience.jobTitle || !workExperience.company || !workExperience.technologies || !workExperience.workPeriod || !workExperience.salary) && enableNegotiation
+                    && <div className="text-right">
+                        <Link to={`/create-information-request/${workExperience.id}`}>
+                            <button className="ml-1 btn btn-primary">Solicitar más información</button>
+                        </Link>
+                    </div>
+                }
             </div>
-            {(!workExperience.jobTitle || !workExperience.company || !workExperience.technologies || !workExperience.workPeriod || !workExperience.salary)
-                && <div className="card-body">
-                    <Link to={`/create-information-request/${workExperience.id}`}>
-                        <button className="ml-1 btn btn-primary">Solicitar más información</button>
-                    </Link>
-                </div>}
+
         </div>
     );
 }

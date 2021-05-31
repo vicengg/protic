@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-export const NegotiableWorkExperience = ({ workExperience, children, visibilityRequest, setVisibilityRequest }) => {
+export const NegotiableWorkExperience = ({ workExperience, children, visibilityRequest, setVisibilityRequest, disabled = false }) => {
 
     const isPresent = (field) => {
         return !!field;
@@ -11,32 +11,36 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
     }
 
     useEffect(() => {
-        if (!!workExperience) {
-            setVisibilityRequest({
-                jobTitle: isPublic(workExperience.jobTitle) ? "already_visible" : "keep_private",
-                company: isPublic(workExperience.company) ? "already_visible" : "keep_private",
-                technologies: isPublic(workExperience.technologies) ? "already_visible" : "keep_private",
-                workPeriod: isPublic(workExperience.workPeriod) ? "already_visible" : "keep_private",
-                salary: isPublic(workExperience.salary) ? "already_visible" : "keep_private"
-            })
+        if (!visibilityRequest) {
+            if (!!workExperience) {
+                setVisibilityRequest({
+                    jobTitle: isPublic(workExperience.jobTitle) ? "already_visible" : "keep_private",
+                    company: isPublic(workExperience.company) ? "already_visible" : "keep_private",
+                    technologies: isPublic(workExperience.technologies) ? "already_visible" : "keep_private",
+                    workPeriod: isPublic(workExperience.workPeriod) ? "already_visible" : "keep_private",
+                    salary: isPublic(workExperience.salary) ? "already_visible" : "keep_private"
+                })
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [workExperience]);
+    }, [workExperience, visibilityRequest]);
 
     const isChecked = (field) => {
-        return visibilityRequest[field] === "already_visible" || visibilityRequest[field] === "make_public";
+        return !!visibilityRequest && (visibilityRequest[field].toLowerCase() === "already_visible" || visibilityRequest[field].toLowerCase() === "make_public");
     }
 
     const isAlreadyVisible = (field) => {
-        return visibilityRequest[field] === "already_visible";
+        return !!visibilityRequest && (visibilityRequest[field].toLowerCase() === "already_visible");
     }
 
     const toggle = (field) => {
-        return () => {
-            if (visibilityRequest[field] === "make_public") {
-                setVisibilityRequest({ ...visibilityRequest, [field]: "keep_private" })
-            } else if (visibilityRequest[field] === "keep_private") {
-                setVisibilityRequest({ ...visibilityRequest, [field]: "make_public" })
+        if (!disabled) {
+            return () => {
+                if (visibilityRequest[field].toLowerCase() === "make_public") {
+                    setVisibilityRequest({ ...visibilityRequest, [field]: "keep_private" })
+                } else if (visibilityRequest[field].toLowerCase() === "keep_private") {
+                    setVisibilityRequest({ ...visibilityRequest, [field]: "make_public" })
+                }
             }
         }
     }
@@ -72,19 +76,19 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
                         {!isPublic(workExperience.jobTitle) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>
                     <div>
-                        <div className="custom-control custom-switch" onClick={toggle("jobTitle")}>
+                        {!isAlreadyVisible("jobTitle") && <div className="custom-control custom-switch" onClick={toggle("jobTitle")}>
                             <input
                                 type="checkbox"
                                 className="custom-control-input"
                                 checked={isChecked("jobTitle")}
                                 onChange={toggle("jobTitle")}
-                                disabled={isAlreadyVisible("jobTitle")} />
+                                disabled={disabled} />
                             <label className={`custom-control-label h5 ${isChecked("jobTitle") ? "text-primary" : "text-muted"}`}>
                                 {!isChecked("jobTitle") && <ion-icon name="lock-closed-outline"></ion-icon>}
                                 {isChecked("jobTitle") && <ion-icon name="lock-open-outline"></ion-icon>}
                             </label>
                         </div>
-
+                        }
                     </div>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -94,18 +98,20 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
                         {!isPublic(workExperience.company) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>
                     <div>
-                        <div className="custom-control custom-switch" onClick={toggle("company")}>
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                checked={isChecked("company")}
-                                onChange={toggle("company")}
-                                disabled={isAlreadyVisible("company")} />
-                            <label className={`custom-control-label h5 ${isChecked("company") ? "text-primary" : "text-muted"}`}>
-                                {!isChecked("company") && <ion-icon name="lock-closed-outline"></ion-icon>}
-                                {isChecked("company") && <ion-icon name="lock-open-outline"></ion-icon>}
-                            </label>
-                        </div>
+                        {!isAlreadyVisible("company") &&
+                            <div className="custom-control custom-switch" onClick={toggle("company")}>
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    checked={isChecked("company")}
+                                    onChange={toggle("company")}
+                                    disabled={disabled} />
+                                <label className={`custom-control-label h5 ${isChecked("company") ? "text-primary" : "text-muted"}`}>
+                                    {!isChecked("company") && <ion-icon name="lock-closed-outline"></ion-icon>}
+                                    {isChecked("company") && <ion-icon name="lock-open-outline"></ion-icon>}
+                                </label>
+                            </div>
+                        }
                     </div>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -115,18 +121,20 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
                         {!isPublic(workExperience.technologies) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>
                     <div>
-                        <div className="custom-control custom-switch" onClick={toggle("technologies")}>
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                checked={isChecked("technologies")}
-                                onChange={toggle("technologies")}
-                                disabled={isAlreadyVisible("technologies")} />
-                            <label className={`custom-control-label h5 ${isChecked("technologies") ? "text-primary" : "text-muted"}`}>
-                                {!isChecked("technologies") && <ion-icon name="lock-closed-outline"></ion-icon>}
-                                {isChecked("technologies") && <ion-icon name="lock-open-outline"></ion-icon>}
-                            </label>
-                        </div>
+                        {!isAlreadyVisible("technologies") &&
+                            <div className="custom-control custom-switch" onClick={toggle("technologies")}>
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    checked={isChecked("technologies")}
+                                    onChange={toggle("technologies")}
+                                    disabled={disabled} />
+                                <label className={`custom-control-label h5 ${isChecked("technologies") ? "text-primary" : "text-muted"}`}>
+                                    {!isChecked("technologies") && <ion-icon name="lock-closed-outline"></ion-icon>}
+                                    {isChecked("technologies") && <ion-icon name="lock-open-outline"></ion-icon>}
+                                </label>
+                            </div>
+                        }
                     </div>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -136,18 +144,20 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
                         {!isPublic(workExperience.salary) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>
                     <div>
-                        <div className="custom-control custom-switch" onClick={toggle("salary")}>
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                checked={isChecked("salary")}
-                                onChange={toggle("salary")}
-                                disabled={isAlreadyVisible("salary")} />
-                            <label className={`custom-control-label h5 ${isChecked("salary") ? "text-primary" : "text-muted"}`}>
-                                {!isChecked("salary") && <ion-icon name="lock-closed-outline"></ion-icon>}
-                                {isChecked("salary") && <ion-icon name="lock-open-outline"></ion-icon>}
-                            </label>
-                        </div>
+                        {!isAlreadyVisible("salary") &&
+                            <div className="custom-control custom-switch" onClick={toggle("salary")}>
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    checked={isChecked("salary")}
+                                    onChange={toggle("salary")}
+                                    disabled={disabled} />
+                                <label className={`custom-control-label h5 ${isChecked("salary") ? "text-primary" : "text-muted"}`}>
+                                    {!isChecked("salary") && <ion-icon name="lock-closed-outline"></ion-icon>}
+                                    {isChecked("salary") && <ion-icon name="lock-open-outline"></ion-icon>}
+                                </label>
+                            </div>
+                        }
                     </div>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -160,18 +170,20 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
                         {!isPublic(workExperience.workPeriod) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>
                     <div>
-                        <div className="custom-control custom-switch" onClick={toggle("workPeriod")}>
-                            <input
-                                type="checkbox"
-                                className="custom-control-input"
-                                checked={isChecked("workPeriod")}
-                                onChange={toggle("workPeriod")}
-                                disabled={isAlreadyVisible("workPeriod")} />
-                            <label className={`custom-control-label h5 ${isChecked("workPeriod") ? "text-primary" : "text-muted"}`}>
-                                {!isChecked("workPeriod") && <ion-icon name="lock-closed-outline"></ion-icon>}
-                                {isChecked("workPeriod") && <ion-icon name="lock-open-outline"></ion-icon>}
-                            </label>
-                        </div>
+                        {!isAlreadyVisible("workPeriod") &&
+                            <div className="custom-control custom-switch" onClick={toggle("workPeriod")}>
+                                <input
+                                    type="checkbox"
+                                    className="custom-control-input"
+                                    checked={isChecked("workPeriod")}
+                                    onChange={toggle("workPeriod")}
+                                    disabled={disabled} />
+                                <label className={`custom-control-label h5 ${isChecked("workPeriod") ? "text-primary" : "text-muted"}`}>
+                                    {!isChecked("workPeriod") && <ion-icon name="lock-closed-outline"></ion-icon>}
+                                    {isChecked("workPeriod") && <ion-icon name="lock-open-outline"></ion-icon>}
+                                </label>
+                            </div>
+                        }
                     </div>
                 </li>
             </ul>

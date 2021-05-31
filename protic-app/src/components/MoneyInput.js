@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const MoneyInput = ({ placeholder, footer, value, onChange, currency = "EUR" }) => {
+export const MoneyInput = ({ placeholder, footer, value, onChange, currency = "EUR", styleClasses = ""}) => {
 
 
     const handleInputChange = (event) => {
@@ -15,7 +15,7 @@ export const MoneyInput = ({ placeholder, footer, value, onChange, currency = "E
         <>
             <form onSubmit={handleFormSubmit} autoComplete="off" className="component-autocomplete">
                 <div className="input-container form-group">
-                    <div className="input-group">
+                    <div className={`input-group ${styleClasses}`}>
                         <input
                             className="form-control"
                             type="number"

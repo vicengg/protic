@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useGetData } from '../hooks/useGetData'
 import { useResize } from '../hooks/useResize'
 
-export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSelect, onSubmit }) => {
+export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSelect, onSubmit, styleClasses = "" }) => {
 
     const [timeoutHandler, setTimeoutHandler] = useState(null);
     const [valueWithDelay, setValueWithDelay] = useState(value);
@@ -97,7 +97,7 @@ export const Autocomplete = ({ url, placeholder, footer, value, onChange, onSele
                 <div className="input-container form-group">
                     <input
                         ref={inputRef}
-                        className="form-control"
+                        className={`form-control ${styleClasses}`}
                         type="text"
                         value={value}
                         onChange={handleInputChange}

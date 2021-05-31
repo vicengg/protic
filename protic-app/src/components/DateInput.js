@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const DateInput = ({ footer, value, onChange, disabled = false }) => {
+export const DateInput = ({ footer, value, onChange, disabled = false, styleClasses = "" }) => {
 
     const handleInputChange = (event) => {
         onChange(event.target.value);
@@ -16,7 +16,7 @@ export const DateInput = ({ footer, value, onChange, disabled = false }) => {
                 <div className="input-container form-group">
                     <div className="input-group">
                         <input
-                            className="form-control"
+                            className={`form-control ${styleClasses}`}
                             type="date"
                             value={value}
                             onChange={handleInputChange}

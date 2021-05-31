@@ -23,7 +23,8 @@ export const SearchWorkExperiencesView = () => {
         maxSalary: null
     }, 400);
 
-    const [{ loading, data }, reload] = useGetWorkExperiences(searchFilters);
+    const [{ loading, data }] = useGetWorkExperiences(searchFilters);
+    const [{ data: ownWorkExperiencesData }] = useGetWorkExperiences({ scope: "own" });
 
     const changeField = (field) => {
         return (value) => setSearchFilters({ ...searchFilters, [field]: nullIfEmpty(value) });
@@ -41,20 +42,22 @@ export const SearchWorkExperiencesView = () => {
                     <div className="col-md-8">
                         <div className="row">
                             <div className="col-md-6">
-                                <h5>Profesión</h5>
                                 <Autocomplete
+                                    styleClasses="form-control-sm"
                                     url="/data/job-titles?name="
-                                    placeholder="Filtrar por profesión"
+                                    placeholder="Profesión"
+                                    footer="Filtrar por profesión"
                                     value={emptyIfNull(searchFilters.jobTitle)}
                                     onChange={changeField('jobTitle')}
                                     onSelect={changeField('jobTitle')}
                                     onSubmit={changeField('jobTitle')} />
                             </div>
                             <div className="col-md-6">
-                                <h5>Empresa</h5>
                                 <Autocomplete
+                                    styleClasses="form-control-sm"
                                     url="/data/companies?name="
-                                    placeholder="Filtrar por empresa"
+                                    placeholder="Empresa"
+                                    footer="Filtrar por empresa"
                                     value={emptyIfNull(searchFilters.company)}
                                     onChange={changeField('company')}
                                     onSelect={changeField('company')}
@@ -63,30 +66,34 @@ export const SearchWorkExperiencesView = () => {
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <h5>Salario desde...</h5>
                                 <MoneyInput
-                                    placeholder="Introduzca su salario"
-                                    value={{value: searchFilters.minSalary, currency: 'EUR'}}
+                                    styleClasses="input-group-sm"
+                                    placeholder="Salario desde..."
+                                    footer="Introduzca un salario mínimo"
+                                    value={{ value: searchFilters.minSalary, currency: 'EUR' }}
                                     onChange={changeSalary('minSalary')} />
                             </div>
                             <div className="col-md-6">
-                                <h5>Salario hasta...</h5>
                                 <MoneyInput
-                                    placeholder="Introduzca su salario"
-                                    value={{value: searchFilters.maxSalary, currency: 'EUR'}}
+                                    styleClasses="input-group-sm"
+                                    footer="Introduzca un salario máximo"
+                                    placeholder="Salario hasta..."
+                                    value={{ value: searchFilters.maxSalary, currency: 'EUR' }}
                                     onChange={changeSalary('maxSalary')} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <h5>Fecha de entrada desde...</h5>
                                 <DateInput
+                                    styleClasses="form-control-sm"
+                                    footer="Introduzca una fecha de entrada mínima"
                                     value={emptyIfNull(searchFilters.startDate)}
                                     onChange={changeField("startDate")} />
                             </div>
                             <div className="col-md-6">
-                                <h5>Fecha de entrada hasta...</h5>
                                 <DateInput
+                                    styleClasses="form-control-sm"
+                                    footer="Introduzca una fecha de entrada hasta máxima"
                                     value={emptyIfNull(searchFilters.endDate)}
                                     onChange={changeField("endDate")} />
                             </div>
@@ -94,10 +101,11 @@ export const SearchWorkExperiencesView = () => {
 
                     </div>
                     <div className="col-md-4">
-                        <h5>Tecnologías</h5>
                         <AutocompleteMultiple
+                            styleClasses="form-control-sm"
                             url="/data/technologies?name="
-                            placeholder="Filtrar por tecnologías"
+                            placeholder="Tecnologías"
+                            footer="Filtrar por tecnologías"
                             values={searchFilters.technologies}
                             setValues={changeField('technologies')} />
                     </div>
@@ -114,7 +122,7 @@ export const SearchWorkExperiencesView = () => {
                 {!loading && !!data && data.result.map(workExperience =>
                     <div className="row mb-2" key={workExperience.id}>
                         <div className="col-md-12">
-                            <WorkExperience workExperience={workExperience} afterDelete={reload} />
+                            <WorkExperience workExperience={workExperience} enableNegotiation={!!ownWorkExperiencesData && ownWorkExperiencesData.result.length > 0} />
                         </div>
                     </div>
                 )}

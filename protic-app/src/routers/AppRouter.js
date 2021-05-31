@@ -12,6 +12,7 @@ import { ModifyWorkExperienceView } from "../components/views/ModifyWorkExperien
 import { SearchWorkExperiencesView } from "../components/views/SearchWorkExperiencesView";
 import { CreateNegotiationView } from "../components/views/CreateNegotiationView";
 import { MyNegotiationsView } from "../components/views/MyNegotiationsView";
+import { NegotiationDetailsView } from "../components/views/NegotiationDetailsView";
 import { NavbarUser } from "../components/NavbarUser";
 
 export default function AppRouter() {
@@ -19,7 +20,7 @@ export default function AppRouter() {
     <Router>
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
-            <Link className="navbar-brand" to="/">Protic</Link>
+            <span className="navbar-brand">Protic</span>
 
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
@@ -65,6 +66,9 @@ export default function AppRouter() {
           </Route>
           <Route path="/my-negotiations">
             <MyNegotiationsView />
+          </Route>
+          <Route path="/negotiation-details/:negotiationId">
+            <NegotiationDetailsView />
           </Route>
           <Route path="/">
             <HomeView />

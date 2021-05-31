@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useUser } from '../hooks/useUser';
 
+
 export const NavbarUser = () => {
 
     const { data: user } = useUser();
     const [show, setShow] = useState(false);
-
+    
     const toggle = () => {
         setShow(!show);
     }

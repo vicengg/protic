@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Autocomplete } from './Autocomplete';
 import { ClosableChip } from './ClosableChip';
 
-export const AutocompleteMultiple = ({ url, placeholder, footer, values, setValues }) => {
+export const AutocompleteMultiple = ({ url, placeholder, footer, values, setValues, styleClasses = "" }) => {
 
     const [temporalValue, setTemporalValue] = useState('');
     const addValue = (newValue) => {
@@ -19,6 +19,7 @@ export const AutocompleteMultiple = ({ url, placeholder, footer, values, setValu
             <Autocomplete
                 url={url}
                 placeholder={placeholder}
+                styleClasses={styleClasses}
                 footer={footer}
                 value={temporalValue}
                 onChange={setTemporalValue}

@@ -3,6 +3,7 @@ import {nullIfEmpty} from '../helpers/nullHelpers';
 
 export const useWorkExperience = (workExperienceId) =>  {
 
+    const [loading, setLoading] = useState(true);
     const [workExperience, setWorkExperience] = useState({
         jobTitle: {
             public: false,
@@ -40,6 +41,7 @@ export const useWorkExperience = (workExperienceId) =>  {
             .then(response => response.json())
             .then(data => {
                 setWorkExperience(data);
+                setLoading(false);
             });
         }
     }, [workExperienceId]);
@@ -77,5 +79,5 @@ export const useWorkExperience = (workExperienceId) =>  {
         setWorkExperience({ ...workExperience, binding: !workExperience.binding});
     }
 
-    return [workExperience, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding];
+    return {workExperience, changeField, toggleVisibility, changeWorkPeriodDate, toggleBinding, loading};
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Select = ({ values, onChange}) => {
+export const Select = ({ values, onChange, styleClasses = ""}) => {
 
     const handleChange = (event) => {
         onChange(event.target.value);
@@ -13,7 +13,7 @@ export const Select = ({ values, onChange}) => {
     return (
         <>
             <form onSubmit={handleFormSubmit}>
-                <select className="form-control" onChange={ handleChange }>
+                <select className={`form-control ${styleClasses}`} onChange={ handleChange }>
                     {!!values && values.map(value => <option key={value.key} value={value.key}>{value.value}</option>)}
                 </select>
             </form>

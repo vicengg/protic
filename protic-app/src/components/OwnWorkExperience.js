@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Chip } from './Chip';
 import { Checkbox } from './Checkbox';
 import { RequestButton } from './RequestButton';
 import { Link } from "react-router-dom";
+import { Modal } from './Modal';
 
 export const OwnWorkExperience = ({ workExperience, afterDelete, editable = false }) => {
+
+    const [modal, setModal] = useState(false);
+
+    const openModal = () => {
+        setModal(true);
+    }
+
+    const closeModal = () => {
+        setModal(false);
+    }
+
+    const afterDeleteWithClose = () => {
+        !!afterDelete && afterDelete();
+        closeModal();
+    }
 
     return (
         <div className="card">
@@ -56,7 +72,7 @@ export const OwnWorkExperience = ({ workExperience, afterDelete, editable = fals
                     <div>
                         <strong>Tecnologías: </strong>
                         <div className="mt-1">
-                            {!!workExperience.technologies && <div className="card-text">
+                            {!!workExperience.technologies && <div className="card-text mt-2">
                                 {workExperience.technologies.content.map(technology => <Chip key={technology} value={technology} />)}
                             </div>}
                         </div>
@@ -66,18 +82,24 @@ export const OwnWorkExperience = ({ workExperience, afterDelete, editable = fals
                     </div>
                 </div>
 
+
+                {!!editable && <div className="text-right">
+                    <button className="btn btn-outline-danger" onClick={openModal}>Eliminar</button>
+                    <Link to={`/modify-work-experience/${workExperience.id}`}>
+                        <button className="ml-1 btn btn-outline-primary">Modificar</button>
+                    </Link>
+
+                </div>}
+                <Modal title="Eliminar experiencia" text="¿Está seguro de que desea eliminar la experiencia?" isShown={modal} close={closeModal}>
+                    <button className="btn btn-outline-secondary mr-1" onClick={closeModal}>Cancelar</button>
+                    <RequestButton
+                        text="Eliminar"
+                        url={`/work-experience/${workExperience.id}`}
+                        method="DELETE"
+                        styleClasses="btn-danger"
+                        onSuccess={afterDeleteWithClose} />
+                </Modal>
             </div>
-            {!!editable && <div className="card-body">
-                <RequestButton
-                    text="Eliminar"
-                    url={`/work-experience/${workExperience.id}`}
-                    method="DELETE"
-                    styleClasses="btn-outline-primary"
-                    onSuccess={afterDelete} />
-                <Link to={`/modify-work-experience/${workExperience.id}`}>
-                    <button className="ml-1 btn btn-outline-primary">Modificar</button>
-                </Link>
-            </div>}
 
         </div>
     );
