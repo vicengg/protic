@@ -12,9 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -124,6 +125,7 @@ public class NegotiationController {
     return Action.of(
         Action.Type.of(actionDto.type),
         issuer,
+        Timestamp.from(Instant.now()),
         toVisibilityRequest(actionDto.offeredData),
         toVisibilityRequest(actionDto.demandedData));
   }

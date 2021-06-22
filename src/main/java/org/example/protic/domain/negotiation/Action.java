@@ -33,6 +33,7 @@ public class Action implements ValueObject {
   private Action(
       Type type,
       User issuer,
+      Timestamp date,
       VisibilityRequest offeredVisibility,
       VisibilityRequest demandedVisibility) {
     this.type =
@@ -41,7 +42,7 @@ public class Action implements ValueObject {
     this.issuer =
         Optional.ofNullable(issuer)
             .orElseThrow(() -> new ValidationException("Action issuer is required."));
-    this.date = Timestamp.from(Instant.now());
+    this.date = Optional.ofNullable(date).orElse(Timestamp.from(Instant.now()));
     this.offeredVisibility =
         Optional.ofNullable(offeredVisibility)
             .orElseThrow(() -> new ValidationException("Action offered visibility is required."));
@@ -53,9 +54,10 @@ public class Action implements ValueObject {
   public static Action of(
       Type type,
       User issuer,
+      Timestamp date,
       VisibilityRequest offeredVisibility,
       VisibilityRequest demandedVisibility) {
-    return new Action(type, issuer, offeredVisibility, demandedVisibility);
+    return new Action(type, issuer, date, offeredVisibility, demandedVisibility);
   }
 
   public Type getType() {

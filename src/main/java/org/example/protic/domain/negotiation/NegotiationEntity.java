@@ -103,7 +103,7 @@ public class NegotiationEntity extends Entity implements Negotiation {
   private void addCancelAction(Action action) {
     Action lastAction = this.actions.get(this.actions.size() - 1);
     if (lastAction.getOfferedVisibility().equals(action.getOfferedVisibility())
-            && lastAction.getDemandedVisibility().equals(action.getDemandedVisibility())) {
+        && lastAction.getDemandedVisibility().equals(action.getDemandedVisibility())) {
       this.actions.add(action);
       this.nextActor = null;
     } else {
@@ -185,7 +185,11 @@ public class NegotiationEntity extends Entity implements Negotiation {
       issuer = maskedReceiver;
     }
     return Action.of(
-        action.getType(), issuer, action.getOfferedVisibility(), action.getDemandedVisibility());
+        action.getType(),
+        issuer,
+        action.getDate(),
+        action.getOfferedVisibility(),
+        action.getDemandedVisibility());
   }
 
   private static User controlVisibility(

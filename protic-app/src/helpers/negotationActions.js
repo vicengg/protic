@@ -20,6 +20,10 @@ export function create(negotiationId, offeredData, demandedData, callback) {
     return addAction(negotiationId, offeredData, demandedData, "modify", callback);
 }
 
+export function modify(negotiationId, offeredData, demandedData, callback) {
+    return create(negotiationId, offeredData, demandedData, callback);
+}
+
 export function cancel(negotiationId, offeredData, demandedData, callback) {
     return addAction(negotiationId, offeredData, demandedData, "cancel", callback);
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useNegotiation = (negotiationId) => {
+export const useNegotiation = (negotiationId, reload = false) => {
 
     const [negotiation, setNegotiation] = useState({ data: null, loading: true });
 
@@ -11,7 +11,7 @@ export const useNegotiation = (negotiationId) => {
             .then(data => {
                 setNegotiation({ data, loading: false });
             });
-    }, [negotiationId]);
+    }, [negotiationId, reload]);
 
 
 

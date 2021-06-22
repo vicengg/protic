@@ -90,14 +90,17 @@ export const OwnWorkExperience = ({ workExperience, afterDelete, editable = fals
                     </Link>
 
                 </div>}
-                <Modal title="Eliminar experiencia" text="¿Está seguro de que desea eliminar la experiencia?" isShown={modal} close={closeModal}>
-                    <button className="btn btn-outline-secondary mr-1" onClick={closeModal}>Cancelar</button>
-                    <RequestButton
-                        text="Eliminar"
-                        url={`/work-experience/${workExperience.id}`}
-                        method="DELETE"
-                        styleClasses="btn-danger"
-                        onSuccess={afterDeleteWithClose} />
+                <Modal title="Eliminar experiencia" isShown={modal} close={closeModal}>
+                    <p>¿Está seguro de que desea eliminar la experiencia?</p>
+                    <div>
+                        <button className="btn btn-outline-secondary mr-1" onClick={closeModal}>Cancelar</button>
+                        <RequestButton
+                            text="Eliminar"
+                            url={`/work-experience/${workExperience.id}`}
+                            method="DELETE"
+                            styleClasses="btn-danger"
+                            onSuccess={afterDeleteWithClose} />
+                    </div>
                 </Modal>
             </div>
 

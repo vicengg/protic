@@ -2,12 +2,9 @@ package org.example.protic.application.workexperience;
 
 import org.example.protic.application.Command;
 import org.example.protic.application.IdentifiedRequest;
-import org.example.protic.domain.user.User;
-import org.example.protic.domain.user.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.javamoney.moneta.Money;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

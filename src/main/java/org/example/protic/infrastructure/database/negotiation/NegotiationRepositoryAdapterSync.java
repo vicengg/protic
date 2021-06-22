@@ -165,6 +165,7 @@ public class NegotiationRepositoryAdapterSync {
     return Action.of(
         Action.Type.of(actionRecord.type),
         userConnector.findUserById(actionRecord.issuerId),
+        actionRecord.actionDate,
         offeredVisibility,
         demandedVisibility);
   }

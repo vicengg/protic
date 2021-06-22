@@ -13,7 +13,7 @@ public final class WorkPeriod implements ValueObject {
   private final LocalDate startDate;
   private final LocalDate endDate;
 
-  public WorkPeriod(LocalDate startDate, LocalDate endDate) {
+  private WorkPeriod(LocalDate startDate, LocalDate endDate) {
     if (Objects.isNull(startDate)) {
       throw new ValidationException("Null period start date.");
     }
@@ -41,12 +41,6 @@ public final class WorkPeriod implements ValueObject {
 
   public Optional<LocalDate> getEndDate() {
     return Optional.ofNullable(endDate);
-  }
-
-  public Period getDuration() {
-    return Optional.ofNullable(endDate)
-        .map(date -> Period.between(startDate, date))
-        .orElse(Period.between(startDate, LocalDate.now()));
   }
 
   public static Builder from(LocalDate startDate) {

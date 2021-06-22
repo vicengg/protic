@@ -59,7 +59,6 @@ class WorkPeriodTest {
     assertEquals(startDate, workPeriod.getStartDate());
     assertTrue(workPeriod.getEndDate().isPresent());
     assertEquals(endDate, workPeriod.getEndDate().get());
-    assertEquals(Period.between(startDate, endDate), workPeriod.getDuration());
   }
 
   @Test
@@ -69,7 +68,6 @@ class WorkPeriodTest {
     WorkPeriod workPeriod = WorkPeriod.from(startDate).toPresent();
     assertEquals(startDate, workPeriod.getStartDate());
     assertFalse(workPeriod.getEndDate().isPresent());
-    assertEquals(Period.between(startDate, LocalDate.now()), workPeriod.getDuration());
   }
 
   @Test

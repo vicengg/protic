@@ -1,7 +1,6 @@
 package org.example.protic.infrastructure.database.workexperience;
 
 import org.example.protic.domain.user.User;
-import org.example.protic.domain.user.UserId;
 import org.example.protic.domain.workexperience.*;
 import org.javamoney.moneta.Money;
 

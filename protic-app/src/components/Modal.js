@@ -1,11 +1,11 @@
 import React from 'react';
 
-export const Modal = ({ title, text, children, isShown, close }) => {
+export const Modal = ({ title, children, isShown, close, additionalClasses="" }) => {
 
     return (
         <>
             <div className={`modal fade ${isShown ? "show d-block" : ""}`} role="dialog">
-                <div className="modal-dialog" role="document">
+                <div className={`modal-dialog ${additionalClasses}`} role="document">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title">{title}</h5>
@@ -14,10 +14,10 @@ export const Modal = ({ title, text, children, isShown, close }) => {
                             </button>
                         </div>
                         <div className="modal-body">
-                            <p>{text}</p>
+                            {children[0]}
                         </div>
                         {!!children && <div className="modal-footer">
-                            {children}
+                            {children[1]}
                         </div>
                         }
                     </div>

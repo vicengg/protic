@@ -4,5 +4,5 @@ import java.sql.Timestamp;
 
 public interface TimeTraceable {
 
-  public Timestamp getCreatedAt();
+  Timestamp getCreatedAt();
 }

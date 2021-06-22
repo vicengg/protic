@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {nullIfEmpty} from '../helpers/nullHelpers';
 
-export const useWorkExperience = (workExperienceId) =>  {
+export const useWorkExperience = (workExperienceId, reload = false) =>  {
 
     const [loading, setLoading] = useState(true);
     const [workExperience, setWorkExperience] = useState({
@@ -44,7 +44,7 @@ export const useWorkExperience = (workExperienceId) =>  {
                 setLoading(false);
             });
         }
-    }, [workExperienceId]);
+    }, [workExperienceId, reload]);
 
 
 

@@ -7,7 +7,7 @@ export function formatDate(date) {
 export function formatDateTimeAgo(date) {
     const time = (new Date()).getTime() - date.getTime();
     if (time < 60 * 1000) {
-        return "ahora"
+        return "hace menos de 1 minuto"
     } else if (time >= 60 * 1000 && time < 2 * 60 * 1000) {
         return `hace 1 minuto`;
     } else if (time >= 2 * 60 * 1000 && time < 60 * 60 * 1000) {

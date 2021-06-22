@@ -213,7 +213,7 @@ public final class WorkExperienceEntity extends Entity implements WorkExperience
     private RestrictedField<Set<Technology>> technologies;
     private RestrictedField<WorkPeriod> workPeriod;
 
-    public Builder(UUID id, Timestamp createdAt) {
+    private Builder(UUID id, Timestamp createdAt) {
       this.id = id;
       this.createdAt = createdAt;
     }
