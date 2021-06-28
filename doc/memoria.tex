@@ -590,11 +590,615 @@ Aquí se describen las clases e interfaces que están relacionadas con el concep
 
 \section{Modelo de datos} 
 \label{sec:data_model}
-[TODO]
+Para explicar el modelo de datos de la aplicación se dará una breve descripción de cada una de las tablas que lo componen. La explicación se apoyará en el diagrama de la Figura ~\ref{fig:data_model}
 
-\section{Diseño del API} 
+\begin{figure}
+  \centering
+  \includegraphics[width=15cm, keepaspectratio]{img/Modelo_datos.png}
+  \caption{Diagrama de entidad relación del modelo de datos.}\label{fig:data_model}
+\end{figure}
+
+
+	\begin{itemize}
+	\item \textbf{Tabla WORK\_EXPERIENCE:} En ella se alamacenan los datos relativos a cada experiencia laboral perteneciente a los usuarios.
+	Contiene el identificador único de la experiencia laboral, su fechar de creación, el identificador del usuario al que pertenece la experiencia, el indicador de si la experiencia extá vinculada o no al perfil del usuario.
+	Además, para cada campo de la experiencia laboral, esta tabla contiene:
+		\begin{itemize}
+		\item Puesto de trabajo: la visibilidad (privada o pública) del campo y una referencia a la tabla \emph{JOB\_TITLE} que contiene el puesto de trabajo.
+		\item Empresa: la visibilidad (privada o pública) del campo y una referencia a la tabla \emph{COMPANY} que contiene el nombre de la empresa.
+		\item Tecnologías: la visibilidad (privada o pública) del campo. La tabla \emph{WORK\_ EXPERIENCE\_TECHNOLOGY} puede contener varias referencias a esta tabla, una por tecnología asociada a la experiencia laboral.
+		\item Período laboral: la visibilidad (privada o pública) del campo y las fechas de inicio y fin de la experiencia laboral, siendo la última nula si la experiencia dura hasta la actualidad.
+		\item Salario: la visibilidad (privada o pública) del campo y la cuantía del salario bruto anual, además del código ISO de la moneda.
+		\end{itemize}
+	\item \textbf{Tabla JOB\_TITLE:} Contiene los nombres de los puestos de trabajo relacionados con las experiencias laborales.
+	\item \textbf{Tabla COMPANY:} Contiene los nombres de las empresas relacionadas con las experiencias laborales.
+	\item \textbf{Tabla WORK\_EXPERIENCE\_TECHNOLOGY:} Relaciona las experincias laborales con las tecnologías utilizadas en cada una de ellas, mediante una relación de muchas a muchas.
+	\item \textbf{Tabla TECHNOLOGY:} Contiene los nombres de las tecnologías relacionadas con las experiencias laborales.
+	\item \textbf{Tabla NEGOTIATION:} En ella se almacenan los datos relativos a las negociaciones.
+	Contiene el identificador único de la negociación, su fecha de creación, una referencia a la experiencia laboral ofrecida en la negociación y otra a la experiencia laboral solicitada, el identificador del usuario creador de la negociación y del usuario receptor, y el identificador del usuario que será el siguiente actor en la negociación, si aplica.
+	\item \textbf{Tabla NEGOTIATION\_ACTION:} En ella se almacena el histórico de acciones que han ido transcurriendo para cada negociación.
+	Cada registro contiene la referencia a la negociación sobre la que se aplicó la acción, la fecha en la que se aplicó, el tipo de acción (modificación, aceptación o cancelación), el identificador del usuario que realizó la acción,
+	y las referencias a la tabla \emph{REQUESTED\_DATA} donde se almacenan la visibilidad a aplicar a cada uno de los campos de la experiencia ofrecida y de la experiencia solicitada.
+	\item \textbf{Tabla REQUESTED\_DATA:} En ella se almacenan los posibles valores de la visibilidad de los campos para una experiencia laboral en negociación, siendo estos "manetener privado", "hacer público" o "ya público".
+	\item \textbf{Tabla USER\_CACHE:} En esta tabla se almacena la información de los usuarios que se obtiene de GitHub, para evitar realizar peticiones HTTP para información de usuarios que ya se ha obtenido en el pasado.
+	\end{itemize}
+
+
+\section{Diseño del API}
 \label{sec:api_desing}
-[TODO]
+En esta sección se describirá el API REST de la aplicación en cuatro grupos de puntos de API según su clasifiación funcional:
+
+		\begin{itemize}
+		\item Puntos de API de sesión: aquellos relacionados con la sesión del usuario.
+		\item Puntos de API de datos de referencia: aquellos que se utilizan para consultar puestos de trabajo, empresas y tecnologías que ya se dieron de alta en la aplicación.
+		\item Puntos de API de experiencias laborales: aquellos relacionados con operaciones sobre la entidad experiencia laboral.
+		\item Puntos de API de negociaciones: aquellos relacionados con operaciones sobre la entidad negociación.
+		\end{itemize}
+
+\subsection{Puntos de API de sesión}
+\label{subsec:session_endpoints}
+Es el conjunto de dos puntos de API que proveen operaciones relacionadas con la sesión del usuario:
+
+\subsubsection{Punto de API de obtención de usuario}
+\label{subsec:get_user}
+Este punto de API se utiliza para obtener la información del usuario que encuentra en sesión.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/user}.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /user
+
+			-- Respuesta
+			200 OK
+			{
+			    "id": "1",
+			    "login": "mojombo",
+			    "avatarUrl": "https://avatars.githubusercontent.com/u/1?v=4"
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de cierre de sesión}
+\label{subsec:get_user}
+Este punto de API se utiliza para invalidar la sesión del usuario en un cierre de sesión.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/user/logout}.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /user/logout
+
+			-- Respuesta
+			200 OK
+			\end{verbatim}
+			}
+
+\subsection{Puntos de API de datos de referencia}
+\label{subsec:reference_endpoints}
+Es el conjunto de tres puntos de API que se utilizan para proveer listados de información preexistente para las experencias laborales.
+Se utilizan principalmente para alimentar componentes de tipo combo en la interfaz de usuario:
+
+\subsubsection{Punto de API de datos de puesto de trabajo}
+\label{subsec:get_data_job_titles}
+Este punto de API se utiliza para obtener la lista de nombres de puestos de trabajo que ya existen en la aplicación.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/job-titles}.
+La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /data/job-titles?name=pro
+
+			-- Respuesta
+			200 OK
+			{
+			    "data": [
+			        "ANALISTA/PROGRAMADOR",
+			        "DISEÑADOR DE PROCESOS",
+			        "PRODUCT OWNER",
+			        "PROGRAMADOR"
+			    ]
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de datos de empresas}
+\label{subsec:get_data_companies}
+Este punto de API se utiliza para obtener la lista de nombres de empresas que ya existen en la aplicación.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/companies}.
+La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /data/companies?name=in
+
+			-- Respuesta
+			200 OK
+			{
+			    "data": [
+			        "ARQUIMEA INGENIERÍA",
+			        "INDRA",
+			        "ING"
+			    ]
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de datos de tecnologías}
+\label{subsec:get_data_job_technologies}
+Este punto de API se utiliza para obtener la lista de nombres de tecnologías que ya existen en la aplicación.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/technologies}.
+La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /data/technologies?name=j
+
+			-- Respuesta
+			200 OK
+			{
+			    "data": [
+			        "DJANGO",
+			        "JAVA",
+			        "JAVA 11",
+			        "JAVASCRIPT",
+			        "JQUERY",
+			        "VUE JS"
+			    ]
+			}
+			\end{verbatim}
+			}
+
+\subsection{Puntos de API de experiencias laborales}
+\label{subsec:work_experience_endpoints}
+Es el conjunto de dos puntos de API que proveen operaciones sobre la entidad experiencia laboral.
+
+\subsubsection{Punto de API de creación de experiencia laboral}
+\label{subsec:post_work_experience}
+Este punto de API se utiliza para crear una nueva experiencia laboral.
+Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/work-experience}.
+El cuerpo de la solicitud contiene la información acerca de la experiencia laboral a crear en formato JSON.
+La respuesta contiene el identificador único de la nueva experiencia laboral.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			POST /work-experience
+			{
+			    "binding": true,
+			    "jobTitle": {
+			        "public": true,
+			        "content": "Analista/Desarrollador"
+			    },
+			    "company": {
+			        "public": true,
+			        "content": "Indra"
+			    },
+			    "technologies": {
+			        "public": true,
+			        "content": [
+			            "Java",
+			            "Spring"
+			        ]
+			    },
+			    "workPeriod": {
+			        "public": true,
+			        "content": {
+			            "startDate": "2020-04-10",
+			            "endDate": "2021-04-11"
+			        }
+			    },
+			    "salary": {
+			        "public": true,
+			        "content": {
+			            "value": 36000,
+			            "currency": "EUR"
+			        }
+			    }
+			}
+
+			-- Respuesta
+			200 OK
+			{
+			    "id": "99784c87-70d0-43cc-a340-aa28a19cb8a3"
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de obtención de experiencia laboral por identificador}
+\label{subsec:get_work_experience_id}
+Este punto de API se utiliza para recuperar una experiencia laboral por su identificador único.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a recuperar.
+La respuesta contiene los datos de la experiencia laboral, con los filtros de visibilidad aplicados según el usuario solicitante.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
+
+			-- Respuesta
+			200 OK
+			{
+			    "id": "99784c87-70d0-43cc-a340-aa28a19cb8a3",
+			    "user":{
+			        "id": "5689851",
+			        "login": "vicengg",
+			        "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			    },
+			    "binding": true,
+			    "jobTitle":{
+			        "content": "ANALISTA/DESARROLLADOR",
+			        "public": true
+			    },
+			    "company":{
+			        "content": "INDRA",
+			        "public": true
+			    },
+			    "technologies":{
+			        "content":[
+			            "JAVA",
+			            "SPRING"
+			        ],
+			        "public": true
+			    },
+			    "workPeriod":{
+			        "content":{
+			            "startDate": "2020-04-10",
+			            "endDate": "2021-04-11"
+			        },
+			        "public": true
+			    },
+			    "salary":{
+			        "content":{
+			            "value": 3.6E+4,
+			            "currency": "EUR"
+			        },
+			        "public": true
+			    }
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de búsqueda de experiencias laborales}
+\label{subsec:get_work_experience}
+Este punto de API se utiliza para buscar experiencias laborales filtrando por su contenido.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/work-experience}.
+La solicitud admite varios parámetros de consulta que filtran el resultado:
+		\begin{itemize}
+		\item \emph{scope}: Indica si se solicitan todas las experiencias laborales (\emph{scope=all}), las del usuario (\emph{scope=own}) o las del resto de usuarios (\emph{scope=foreign}).
+		Su valor por defecto es \emph{all}.
+		\item \emph{jobTitle}: Al asignar un cadena de caracteres a este filtro, solo se devolveran aquellas experiencias que contengan esa en el nombre del puesto de trabajo.
+		\item \emph{company}: Al asignar un cadena de caracteres a este filtro, solo se devolveran aquellas experiencias que contengan esa en el nombre de la empresa.
+		\item \emph{technologies}: Al asignar múltiples cadenas de caracteres a este filtro, solo se devolveran aquellas experiencias que contengan esas cadenas en su lista de tecnologías.
+		\item \emph{startDate}: Enviar este filtro hará que solo las experiencias laborales que iniciaron después de la fecha indicada estén presentes en la respuesta.
+		\item \emph{endDate}: Enviar este filtro hará que solo las experiencias laborales que iniciaron antes de la fecha indicada estén presentes en la respuesta.
+		\item \emph{minSalary}: Enviar este filtro hará que solo las experiencias laborales con un salario superior al indicado estén presentes en la respuesta.
+		\item \emph{maxSalary}: Enviar este filtro hará que solo las experiencias laborales con un salario inferior al indicado estén presentes en la respuesta.
+		\end{itemize}
+La respuesta contiene un listado de experiencias laborales, con los filtros de visibilidad aplicados según el usuario solicitante.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /work-experience?scope=own&jobTitle=programador&company=arquimea
+			&technologies=java&technologies=angular&startDate=2015-01-01
+			&endDate=2018-01-01&minSalary=5000&maxSalary=20000
+
+			-- Respuesta
+			200 OK
+			{
+			    "result": [{
+			        "id": "60219d70-ae4d-11eb-8529-0242ac130003",
+			        "user":{
+			            "id": "5689851",
+			            "login": "vicengg",
+			            "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			        },
+			        "binding": true,
+			        "jobTitle":{
+			            "content": "PROGRAMADOR",
+			            "public": true
+			        },
+			        "company":{
+			            "content": "ARQUIMEA INGENIERÍA",
+			            "public": true
+			        },
+			        "technologies":{
+			            "content":[
+			                "JAVASCRIPT",
+			                "JAVA",
+			                "SPRING",
+			                "JQUERY",
+			                "ANGULAR"
+			            ],
+			            "public": true
+			        },
+			        "workPeriod":{
+			            "content":{
+			                "startDate": "2015-03-01",
+			                "endDate": "2017-07-01"
+			            },
+			            "public": true
+			        },
+			        "salary":{
+			            "content":{
+			                "value": 1.1E+4,
+			                "currency": "EUR"
+			            },
+			            "public": false
+			        }
+			    }]
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de actualización de experiencia laboral}
+\label{subsec:put_work_experience}
+Este punto de API se utiliza para actualizar una experiencia laboral.
+Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a actualizar.
+El cuerpo de la solicitud contiene la información acerca de la experiencia laboral a actualizar en formato JSON.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			PUT /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
+			{
+			    "binding": true,
+			    "jobTitle": {
+			        "public": true,
+			        "content": "Analista/Desarrollador"
+			    },
+			    "company": {
+			        "public": true,
+			        "content": "Indra"
+			    },
+			    "technologies": {
+			        "public": true,
+			        "content": [
+			            "Java",
+			            "Spring"
+			        ]
+			    },
+			    "workPeriod": {
+			        "public": true,
+			        "content": {
+			            "startDate": "2020-04-10",
+			            "endDate": "2021-04-11"
+			        }
+			    },
+			    "salary": {
+			        "public": true,
+			        "content": {
+			            "value": 36000,
+			            "currency": "EUR"
+			        }
+			    }
+			}
+
+			-- Respuesta
+			200 OK
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de borrado de experiencia laboral}
+\label{subsec:delete_work_experience}
+Este punto de API se utiliza para borrar una experiencia laboral.
+Las solicitudes se envían metidante el método \emph{DELETE} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a borrar.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			DELETE /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
+
+			-- Respuesta
+			200 OK
+			\end{verbatim}
+			}
+
+\subsection{Puntos de API de negociaciones}
+\label{subsec:negotiation_endpoints}
+Es el conjunto de dos puntos de API que proveen operaciones sobre la entidad negociación.
+
+\subsubsection{Punto de API de creación de negociación}
+\label{subsec:post_work_experience}
+Este punto de API se utiliza para crear una nueva negociación.
+Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/negotiation}.
+El cuerpo de la solicitud contiene las referencias a las experiencias laborales entre las que se establece la negociación.
+La respuesta contiene el identificador único de la nueva negociación.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			POST /negotiation
+			{
+			    "offeredWorkExperienceId": "4c714c8e-9d5f-11eb-a8b3-0242ac130003",
+			    "demandedWorkExperienceId": "b6b3705e-9e04-11eb-a8b3-0242ac130003"
+			}
+
+			-- Respuesta
+			200 OK
+			{
+			    "id": "958961ae-deaa-484f-b3a7-39bcb7ca0df0"
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de agregación de acciones a una negociación}
+\label{subsec:put_negotiation}
+Este punto de API se utiliza para agregar una nueva acción a una negociación.
+Las solicitudes se envían metidante el método \emph{PUT} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a la que se le va a agregar una nueva acción.
+El cuerpo de la solicitud contiene la información de la nueva acción a añadir.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			PUT /negotiation/958961ae-deaa-484f-b3a7-39bcb7ca0df0/action
+			{
+			    "type": "accept",
+			    "offeredData": {
+			        "jobTitle": "make_public",
+			        "company": "make_public",
+			        "technologies": "make_public",
+			        "workPeriod": "make_public",
+			        "salary": "make_public"
+			    },
+			    "demandedData": {
+			        "jobTitle": "make_public",
+			        "company": "make_public",
+			        "technologies": "make_public",
+			        "workPeriod": "make_public",
+			        "salary": "make_public"
+			    }
+			}
+
+			-- Respuesta
+			200 OK
+			\end{verbatim}
+			}
+
+
+
+\subsubsection{Punto de API de obtención de negociación por identificador}
+\label{subsec:get_negotiation_id}
+Este punto de API se utiliza para recuperar una negociación por su identificador único.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a recuperar.
+La respuesta contiene los datos de la negociación, con los filtros de visibilidad aplicados a algunos campos según el usuario solicitante.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /negotiation/958961ae-deaa-484f-b3a7-39bcb7ca0df0
+
+			-- Respuesta
+			200 OK
+			{
+			    "id": "958961ae-deaa-484f-b3a7-39bcb7ca0df0",
+			    "offeredWorkExperienceId": "4c714c8e-9d5f-11eb-a8b3-0242ac130003",
+			    "demandedWorkExperienceId": "b6b3705e-9e04-11eb-a8b3-0242ac130003",
+			    "creator":{
+			        "id": "5689851",
+			        "login": "vicengg",
+			        "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			    },
+			    "receiver":{
+			        "id": "0",
+			        "login": "anónimo",
+			        "avatarUrl": "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png"
+			    },
+			    "nextActor":{
+			        "id": "0",
+			        "login": "anónimo",
+			        "avatarUrl": "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png"
+			    },
+			    "actions": [{
+			        "type": "MODIFY",
+			        "date": "2021-05-05T13:59:15.229+00:00",
+			        "offeredData":{
+			            "jobTitle": "MAKE_PUBLIC",
+			            "company": "MAKE_PUBLIC",
+			            "technologies": "MAKE_PUBLIC",
+			            "workPeriod": "MAKE_PUBLIC",
+			            "salary": "MAKE_PUBLIC"
+			        },
+			        "demandedData":{
+			            "jobTitle": "MAKE_PUBLIC",
+			            "company": "MAKE_PUBLIC",
+			            "technologies": "MAKE_PUBLIC",
+			            "workPeriod": "MAKE_PUBLIC",
+			            "salary": "MAKE_PUBLIC"
+			        },
+			        "issuer":{
+			            "id": "5689851",
+			            "login": "vicengg",
+			            "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			        }
+			    }]
+			}
+			\end{verbatim}
+			}
+
+\subsubsection{Punto de API de obtención de negociaciones}
+\label{subsec:get_negotiation}
+Este punto de API se utiliza obtener las negociaciones en las cuales el usuario solicitantes está implicado.
+Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/negotiation}.
+La solicitud admite un parámetro de consulta, \emph{scope},
+este parámetro indica si deben devolverse las negociaciones de las que el usuario es creador (\emph{scope=creator}) o de las que el usuario es receptor (\emph{scope=receiver}).
+Por defecto su valor es(\emph{scope=creator}.
+La respuesta contiene un listado de negociaciones.
+A continuación se muestra un ejemplo de llamada al punto de API:
+
+			{\footnotesize
+			\begin{verbatim}
+			-- Solicitud
+			GET /work-experience?scope=own&jobTitle=programador&company=arquimea
+			&technologies=java&technologies=angular&startDate=2015-01-01
+			&endDate=2018-01-01&minSalary=5000&maxSalary=20000
+
+			-- Respuesta
+			200 OK
+			{
+			    "result": [			{
+			        "id": "958961ae-deaa-484f-b3a7-39bcb7ca0df0",
+			        "offeredWorkExperienceId": "4c714c8e-9d5f-11eb-a8b3-0242ac130003",
+			        "demandedWorkExperienceId": "b6b3705e-9e04-11eb-a8b3-0242ac130003",
+			        "creator":{
+			            "id": "5689851",
+			            "login": "vicengg",
+			            "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			        },
+			        "receiver":{
+			            "id": "0",
+			            "login": "anónimo",
+			            "avatarUrl": "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png"
+			        },
+			        "nextActor":{
+			            "id": "0",
+			            "login": "anónimo",
+			            "avatarUrl": "https://crysteland.com/wp-content/uploads/2016/12/unknown-user-460x460.png"
+			        },
+			        "actions": [{
+			            "type": "MODIFY",
+			            "date": "2021-05-05T13:59:15.229+00:00",
+			            "offeredData":{
+			                "jobTitle": "MAKE_PUBLIC",
+			                "company": "MAKE_PUBLIC",
+			                "technologies": "MAKE_PUBLIC",
+			                "workPeriod": "MAKE_PUBLIC",
+			                "salary": "MAKE_PUBLIC"
+			            },
+			            "demandedData":{
+			                "jobTitle": "MAKE_PUBLIC",
+			                "company": "MAKE_PUBLIC",
+			                "technologies": "MAKE_PUBLIC",
+			                "workPeriod": "MAKE_PUBLIC",
+			                "salary": "MAKE_PUBLIC"
+			            },
+			            "issuer":{
+			                "id": "5689851",
+			                "login": "vicengg",
+			                "avatarUrl": "https://avatars.githubusercontent.com/u/5689851?v=4"
+			            }
+			        }]
+			    }]
+			}
+			\end{verbatim}
+			}
 
 \section{Componentes web} 
 \label{sec:web_components}
