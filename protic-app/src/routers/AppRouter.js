@@ -5,7 +5,6 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import { HomeView } from '../components/views/HomeView'
 import { AddWorkExperienceView } from '../components/views/AddWorkExperienceView'
 import { MyWorkExperiencesView } from '../components/views/MyWorkExperiencesView'
 import { ModifyWorkExperienceView } from "../components/views/ModifyWorkExperienceView";
@@ -20,7 +19,7 @@ export default function AppRouter() {
     <Router>
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
-            <span className="navbar-brand">Protic</span>
+            <span className="navbar-brand">ProTIC</span>
 
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
@@ -71,7 +70,7 @@ export default function AppRouter() {
             <NegotiationDetailsView />
           </Route>
           <Route path="/">
-            <HomeView />
+            <SearchWorkExperiencesView />
           </Route>
         </Switch>
       </div>
