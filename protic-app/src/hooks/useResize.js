@@ -7,19 +7,22 @@ export const useResize = (myRef) => {
 
     useEffect(() => {
         const handleResize = () => {
-            setDimensions({
-                ...dimensions,
-                width: myRef.current.offsetWidth,
-                height: myRef.current.offsetHeight
-            })
+            if(myRef.current) {
+                setDimensions({
+                    ...dimensions,
+                    width: myRef.current.offsetWidth,
+                    height: myRef.current.offsetHeight
+                })
+            }
         }
 
         const handlePosition = () => {
-            setPosition({
-                ...position,
-                top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top
-            })
-
+            if(myRef.current) {
+                setPosition({
+                    ...position,
+                    top: myRef.current.offsetHeight + myRef.current.getBoundingClientRect().top
+                })
+            }
         }
 
         if (myRef.current) {

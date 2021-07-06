@@ -24,7 +24,7 @@ export const WorkExperience = ({ workExperience, enableNegotiation = true }) => 
                             <h5 className="card-title">Experiencia laboral <ion-icon name="lock-closed-outline"></ion-icon></h5>}
                         <div className="d-flex flex-row">
                             <div className={isUnlocked("jobTitle") ? "text-success" : ""}>
-                                <strong>Cargo: </strong>
+                                <strong>Puesto de trabajo: </strong>
                                 {!!workExperience.jobTitle && <span>{workExperience.jobTitle.content}</span>}
                                 {!workExperience.jobTitle && <span>Oculto <ion-icon name="lock-closed-outline"></ion-icon></span>}
                                 {isUnlocked("jobTitle") && <span> <ion-icon name="lock-open-outline"></ion-icon></span>}

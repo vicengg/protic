@@ -53,7 +53,7 @@ export const ActionDisplay = ({ action, user, isFirst, creator, receiver }) => {
                                 <div className="col-md-5 offset-md-1">
                                     <strong>{creator.login}</strong> mostrará:
                                     <ul className="mb-0">
-                                        {action.offeredData.jobTitle.toLowerCase() === "make_public" && <li>Cargo</li>}
+                                        {action.offeredData.jobTitle.toLowerCase() === "make_public" && <li>Puesto de trabajo</li>}
                                         {action.offeredData.company.toLowerCase() === "make_public" && <li>Empresa</li>}
                                         {action.offeredData.technologies.toLowerCase() === "make_public" && <li>Tecnologías</li>}
                                         {action.offeredData.salary.toLowerCase() === "make_public" && <li>Salario</li>}
@@ -63,7 +63,7 @@ export const ActionDisplay = ({ action, user, isFirst, creator, receiver }) => {
                                 <div className="col-md-5 offset-md-1">
                                     <strong>{receiver.login}</strong> mostrará:
                                     <ul className="mb-0">
-                                        {action.demandedData.jobTitle.toLowerCase() === "make_public" && <li>Cargo</li>}
+                                        {action.demandedData.jobTitle.toLowerCase() === "make_public" && <li>Puesto de trabajo</li>}
                                         {action.demandedData.company.toLowerCase() === "make_public" && <li>Empresa</li>}
                                         {action.demandedData.technologies.toLowerCase() === "make_public" && <li>Tecnologías</li>}
                                         {action.demandedData.salary.toLowerCase() === "make_public" && <li>Salario</li>}

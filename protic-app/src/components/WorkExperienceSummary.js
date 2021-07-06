@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-export const WorkExperienceSummary = ({ workExperience, children, visibilityRequest, setVisibilityRequest, disabled = false }) => {
+export const WorkExperienceSummary = ({ workExperience, visibilityRequest, setVisibilityRequest }) => {
 
     const isPresent = (field) => {
         return !!field;
@@ -67,7 +67,7 @@ export const WorkExperienceSummary = ({ workExperience, children, visibilityRequ
                     <div className="col-md-12">
                         <div>
                             <small>
-                                <strong>Cargo: </strong>
+                                <strong>Puesto de trabajo: </strong>
                                 {isPresent(workExperience.jobTitle) && <span>{workExperience.jobTitle.content} </span>}
                                 {!isPublic(workExperience.jobTitle) && <ion-icon name="lock-closed"></ion-icon>}
                             </small>

@@ -45,8 +45,8 @@ export const SearchWorkExperiencesView = () => {
                                 <Autocomplete
                                     styleClasses="form-control-sm"
                                     url="/data/job-titles?name="
-                                    placeholder="Profesión"
-                                    footer="Filtrar por profesión"
+                                    placeholder="Puesto de trabajo"
+                                    footer="Filtrar por puesto de trabajo"
                                     value={emptyIfNull(searchFilters.jobTitle)}
                                     onChange={changeField('jobTitle')}
                                     onSelect={changeField('jobTitle')}

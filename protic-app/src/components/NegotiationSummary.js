@@ -71,7 +71,7 @@ export const NegotiationSummary = ({ negotiation, user }) => {
 
     const getOfferedFields = (visibilityRequest) => {
         const list = [];
-        visibilityRequest.jobTitle.toLowerCase() === "make_public" && list.push("Profesión");
+        visibilityRequest.jobTitle.toLowerCase() === "make_public" && list.push("Puesto de trabajo");
         visibilityRequest.company.toLowerCase() === "make_public" && list.push("Expresa");
         visibilityRequest.salary.toLowerCase() === "make_public" && list.push("Salario");
         visibilityRequest.technologies.toLowerCase() === "make_public" && list.push("Tecnologías utilizadas");

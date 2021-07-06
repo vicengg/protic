@@ -31,7 +31,7 @@ export const OwnWorkExperience = ({ workExperience, afterDelete, editable = fals
                 </h5>}
                 <div className="d-flex flex-row">
                     <div>
-                        <strong>Cargo: </strong>
+                        <strong>Puesto de trabajo: </strong>
                         <span>{workExperience.jobTitle.content}</span>
                     </div>
                     <div className="ml-auto">

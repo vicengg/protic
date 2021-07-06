@@ -71,7 +71,7 @@ export const NegotiableWorkExperience = ({ workExperience, children, visibilityR
             <ul className="list-group  list-group-flush">
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>Cargo: </strong>
+                        <strong>Puesto de trabajo: </strong>
                         {isPresent(workExperience.jobTitle) && <span>{workExperience.jobTitle.content} </span>}
                         {!isPublic(workExperience.jobTitle) && <ion-icon name="lock-closed"></ion-icon>}
                     </div>

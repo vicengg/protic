@@ -54,13 +54,13 @@ export const AddWorkExperienceView = () => {
                     siempre por acuerdo mutuo y con el <span className="text-primary">nivel de anonimato</span> que elijas para tu experiencia laboral.
                 </p>
                 <h2>Información laboral</h2>
-                <h6>Profesión</h6>
+                <h6>Puesto de trabajo</h6>
                 <div className="row">
                     <div className="col-md-10">
                         <Autocomplete
                             url="/data/job-titles?name="
-                            placeholder="Introduce tu profesión"
-                            footer="Haz click para obtener sugerencias de profesiones. Puedes introducir una profesión que no esté en la lista  de sugerencias simplemente introduciendo su nombre."
+                            placeholder="Introduce tu puesto de trabajo"
+                            footer="Haz click para obtener sugerencias de puestos de trabajo. Puedes introducir un puesto de trabajo que no esté en la lista de sugerencias simplemente introduciendo su nombre."
                             value={emptyIfNull(form.jobTitle.content)}
                             onChange={changeField('jobTitle')}
                             onSelect={changeField('jobTitle')}

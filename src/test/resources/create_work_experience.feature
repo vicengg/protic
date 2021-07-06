@@ -1,5 +1,5 @@
-Feature: Work experience visibility
-  Check the work experiences visibility business rules.
+Feature: Work experience visibility by default
+  Check the work experiences visibility business rules by default.
 
   Background:
     Given a user with id "user_1"

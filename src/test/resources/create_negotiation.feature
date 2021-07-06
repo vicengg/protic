@@ -1,5 +1,5 @@
-Feature: Work experience visibility
-  Check the work experiences visibility business rules.
+Feature: Work experience visibility with negotiations
+  Check the work experiences visibility business rules with negotiation.
 
   Background:
     Given a user with id "user_1"
