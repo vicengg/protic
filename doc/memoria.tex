@@ -65,7 +65,7 @@
             \vspace{2.5cm}
 
             \LARGE
-            [TODO] TÍTULO DEL TRABAJO EN MAYÚSCULAS
+            APLICACIÓN HTML5 PARA INTERCAMBIO DE INFORMACIÓN LABORAL PRIVADA ENTRE PROFESIONALES TIC
 
             \vspace{4cm}
 
@@ -93,7 +93,7 @@
 
         \vspace{1cm}
         \large
-        [TODO] Título del Trabajo con Letras Capitales para Sustantivos y Adjetivos
+        Aplicación HTML5 para Intercambio de Información Laboral Privada entre Profesionales TIC
 
         \vspace{1cm}
         \large
@@ -125,7 +125,7 @@
 
     \vspace{1cm}
     \begin{flushright}
-        Fuenlabrada, a \qquad$\;\,$ de \qquad\qquad\qquad\qquad de 202X
+        Fuenlabrada, a \qquad$\;\,$ de \qquad\qquad\qquad\qquad de 2021
     \end{flushright}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,8 +134,8 @@
     \chapter*{}
     \pagenumbering{Roman} % para comenzar la numeracion de paginas en numeros romanos
     \begin{flushright}
-        \textit{[TODO] Dedicado a \\
-        mi familia / mi abuelo / mi abuela}
+        \textit{Dedicado a \\
+        mi familia}
     \end{flushright}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,7 +145,10 @@
 %\addcontentsline{toc}{chapter}{Agradecimientos} % si queremos que aparezca en el índice
     \markboth{AGRADECIMIENTOS}{AGRADECIMIENTOS} % encabezado
 
-    [TODO]
+    Quiero dar sinceras gracias a mi familia y amigos, por apoyarme tanto durante estos años.
+
+    También a mi profesor Pedro de las Heras Quirós por su tiempo e interés, y por su guía, gracias a la cuál
+    fue posible hacer este proyecto.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Resumen
@@ -156,21 +159,25 @@
 
     Una de las dificultades a las que se enfrentan los alumnos en período de prácticas empresariales o recién egresados de la universidad
     es el desconocimiento de qué salario podría considerarse justo para un determinado puesto ante una oferta de trabajo.
+    A esta dificultad se añade el hecho de que muchos trabajadores consideran hablar de su sueldo un tema tabú.
 
-    A esta dificultad se añade el hecho de que muichos trabajadores consideran hablar de su sueldo un tema tabú,
-    lo que complica a aquellos alumnos que buscan trabajo la tarea de recabar información acerca de qué rango salarial es el adecuado para una determinada actividad.
+    El objetivo de este Trabajo Fin de Grado es desarrollar una aplicación que proporcione a estudiantes y trabajadores
+    del sector de las tecnologías de la información y la comunicación un modo de evaluar cuál es el rango salarial justo
+    para una determinada profesión u oferta de trabajo teniendo en cuenta la empresa donde se realizará la labor,
+    el puesto de trabajo y las tecnologías relacionadas con el puesto mediante el intercambio de experiencias laborales
+    entre usuarios, permitiendo a éstos mantener el control sobre la privacidad de sus datos y de su identidad.
 
-    Además, concretamente en el ámbito de las tecnologías de la información y la comunicación, el gran abanico de sectores, profesiones, técnicas, lenguajes, etcétera,
-    hace que resulte realmente complejo para una persona con poca experiencia evaluar si una oferta de trabajo es interesante desde un punto de vista económico.
+    El proyecto consiste en una aplicación web desarrollada con la librería de JavaScript React y un servidor de aplicaciones escrito en Java
+    con Sprint Boot siguiendo el patrón de arquitectura hexagonal. El resultado es una aplicación que puede ejecutarse en un navegador web
+    y que hace uso de los servicios de intercambio de experiencias laborales que proporciona el servidor.
+    El servidor además está integrado con la plataforma GitHub~\cite{bib:github} como proveedor de autenticación y de datos de usuarios, por lo que cualquier
+    usuario con cuenta de GitHub puede hacer uso de la plataforma.
 
-    Con el objetivo de facilitar a los alumnos esta tarea de entendimiento del mercado, este proyecto pretende plantear una solución sencilla y eficaz en forma de aplicación
-    web que permite buscar y compartir información laboral de primera mano a través de las experiencias laborales de los usuarios que participan en la plataforma.
-
-    Esta aplicación enfatiza en el intercambio de información laboral entre dos usuarios como fuente información, permitiendo en todos los casos que estos compartan únicamente los datos que deseen mostrar acerca de una experiencia laboral propia,
-    incluida su identidad en caso de que prefieran ofrecer sus referencias de forma anónima.
-
-    Este proyecto se compone de un servidor que expone su funcionalidad a través de un API REST, desarrollado con la tecnología Spring Boot y una aplicación de navagdor en el lado del cliente desarrollada en React que consume los recursos expuestos en dicha API.
-    Todo el sistema es accesible a través de autenticación de los usuarios en la plataforma de Github, lo que permite a la mayoría de los alumnos de grados relacionados con las TIC poder hacer uso de la aplicación sin tener que hacer un registro adicional.
+    El proyecto ha finalizado cumpliendo sus objetivos, proporcionando al usuario una herramienta donde puede subir sus experiencias laborales
+    eligiendo para cada dato de ésta si es visible al resto de usuarios o no, vinculando estas experiencias a su perfil o publicándolas
+    de forma anónima en la herramienta, permitiéndole hacer búsquedas de experiencias laborales de otros usuarios donde podrá ver la información
+    que estos marcaron como pública y podrá solicitar acceder a la información privada a los usuarios dueños de ésta, a cambio de su propia
+    información privada, mediante una negociación.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,11 +208,30 @@
     \label{sec:intro} % etiqueta para poder referenciar luego en el texto con ~\ref{sec:intro}
     \pagenumbering{arabic} % para empezar la numeración de página con números
 
-    Este Trabajo fin de Grado consiste en una aplicación web desarrollada en una arquitectura cliente-servidor que tiene el próposito de permitir a los usuarios crear, modificar y eliminar sus experiencias laborales con un nivel de privacidad establecido por el propio usuario
-    de forma que sean accesibles mediante una búsqueda por el resto de los usuarios, que pueden solicitar información privada acerca de estas a cambio de ofrecer la suya propia.
-    En esta arquitectura, el cliente es una aplicación JavaScript ejecutable en el navegador,
-    y el servidor es un servidor de aplicaciones Java EE cuyos recursos son accesibles por el cliente a través de un API REST. Además, la aplicación utiliza GitHub como proveedor de autenticación para los usuarios.
-    A continuación se procederá a describir tanto cada una de las partes de la aplicación como las tecnologías utilizadas y las herramientas empleadas para su desarrollo.
+    Una de las dificultades a las que se enfrentan los alumnos en período de prácticas empresariales o recién egresados de la universidad
+    es el desconocimiento de qué salario podría considerarse justo para un determinado puesto ante una oferta de trabajo.
+
+    A esta dificultad se añade el hecho de que muchos trabajadores consideran hablar de su sueldo un tema tabú,
+    lo que complica a aquellos alumnos que buscan trabajo la tarea de recabar información acerca de qué rango salarial es el adecuado para una determinada actividad.
+    Esta actitud generalizada puede beneficiar a las empresas que desean evitar conversaciones incómodas entre empleados
+    que obtienen distintos salarios por desempeñar las mismas funciones~\cite{bib:wsj,bib:theatlantic}, pero no es beneficiosa para los
+    demandantes de empleo.
+
+    Es habitual también que las propias empresas no publiquen información salarial en sus propias ofertas, por diversos motivos~\cite{bib:bonilista}, entre los que se encuentra
+    tener la capacidad durante el proceso de contratación de un empleado de ofrecer un salario que mejore al actual, pero que no tiene
+    por qué estar alineado con el adecuado para su profesión.
+
+    Además, concretamente en el ámbito de las tecnologías de la información y la comunicación, el gran abanico de sectores, profesiones, técnicas, lenguajes, etcétera,
+    hace que resulte realmente complejo para una persona con poca experiencia evaluar si una oferta de trabajo es interesante desde un punto de vista económico.
+
+    Con el objetivo de facilitar a los alumnos esta tarea de entendimiento del mercado, este proyecto pretende plantear una solución sencilla y eficaz en forma de aplicación
+    web que permite buscar y compartir información laboral de primera mano a través de las experiencias laborales de los usuarios que participan en la plataforma.
+
+    Esta aplicación enfatiza en el intercambio de información laboral entre dos usuarios como fuente información, permitiendo en todos los casos que estos compartan únicamente los datos que deseen mostrar acerca de una experiencia laboral propia,
+    incluida su identidad en caso de que prefieran ofrecer sus referencias de forma anónima.
+
+    Este proyecto se compone de un servidor que expone su funcionalidad a través de una API REST, desarrollado con la tecnología Spring Boot y una aplicación de navegador en el lado del cliente desarrollada en React que consume los recursos expuestos en dicha API.
+    Todo el sistema es accesible a través de autenticación de los usuarios en la plataforma de GitHub, lo que permite a la mayoría de los alumnos de grados relacionados con las TIC poder hacer uso de la aplicación sin tener que hacer un registro adicional.
 
 
     \section{Definición de experiencia laboral}
@@ -235,9 +261,40 @@
     En este momento se establece una negociación entre ambos usuarios, en el que cada uno de ellos, por turnos, puede modificar lo que ofrece y solicita revelar. Esta negociación finalizada cuando el usuario al que corresponde realizar el siguiente paso de la negociación acepta el intercambio de datos, o en el momento en el que uno de ambos usuarios deniega la solicitud.
 
 
+    \section{Estado del arte}
+    \label{sec:estado_arte}
+    Antes de realizar este Trabajo Fin de Grado se evaluaron algunas herramientas que realizan una función parecida a la que
+    la aplicación de este proyecto provee, entre ellas:
+    \begin{itemize}
+        \item Payscale.com~\cite{bib:payscale}
+        \item Salary.com~\cite{bib:salarycom}
+        \item SalaryExpert.com~\cite{bib:salaryexpert}
+        \item GlassDoor.com~\cite{bib:glassdoor}
+    \end{itemize}
+
+    Estas herramientas tienen en común que la información laboral que recibe el usuario final proviene de la propia plataforma
+    y no de primera mano, fruto de la interacción con otros usuarios, como se propone en este proyecto.
+
+    Cabe destacar también que existe otro Trabajo Fin de Grado~\cite{bib:tfg} realizado en la Universidad Rey Juan Carlos que partió
+    de la misma idea que fue propuesta para este TFG en 2016 por el mismo tutor, y que tuvo como resultado una aplicación móvil que
+    almacenaba la mayoría de los datos en el propio dispositivo. En el planteamiento para el proyecto actual el almacenamiento de los
+    datos laborales recae en el servidor, y la interfaz de usuario se propone como una aplicación web ejecutable en el navegador.
+
+
     \section{Estructura de la memoria}
     \label{sec:intro_memorystructure}
-    [TODO]
+    La organización de la información en esta memoria es la siguiente:
+
+    \begin{enumerate}
+        \item \textbf{Capítulo 1:} En este capítulo se exponen de forma introductoria la motivación y principales conceptos de este Trabajo Fin de Grado.
+        \item \textbf{Capítulo 2:} En este capítulo se describen los objetivos, requisitos y planificación temporal del proyecto.
+        \item \textbf{Capítulo 3:} En este capítulo se describen las tecnologías y herramientas utilizadas para el desarrollo de la aplicación,
+        así como algunos conceptos teóricos de la arquitectura utilizada.
+        \item \textbf{Capítulo 4:} En este capítulo se explican los detalles de la implementación de la solución y su funcionalidad.
+        \item \textbf{Capítulo 5:} En este capítulo se describen las pruebas utilizadas para validar la aplicación.
+        \item \textbf{Capítulo 6:} En este capítulo se desarrollan las conclusiones obtenidas, los futuros trabajos y se referencia
+        el código fuente del proyecto.
+    \end{enumerate}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -255,7 +312,11 @@
     \section{Objetivo general} % título de sección (se muestra)
     \label{sec:targets_generaltarget} % identificador de sección (no se muestra, es para poder referenciarla)
 
-    El objetivo de este Trabajo Fin de Grado es desarrollar una aplicación que permita a estudiantes y trabajadores del sector de las tecnologías de la información y la comunicación evaluar cual es el rango salarial justo para una determinada profesión u oferta de trabajo teniendo en cuenta la empresa donde se realizará la labor, el puesto de trabajo y las tecnologías relacionadas con el puesto.
+    El objetivo de este Trabajo Fin de Grado es desarrollar una aplicación que proporcione a estudiantes y trabajadores
+    del sector de las tecnologías de la información y la comunicación un modo de evaluar cuál es el rango salarial justo
+    para una determinada profesión u oferta de trabajo teniendo en cuenta la empresa donde se realizará la labor,
+    el puesto de trabajo y las tecnologías relacionadas con el puesto mediante el intercambio de experiencias laborales
+    entre usuarios, permitiendo a éstos mantener el control sobre la privacidad de sus datos y de su identidad.
 
 
     \section{Objetivos específicos}
@@ -274,7 +335,7 @@
 
 
     \section{Requisitos}
-    \label{sec:target_rquirements}
+    \label{sec:target_requirements}
 
     Los requisitos que cumple la aplicación resultado de este Trabajo Fin de Grado son los siguientes:
 
@@ -282,7 +343,7 @@
         \item Un usuario que tenga cuenta en GitHub podrá ingresar en la aplicación sin necesidad de registro.
         \item La información de los usuarios (identificador, nombre de usuario y avatar) será recuperada de GitHub.
         \item La información de usuario que ya se ha recuperado de GitHub no se volverá a solicitar (No funcional).
-        \item El usuario podrá crear un número idefinido de experiencias laborales a través de un formulario.
+        \item El usuario podrá crear un número indefinido de experiencias laborales a través de un formulario.
         \item Las experiencias laborales creadas tendrán los siguientes campos:
         \begin{itemize}
             \item Puesto de trabajo (Texto obligatorio).
@@ -293,13 +354,13 @@
             \item Fecha de fin (Fecha pasada opcional).
         \end{itemize}
         \item Las experiencias laborales tendrán una visibilidad que puede ser pública o privada asociada a cada uno de los campos.
-        \item Las experiencias laborales tendrán una una marca que indica si la experiencia laboral está vinculada al perfil del usuario o es anónima.
-        \item Un usuario podrá acceder a toda la infomación de sus propias experiencias laborales, sea pública a privada.
+        \item Las experiencias laborales tendrán una marca que indica si la experiencia laboral está vinculada al perfil del usuario o es anónima.
+        \item Un usuario podrá acceder a toda la información de sus propias experiencias laborales, sea pública a privada.
         \item El usuario dispondrá de una vista donde se listarán sus experiencias laborales.
         \item El usuario podrá eliminar cada una de sus experiencias laborales.
         \item El usuario podrá editar todos los datos de sus experiencias laborales a través de un formulario.
         \item El usuario dispondrá de una vista para buscar experiencias laborales de otros usuarios.
-        \item El usuario podrá filtrar experiencias en la la búsqueda por los siguientes campos:
+        \item El usuario podrá filtrar experiencias en la búsqueda por los siguientes campos:
         \begin{itemize}
             \item Puesto de trabajo: si se introduce cadena de caracteres en el filtro, permite obtener las experiencias cuyo puesto de trabajo sea público y contenga la cadena.
             \item Nombre de empresa: si se introduce cadena de caracteres en el filtro, permite obtener las experiencias cuyo nombre de empresa sea público y contenga la cadena.
@@ -342,7 +403,7 @@
         \item Toda solicitud se crea con una acción de \emph{creación} en su histórico.
         \item Cualquier usuario involucrado en una solicitud podrá realizar una acción de \emph{cancelación} en cualquier momento, a menos que esta solicitud se encuentre previamente aceptada o cancelada.
         \item Un usuario podrá realizar una acción de \emph{modificación} en una solicitud siempre que esta se encuentre en estado \emph{pendiente de su respuesta}.
-        \item Una acción de \emph{modifiación} de una solicitud hace pasar el turno al otro usuario involucrado, es decir:
+        \item Una acción de \emph{modificación} de una solicitud hace pasar el turno al otro usuario involucrado, es decir:
         \begin{itemize}
             \item Una vez realizada la acción por un usuario, este verá la solicitud en estado \emph{pendiente de la respuesta de otro usuario}.
             \item A la vez, la solicitud pasará al estado \emph{pendiente de su respuesta} para el otro usuario.
@@ -352,7 +413,7 @@
         \begin{itemize}
             \item Comprobar el estado de la solicitud.
             \item Visualizar los datos del otro usuario envuelto en la solicitud, si este no aparece como anónimo por su relación con la experiencia laboral.
-            \item Visualizar la información de las experiencias laborales ofrecida y demandada en la solcitud.
+            \item Visualizar la información de las experiencias laborales ofrecida y demandada en la solicitud.
             \item Visualizar el histórico de acciones realizadas sobre la solicitud.
             \item Cancelar la solicitud si aplica.
             \item Aceptar la solicitud si aplica.
@@ -366,8 +427,22 @@
 
     \section{Planificación temporal}
     \label{sec:planificacion-temporal}
+    La idea para el desarrollo de este Trabajo Fin de Grado surgió en el año 2016. En esta primera fase la aplicación
+    se concibió como una aplicación móvil, se establecieron las bases del proyecto y los requisitos funcionales y se realizaron
+    los primeros diseños de la aplicación como \emph{mockups} que pueden verse en el Apéndice~\ref{app:mockups}.
+
+    Después el proyecto se descontinuó hasta que se retomó en 2021, esta vez como una aplicación web.
+
+    El análisis y diseño de la aplicación a lo largo del tiempo teniendo en cuenta esta circunstancia
+    se muestran en el diagrama de Gantt de la Figura~\ref{figure:gantt2016}.
 
     El desarrollo de la aplicación a lo largo del tiempo se muestra en el diagrama de Gantt de la Figura~\ref{figure:gantt}.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=15cm, keepaspectratio]{img/Gantt2016.png}
+        \caption{Diagrama de Gantt del análisis/diseño de la aplicación.}\label{figure:gantt2016}
+    \end{figure}
 
     \begin{figure}
         \centering
@@ -378,52 +453,54 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ESTADO DEL ARTE %
+% TECNOLOGÍAS Y HERRAMIENTAS %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     \cleardoublepage
 
 
-    \chapter{Estado del arte}
+    \chapter{Tecnologías y herramientas}
     \label{chap:estado}
+    En este capítulo se describirán las tecnologías y herramientas empleadas para el desarrollo de la aplicación
+    así como los principales aspectos teóricos de la arquitectura de software empleada.
 
 
     \section{Servidor de aplicaciones}
     \label{sec:intro_applicationserver}
 
-    Es la pieza de software que no se ejecuta en el navegador si no que es invocada desde este vía conexión HTTP.
-    Su cometido en la aplicación es el de exponer recursos que ofrecen la información de los usuarios, es decir, sus experiencias laborales y solicitudes de manera controlada basada en la identidad de los usuarios.
+    Es la pieza de software que no se ejecuta en el navegador si no que es invocada desde este vía conexión HTTP~\cite{bib:http}.
+    Su cometido en la aplicación es el de exponer recursos que permiten al usuario consultar información y operar sobre ella~\cite{bib:appserver}, en este caso su experiencias laborales y solicitudes de información.
     Para ello antes de ofrecer información al lado cliente comprueba la identidad del usuario que la solicita para aplicarle las reglas de visibilidad y presentar únicamente la información que,
     o bien es pública, o bien pertenece al solicitante, o bien tanto el solicitante como el propietario han accedido a compartir. Abajo se describirán los puntos principales relacionados con el servidor de aplicaciones.
 
     \subsection{Lenguaje y plataforma}
     \label{subsec:intro_applicationserver_languageandplatform}
 
-    El lenguaje elegido para el desarrollo del servidor es Java. Java es un lenguaje de programación orientada objetos desarrollado por la compañía Sun Microsystems.
-    Una de sus particularidades más importantes es la de poder ejecutarse en la máquina virtual de Java (JVM) que puede ser instalada en la gran mayoría de sistemas operativos,
+    El lenguaje elegido para el desarrollo del servidor es Java~\cite{bib:java}. Java es un lenguaje de programación orientada objetos~\cite{bib:oop} desarrollado por la compañía Sun Microsystems.
+    Una de sus particularidades más importantes es la de poder ejecutarse en la máquina virtual de Java (JVM)~\cite{bib:jvm} que puede ser instalada en la gran mayoría de sistemas operativos,
     lo que proporciona a este lenguaje gran portabilidad entre distintas plataformas. La versión concreta de Java que se utilizó para el desarrollo fue la 11, que entre otras características da Java soporte para la programación funcional.
 
-    El framework Java utilizado para la creación del servidor fue Spring, un framework Open Source que facilita el desarrollo de aplicaciones Java Enterprise Edition, que es a su vez una plataforma, parte de la plataforma Java que permite el desarrollo de aplicaciones servidor.
+    El framework Java utilizado para la creación del servidor fue Spring~\cite{bib:spring}, un framework Open Source~\cite{bib:opensource} que facilita el desarrollo de aplicaciones Java Enterprise Edition~\cite{bib:javaee}, que es a su vez una plataforma, parte de la plataforma Java que permite el desarrollo de aplicaciones servidor.
     Spring Framework provee una serie de características y librerías que ayudan al programador a centrarse en el desarrollo de la lógica que quiere implementar en su aplicación, abstrayéndose de conceptos de infraestructura que complican el desarrollo de servidores.
     Para esta aplicación se utilizó concretamente la tecnología Spring Boot que además reduce la cantidad de configuración necesaria para funcionamiento de una aplicación Spring.
 
     \subsection{Comunicación con el cliente}
     \label{subsec:intro_applicationserver_communicationwithclient}
 
-    Para permitir a la parte cliente del navegador acceder la información laboral que reside en el servidor, la aplicación servidor expone un API REST.
-    Un API REST es una interfaz accesible de forma remota vía protocolo HTTP donde la información se representa en forma de recurso, siendo estos recursos identificadores de los conceptos y entidades que alberga el servidor, que en el caso de este Trabajo Fin de Grado son las experiencias laborales y las solicitudes de información.
-    En un API REST estos recursos son operables utilizando los propios métodos HTTP, a los que el estilo REST provee de semántica, interpretándose los verbos HTTP como operaciones de escritura, lectura, borrado y modificación. De esta forma un cliente web puede en este caso crear, borrar, leer y modificar experiencias laborales y solicitudes dentro del servidor enviando mensajes HTTP.
+    Para permitir a la parte cliente del navegador acceder la información laboral que reside en el servidor, la aplicación servidor expone una API REST~\cite{bib:apirest}.
+    Una API REST es una interfaz accesible de forma remota vía protocolo HTTP donde la información se representa en forma de recurso, siendo estos recursos identificadores de los conceptos y entidades que alberga el servidor, que en el caso de este Trabajo Fin de Grado son las experiencias laborales y las solicitudes de información.
+    En una API REST estos recursos son operables utilizando los propios métodos HTTP, a los que el estilo REST provee de semántica, interpretándose los verbos HTTP como operaciones de escritura, lectura, borrado y modificación. De esta forma un cliente web puede en este caso crear, borrar, leer y modificar experiencias laborales y solicitudes dentro del servidor enviando mensajes HTTP.
 
     \subsection{Base de datos}
     \label{subsec:intro_applicationserver_database}
 
-    Para almacenar las experiencias laborales de los usuarios y solicitudes, el servidor hace uso de una base de datos relacional (SQL), concretamente H2, que es un motor de bases de datos Open Source cuyas características principales son estar implementado en Java,
+    Para almacenar las experiencias laborales de los usuarios y solicitudes, el servidor hace uso de una base de datos relacional (SQL)~\cite{bib:sql}, concretamente H2~\cite{bib:h2}, que es un motor de bases de datos Open Source cuyas características principales son estar implementado en Java,
     lo que simplifica en muchos casos la integración con aplicaciones Java, y el poder levantarse en memoria o en modo embebido, de forma que sus datos se almacenan en ficheros, lo que facilita la base de desarrollo, evitando al programador tener que instalar y configurar una base de datos completa.
     El dialecto SQL que utiliza H2 es altamente compatible con el resto de dialectos de SQL, lo que a futuro permite hacer uso de otro distribuidor distinto de base de datos sin realizar grandes modificaciones.
 
-    Como librería para realizar operaciones de base de datos desde el servidor se ha hecho uso de MyBatis, una herramienta de persistencia de Java que permite definir sentencias SQL en archivos XML que pueden ser invocadas desde el código y que integra fácilmente con Spring Framework.
+    Como librería para realizar operaciones de base de datos desde el servidor se ha hecho uso de MyBatis~\cite{bib:mybatis}, una herramienta de persistencia de Java que permite definir sentencias SQL en archivos XML~\cite{bib:xml} que pueden ser invocadas desde el código y que integra fácilmente con Spring Framework.
 
-    La herramienta para definir la estructura de la base de datos es Flyway, una tecnología que permite llevar un versionado de la base de datos mediante una lista de scripts SQL, uno por versión. Estos scripts se ejecutan secuencialmente, por lo que cada script debe escribirse como una modificación del estado de la estructura de base de datos que dejó el script anterior.
+    La herramienta para definir la estructura de la base de datos es Flyway~\cite{bib:flyway}, una tecnología que permite llevar un versionado de la base de datos mediante una lista de scripts SQL, uno por versión. Estos scripts se ejecutan secuencialmente, por lo que cada script debe escribirse como una modificación del estado de la estructura de base de datos que dejó el script anterior.
     De esta manera Flyway es capaz de llevar un registro de que modificaciones se hicieron en anteriores desarrollos sobre el proyecto, para ejecutar solo los nuevos scripts, es decir, los últimos cambios, no teniendo que generar una estructura nueva en cada modificación, lo que facilita la modificación de la base de datos una vez la aplicación está en producción,
     sin la pérdida de datos que supondría eliminar toda la estructura SQL y volverla a crear en cada modificación.
 
@@ -431,24 +508,28 @@
     \section{Aplicación web}
     \label{sec:intro_webapplication}
 
-    Es la aplicación que se ejecuta en el navegador web del usuario. Su función es la de ofrecer una interfaz amigable e intuitiva al usuario para permitirle operar sobre sus recursos en el servidor y realizar consultas de datos.
+    Es la aplicación que se ejecuta en el navegador web del usuario~\cite{bib:webapp}. Su función es la de ofrecer una interfaz amigable e intuitiva al usuario para permitirle operar sobre sus recursos en el servidor y realizar consultas de datos.
     En el caso concreto de este Trabajo Fin de Grado, la aplicación web ofrece una interfaz para que el usuario pueda crear, modificar e eliminar sus experiencias laborales, realizar búsquedas de experiencias laborales mediante filtros
     y crear solicitudes de datos confidenciales a otros usuarios desde su navegador, mediante una interfaz gráfica.
 
     \subsection{Lenguaje y librerías}
     \label{subsec:intro_webapplication_languageandlibraries}
 
-    El lenguaje utilizado para desarrollar la lógica en esta parte fue JavaScript. Este es un lenguaje interpretado orientado a objetos, que se ejecuta en los navegadores y permite modificar el documento HTML que visualiza el usuario, solicitar datos remotos a un servidor y almacenar datos en el propio navegador entre otras funciones.
+    El lenguaje utilizado para desarrollar la lógica en esta parte fue JavaScript~\cite{bib:javascript}. Este es un lenguaje interpretado orientado a objetos, que se ejecuta en los navegadores y permite modificar el documento HTML~\cite{bib:html} que visualiza el usuario, solicitar datos remotos a un servidor y almacenar datos en el propio navegador entre otras funciones.
 
-    La librería utilizada para el desarrollo de la aplicación fue React, una librería que facilita el desarrollo de aplicaciones JavaScript de una sola página, cuya característica principal es la facilidad que aporta a la hora de desarrollar componentes web, es decir,
+    La librería utilizada para el desarrollo de la aplicación fue React~\cite{react}, una librería que facilita el desarrollo de aplicaciones JavaScript de una sola página, cuya característica principal es la facilidad que aporta a la hora de desarrollar componentes web~\cite{bib:webcomponents}, es decir,
     componentes reutilizables en la aplicación, que se pueden invocar múltiples veces en el código mediante una etiqueta y atributos que actúan como entrada de información en el componente, y que tienen su propia estructura interna, comportamiento y estilo.
-    Para esto React hace uso de archivos JavaScript con una extensión específica, JSX, que permiten referenciar HTML directamente desde el código JavaScript como si se tratara de un tipo de dato adicional a los que el JavaScript nativo soporta.
+    Para esto React hace uso de archivos JavaScript con una extensión específica, JSX~\cite{bib:jsx}, que permiten referenciar HTML directamente desde el código JavaScript como si se tratara de un tipo de dato adicional a los que el JavaScript nativo soporta.
     Debido al uso de esta librería, la presencia de archivos HTML en la aplicación web es mínima, limitándose a un único archivo prácticamente vacío cuya función es referenciar los recursos necesarios para la ejecución de la aplicación.
 
     \subsection{Estilo}
     \label{subsec:intro_webapplication_style}
 
-    Para agregar estilos a la interfaz gráfica y hacer la aplicación visualmente más atractiva se ha hecho uso de la librería Bootstrap. Bootstrap provee una serie de estilos CSS predefinidos y fácilmente utilizables sobre los elementos HTML de la aplicación en forma de clases HTML.
+    Para agregar estilos a la interfaz gráfica y hacer la aplicación visualmente más atractiva se ha hecho uso
+    de la librería Bootstrap\cite{bib:bootstrap}. Bootstrap provee una serie de estilos
+    CSS~\cite{bib:css} predefinidos y fácilmente utilizables sobre los elementos HTML de la aplicación en forma de clases HTML.
+    Además esta tecnología permite que las interfaces de usuario sean fácilmente adaptables a las pantallas de
+    dispositivos móviles.
 
 
     \section{Autenticación}
@@ -456,7 +537,7 @@
 
     Con el objetivo de facilitar a los usuarios el ingreso en la aplicación, esta se ha integrado con la plataforma GitHub, haciendo uso de ella como proveedora de autenticación e identidad. De esta manera, los usuarios que ya están registrados en GitHub, como suele ser el caso de los alumnos de carreras relacionadas con las TIC, pueden utilizar sus credenciales de GitHub para acceder a la aplicación. Estas credenciales se envían directamente a GitHub, por lo que no pasan directamente por la aplicación de este Trabajo Fin de Grado, de forma que en ningún momento se pone en riesgo la privacidad del usuario.
 
-    Para lograr esto se ha hecho uso del módulo Spring Social, que facilita la comunicación con GitHub vía el estándar OAuth2, una forma de integrar aplicaciones con plataformas que ofrecen parte de los datos de sus usuarios sin vulnerar su privacidad, extendiendo la sesión de estos usuarios a aplicaciones de terceros.
+    Para lograr esto se ha hecho uso del módulo Spring Social~\cite{bib:springsocial}, que facilita la comunicación con GitHub~\cite{bib:github} vía el estándar OAuth2~\cite{bib:oauth2}, una forma de integrar aplicaciones con plataformas que ofrecen parte de los datos de sus usuarios sin vulnerar su privacidad, extendiendo la sesión de estos usuarios a aplicaciones de terceros.
 
 
     \section{Herramientas}
@@ -465,75 +546,75 @@
 
     \subsection{IntelliJ IDEA}
     \label{subsec:intro_tools_intellij}
-    IntelliJ IDEA es un entorno de desarrollo integrado desarrollado por la compañía JetBrains. Tiene soporte para el lengauje Java, facilita las tareas de escritura del código, permite ejecutar y depurar aplicaciones y pruebas, integra con varias herramientas de gestión de dependencias y control de versiones, entre otras características. Se eligió este IDE para hacer el desarrollo del servidor de aplicaciones.
+    IntelliJ IDEA~\cite{bib:intellij} es un entorno de desarrollo integrado desarrollado por la compañía JetBrains. Tiene soporte para el lenguaje Java, facilita las tareas de escritura del código, permite ejecutar y depurar aplicaciones y pruebas, integra con varias herramientas de gestión de dependencias y control de versiones, entre otras características. Se eligió este IDE para hacer el desarrollo del servidor de aplicaciones.
 
     \subsection{Visual Studio Code}
     \label{subsec:intro_tools_vsc}
-    Visual Studio Code es un editor de código fuente con gran soporte para JavaScript. Permite ejecutar y depurar aplicaciones y pruebas, integra con gestores de dependencias y control de versiones. Se eligió este editor para el desarrollo de la aplicación web en React.
+    Visual Studio Code~\cite{bib:vsc} es un editor de código fuente con gran soporte para JavaScript. Permite ejecutar y depurar aplicaciones y pruebas, integra con gestores de dependencias y control de versiones. Se eligió este editor para el desarrollo de la aplicación web en React.
 
     \subsection{Maven}
     \label{subsec:intro_tools_maven}
-    Maven es una herramienta de gestión de proyectos de software desarrollada por Apache Software Foundation. Permite de forma declarativa gestionar todas las dependencias de un proyecto Java, es decir, referenciar los módulos que contienen las librerías sobre las que se construye el proyecto para poder descargarlos automáticamente del repositorio central de Maven
-    durante la construcción de la aplicación. También permite la ejecución de plugins que facilitan tareas de desarrollo como construcción, ejecución de pruebas, empaquetado, instalación, etcétera. Se utilizó para la gestión de dependecias del servidor de aplicaciones.
+    Maven~\cite{bib:maven} es una herramienta de gestión de proyectos de software desarrollada por Apache Software Foundation. Permite de forma declarativa gestionar todas las dependencias de un proyecto Java, es decir, referenciar los módulos que contienen las librerías sobre las que se construye el proyecto para poder descargarlos automáticamente del repositorio central de Maven
+    durante la construcción de la aplicación. También permite la ejecución de plugins que facilitan tareas de desarrollo como construcción, ejecución de pruebas, empaquetado, instalación, etcétera. Se utilizó para la gestión de dependencias del servidor de aplicaciones.
 
     \subsection{NPM}
     \label{subsec:intro_tools_npm}
-    NPM es el sistema de gestión de paquetes para el lenguaje JavaScript. De forma similar a Maven permite gestionar las dependencias de una aplicación web JavaScript declarándolas en un fichero y automatizando de esta forma su descarga. Se utilizó para la gestión de dependencias de la aplicación web.
+    NPM~\cite{bib:npm} es el sistema de gestión de paquetes para el lenguaje JavaScript. De forma similar a Maven permite gestionar las dependencias de una aplicación web JavaScript declarándolas en un fichero y automatizando de esta forma su descarga. Se utilizó para la gestión de dependencias de la aplicación web.
 
     \subsection{Git}
     \label{subsec:intro_tools_git}
-    Git es un sistema de control de versiones distribuido y de código abierto. Permite mantener un histórico de los cambios del proyecto de forma remota (en este caso en Github) y una copia de estos de forma local. Además permite mantener distintas ramas de desarollo en paralelo, esta característica facilita el desarollo de distintas funcionalidades del software en paralelo, ya sea por uno o varios desarrolladores, siendo posible mezclar estas distintas ramas después con la versión final, gestionando mediante el sistema Git las diferencias y conflictos entre los cambios en el código.
+    Git~\cite{bib:git} es un sistema de control de versiones distribuido y de código abierto. Permite mantener un histórico de los cambios del proyecto de forma remota (en este caso en GitHub) y una copia de estos de forma local. Además permite mantener distintas ramas de desarrollo en paralelo, esta característica facilita el desarrollo de distintas funcionalidades del software en paralelo, ya sea por uno o varios desarrolladores, siendo posible mezclar estas distintas ramas después con la versión final, gestionando mediante el sistema Git las diferencias y conflictos entre los cambios en el código.
 
 
     \section{Arquitectura hexagonal}
     \label{sec:intro_desc_hexagonal_arch}
 
-    La arquitectura hexagonal, también denominada patrón de puertos y adaptadores, es un conjunto de patrones aplicados en el lado servidor de una aplicación
+    La arquitectura hexagonal~\cite{bib:hex1, bib:hex2}, también denominada patrón de puertos y adaptadores, es un conjunto de patrones aplicados en el lado servidor de una aplicación
     que proporcionan una división en la aplicación en una serie de capas concéntricas con responsabilidades definidas.
-    Esta división tiene como objetivo separar la lógica de negocio de una aplicación de las tecnologías utilizadas como consecuencia de la infrastructura en la que yace,
+    Esta división tiene como objetivo separar la lógica de negocio de una aplicación de las tecnologías utilizadas como consecuencia de la infraestructura en la que yace,
     es decir, bases de datos, buses de eventos, protocolos de transporte, etc. Algunas de las ventajas de esta arquitectura son:
     \begin{itemize}
-        \item Las aplicaciones son más faciles de probar mediante pruebas cuyo alcance es
+        \item Las aplicaciones son más fáciles de probar mediante pruebas cuyo alcance es
         solo una de las capas en cada caso, falseando las demás en el contexto de la prueba.
-        \item Las aplicaciones son resilientes ante posibles cambios en la infrastructura, ya que en estos casos la lógica de negocio se mantiene sin modificar
-        mientras que la adaptación solo dependerá de implementar nuevos adaptadores para las nuevas tecnologías de infrastructura.
+        \item Las aplicaciones son adaptables ante posibles cambios en la infraestructura, ya que en estos casos la lógica de negocio se mantiene sin modificar
+        mientras que la adaptación solo dependerá de implementar nuevos adaptadores para las nuevas tecnologías de infraestructura.
         \item Resulta más fácil por otra parte evolucionar y modificar la lógica de negocio teniendo en cuenta que esta es totalmente independiente de las tecnologías
-        de infrastructura y frameworks.
+        de infraestructura y frameworks.
     \end{itemize}
 
     En la arquitectura hexagonal intervienen las siguientes capas:
 
     \begin{itemize}
-        \item Modelo de dominio: Compuesto por las clases que representan los conceptos con los que el sistema opera.
+        \item Modelo de dominio~\cite{bib:domainmodel}: Compuesto por las clases que representan los conceptos con los que el sistema opera.
         El modelo de dominio no debe tener dependencia con ninguna otra capa de la aplicación.
         Podemos distinguir las clases del modelo de dominio en dos tipos distintos:
 
         \begin{itemize}
-            \item Entidades: son aquellas que son susceptibles de ser identificadas mediante un identificador único y que tienen ciclo de vida, es decir, evolucionan a lo largo del tiempo a través de las operaciones que los usuarios realizan sobre ellas.
+            \item Entidades~\cite{bib:entities}: son aquellas que son susceptibles de ser identificadas mediante un identificador único y que tienen ciclo de vida, es decir, evolucionan a lo largo del tiempo a través de las operaciones que los usuarios realizan sobre ellas.
             Podemos decir que dos entidades con igual información no son la misma entidad si difieren en su identificador único.
-            Las entidades no son meras estructuras de datos anémicas, sino que continen la lógica necesaria para construirse, para cambiar de estado, para validar la información de la que se componen o la que transitan y para interoperar con otras entidades.
+            Las entidades no son meras estructuras de datos anémicas, sino que contienen la lógica necesaria para construirse, para cambiar de estado, para validar la información de la que se componen o la que transitan y para interactuar con otras entidades.
             Además son las propias entidades las que generan proyecciones de si mismas omitiendo datos en caso de que el usuario que las accede no tenga visibilidad sobre estos datos, por lo que son las encargadas de aplicar los criterios de privacidad.
             Desde este punto de vista podemos afirmar que las entidades contienen la lógica de negocio de la aplicación.
-            \item Objetos de valor: representan tipos de datos del dominio de las experincias laborales que no tienen la capacidad de evolucionar a lo largo del tiempo, ya que de cambiar representarían realidades distintas. Se puede decir que dos objetos de valor con el mismo contenido son el mismo objeto de valor.
+            \item Objetos de valor~\cite{bib:valueobjects}: representan tipos de datos del dominio de las experiencias laborales que no tienen la capacidad de evolucionar a lo largo del tiempo, ya que de cambiar representarían realidades distintas. Se puede decir que dos objetos de valor con el mismo contenido son el mismo objeto de valor.
             Los objetos de valor tienen la capacidad de validarse en su construcción, de forma que no pueden construirse a partir de datos que no cumplan por ejemplo las restricciones de formato del objeto de valor.
         \end{itemize}
 
         \item Capa de aplicación: Es la capa del sistema que expone una interfaz de servicios que pueden invocarse para realizar las distintas operaciones que componen la funcionalidad de la aplicación. Además es la encargada de crear, persistir, recuperar y borrar las entidades del modelo de domino y de invocar su lógica de negocio.
         Es una aplicación Java pura, es decir, no requiere del framework, aunque puede utilizar librerías externas con un uso utilitario no requiere en este caso de contexto de Spring para funcionar, y solo depende de las clases del modelo de dominio.
-        De este modo se logra que la lógica de negocio de la aplicación sea independiente de la infrastructura (protocolos de transporte, bases de datos, etcétera), haciendo el sistema fácilmente sea fácilmente acoplable a otras infrastructuras en caso de necesidad.
-        Además permite realizar pruebas automáticas de lógica de negocio sin tener que levantar la infrastructura de la aplicación completa, de manera que son más descriptivas del comportamiento de la aplicación y más fáciles de mantener.
+        De este modo se logra que la lógica de negocio de la aplicación sea independiente de la infraestructura (protocolos de transporte, bases de datos, etcétera), haciendo el sistema fácilmente sea fácilmente acoplable a otras infraestructuras en caso de necesidad.
+        Además permite realizar pruebas automáticas de lógica de negocio sin tener que levantar la infraestructura de la aplicación completa, de manera que son más descriptivas del comportamiento de la aplicación y más fáciles de mantener.
         Consta de los siguientes elementos:
 
         \begin{itemize}
             \item Interfaces de servicio: conocidas en la arquitectura como puertos primarios, son la entrada a la aplicación y representan el conjunto de operaciones que provee. Lo métodos de estas interfaces aceptan objetos denominados comandos en el caso de las operaciones de escritura, y denominados consultas en el caso de las operaciones de lectura.
-            Las consultas y comandos contienen los objetos de valor necesarios para la ejecución del método de servicio al que se pasan como parámetros .
+            Las consultas y comandos contienen los objetos de valor necesarios para la ejecución del método de servicio al que se pasan como parámetros.
             \item Implementación de los servicios: Implementa la anterior interfaz, por lo que tiene el código necesario para ejecutar la lógica de las operaciones desde la entrada del comando o consulta hasta la invocación de la interfaz de repositorio, con la consiguiente vuelta de información.
-            \item Interfaces de repositorio: conocidas en la arquitectura como puertos secundarios, proveen a la aplicación del juego de metódos para operar contra los sistemas donde se persisten las entidades, sean estas del dominio del sistema o no.
-            Las implementaciones de las interfaces de repositorio no son objeto de la capa aplicación, por estar fuertemente acopladas a tecnologías de transporte y persistencia, por lo que pertenecen a la siguiente capa, la capa de infrastructura.
+            \item Interfaces de repositorio: conocidas en la arquitectura como puertos secundarios, proveen a la aplicación del juego de métodos para operar contra los sistemas donde se persisten las entidades, sean estas del dominio del sistema o no.
+            Las implementaciones de las interfaces de repositorio no son objeto de la capa aplicación, por estar fuertemente acopladas a tecnologías de transporte y persistencia, por lo que pertenecen a la siguiente capa, la capa de infraestructura.
         \end{itemize}
 
 
-        \item Capa de infrastructura: Es la capa del sistema que contiene el código que no está relacionado con la lógica de negocio sino con tecnologías de transporte y persistencia en base de datos, configuración y ejecución de la aplicación.
+        \item Capa de infraestructura: Es la capa del sistema que contiene el código que no está relacionado con la lógica de negocio sino con tecnologías de transporte y persistencia en base de datos, configuración y ejecución de la aplicación.
     \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -549,10 +630,27 @@
     En este capítulo de describirá con detalle técnico el diseño e implementación de la aplicación completa desarrollada para este Trabajo Fin de Grado.
 
 
+    \section{Guía de lectura}
+    \label{sec:read_guide}
+    La información técnica de esta sección está ordenada de la siguiente manera:
+    \begin{itemize}
+        \item Arquitectura general: Introduce al lector en la estructura del sistema desde un punto de vista global.
+        \item Modelo de dominio: Se enfoca la implementación del modelo de dominio del servidor de la aplicación, donde reside la lógica de negocio y principales estructuras de datos.
+        \item Modelo de datos: Describe la estructura de la base de datos del servidor.
+        \item Diseño de la API REST: Describe los puntos de acceso que el servidor expone para invocar su funcionalidad.
+        \item Componentes web: Se describe el catálogo de componentes desarrollado para su uso en la aplicación web.
+        \item Vistas: Se describe de forma estática cada una de las pantallas que componen la aplicación web haciendo foco en el propósito funcional de la pantalla.
+        \item Casos de uso: Se describen de forma dinámica las funcionalidades que provee la aplicación, con una guía que incluye figuras que representan el camino del usuario
+    \end{itemize}
+
+    Por ello se recomienda al lector que quiera empezar por la comprensión de la aplicación desde un punto de vista funcional que
+    comience leyendo las secciones de Vistas~\ref{sec:views} y Casos de uso~\ref{sec:use_cases}.
+
+
     \section{Arquitectura general}
     \label{sec:architecture_impl}
 
-    Como se indicó anteriormente el sitema está compuesto por una aplicación web de navegador desarrollada en React y un servidor web desarrollado en Spring Boot.
+    Como se indicó anteriormente, el sistema está compuesto por una aplicación web de navegador desarrollada en React y un servidor de aplicaciones desarrollado en Spring Boot.
 
     La aplicación web consiste en una única página web compuesta de componentes web de primer nivel, que denominamos vistas, y que contienen a su vez por componentes web de segundo nivel.
     Los componentes de primer nivel, llamados vistas, renderizan pantallas completas de la aplicación de una sola página, y tienen cada uno asociada una ruta de navegador.
@@ -574,17 +672,17 @@
         \item Capa de aplicación:
 
         \begin{itemize}
-            \item Interfaces de servicio: ejemplos de servicios son el servicio de experiencias laborales y el servicio de negociaciones, por lo tanto la interfaz de servicios se compone de operaciones como creación, actulización, borrado y consulta de experiencias laborales,
+            \item Interfaces de servicio: ejemplos de servicios son el servicio de experiencias laborales y el servicio de negociaciones, por lo tanto la interfaz de servicios se compone de operaciones como creación, actualización, borrado y consulta de experiencias laborales,
             o creación, actualización, recuperación, aceptación o denegación de negociaciones.
             \item Interfaces de repositorio: ejemplos de repositorios del sistema son el de experiencias laborales y el de negociaciones, que operan contra la base de datos del sistema para persistir y recuperar estas entidades, o el repositorio de usuarios, que opera contra GitHub para recuperar información de usuarios vía conexión REST.
         \end{itemize}
 
 
-        \item Capa de infrastructura:
+        \item Capa de infraestructura:
 
         \begin{itemize}
             \item Spring Boot: utiliza clases de configuración que instancian en el contexto de Spring los bean necesarios para la ejecución de la aplicación.
-            \item Spring MVC: define clases de tipo controlador que exponen endpoints invocables vía peticiones HTTP, estas clases conforman el API REST de la aplicación. También son las encargadas de, una vez deserializadas las peticiones HTTP, generar los comandos o consultas que serán enviados en la invocación a los puertos primarios de la aplicación.
+            \item Spring MVC: define clases de tipo controlador que exponen endpoints invocables vía peticiones HTTP, estas clases conforman la API REST de la aplicación. También son las encargadas de, una vez deserializadas las peticiones HTTP, generar los comandos o consultas que serán enviados en la invocación a los puertos primarios de la aplicación.
             \item Spring Social: mediante configuración, levanta el mecanismo necesario para redireccionar a GitHub al usuario para ingresar en la aplicación, y una vez dentro permite acceder al contexto de seguridad de Spring para recuperar datos de la sesión como la identidad del usuario.
             \item Spring Template: con esta tecnología para realizar llamadas HTTP se implementa la interfaz de repositorio de usuarios, que realiza llamadas a GitHub.
             \item MyBatis: con esta tecnología para operar contra bases de datos SQL se implementan los repositorios de experiencias laborales y negociaciones.
@@ -614,8 +712,6 @@
         \item Entidad negociación: descripción de las clases e interfaces que constituyen la entidad negociación.
     \end{itemize}
 
-    Para ayudar a visualizar la implementación del modelo de dominio se han añadido las Figuras~\ref{fig:domain_model_vo} y~\ref{fig:domain_model_entities} que representan los objetos de valor y las entidades de la aplicación respectivamente.
-
     \begin{figure}
         \centering
         \includegraphics[width=15cm, keepaspectratio]{img/Modelo_dominio_vo.png}
@@ -637,17 +733,18 @@
         \item \textbf{TimeTraceable:} Interfaz que implementan aquellas clases que tienen una fecha de creación.
         \item\textbf{Entity:} Clase abstracta que extienden todas las entidades del modelo de dominio. Puesto que las entidades son siempre identificables y su fecha de creación es relevante, esta clase implementa ambas interfaces \emph{Identifiable} y \emph{TimeTraceable}
         \item \textbf{ValueObject:} Interfaz que implementan aquellas clases que son objetos de valor, es decir, aquellas clases que representan tipos de datos inmutables. Esta interfaz no tiene funcionalidad, su propósito es únicamente semántico.
-        \item \textbf{User:} Objeto de valor que representa a un usuario de la aplicación. Contiene como datos el idetificador del usuario en GitHub, su nombre de usuario y la URL de su avatar.
+        \item \textbf{User:} Objeto de valor que representa a un usuario de la aplicación. Contiene como datos el identificador del usuario en GitHub, su nombre de usuario y la URL de su avatar.
     \end{itemize}
 
     \subsection{Objetos de valor del dominio de las experiencias laborales}
     \label{subsec:work_experience_value_objects}
-    Los objetos de valor del dominio de la experiencia laboral son clases que reprensetan aquellos tipos de datos estáticos de los que se compone la información de la experiencia laboral.
+    Los objetos de valor del dominio de la experiencia laboral son clases que representan aquellos tipos de datos estáticos de los que se compone la información de la experiencia laboral.
     Su propósito es doble, por una parte aportan semántica al tipado de los atributos de la entidad experiencia laboral, por otra facilitan implementar las validaciones necesarias para construir estos atributos.
+    Aparecen representados en la Figura~\ref{fig:domain_model_vo}.
     Se listan a continuación:
 
     \begin{itemize}
-        \item \textbf{Company:} Representa la empresa donde tuvo lugar la experincia laboral.
+        \item \textbf{Company:} Representa la empresa donde tuvo lugar la experiencia laboral.
         \item \textbf{JobTitle:} Representa el puesto de trabajo de la experiencia laboral.
         \item\textbf{Technology:} Representa una tecnología que se manejó dentro de una experiencia laboral.
         \item \textbf{WorkPeriod:} Representa un periodo laboral con fecha de inicio y que puede tener o no fecha de fin. Se construye a través de una clase \emph{Builder} que permite la creación de periodos laborales concluidos o que duran hasta la actualidad.
@@ -657,7 +754,8 @@
 
     \subsection{Entidad experiencia laboral}
     \label{subsec:work_experience_entity}
-    Aquí se describen las clases e interfaces que están relacionadas con el concepto de experiencia laboral como entidad de la aplicación:
+    A continuación se describen las clases e interfaces que están relacionadas con el concepto de experiencia laboral como entidad de la aplicación,
+    Aparecen representadas en la Figura~\ref{fig:domain_model_entities}.
 
     \begin{itemize}
         \item \textbf{WorkExperienceEntity:} Clase principal, representa directamente la entidad experiencia laboral.
@@ -682,12 +780,13 @@
 
     \subsection{Objetos de valor del dominio de las negociaciones}
     \label{subsec:negotiation_value_objects}
-    Los objetos de valor del dominio de las negociaciones son clases que reprensetan aquellos tipos de datos estáticos que conforman una negociaciónl.
+    Los objetos de valor del dominio de las negociaciones son clases que representan aquellos tipos de datos estáticos que conforman una negociación.
     Su propósito es contener la información relativa al histórico de la negociación y la visibilidad que los usuarios ofrecen y solicitan en relación a las experiencias laborales.
+    Aparecen representados en la Figura~\ref{fig:domain_model_vo}.
     Se listan a continuación:
 
     \begin{itemize}
-        \item \textbf{Visibility:} Tipo enumerado que reprensenta un cambio de visibilidad sobre un campo. Tiene tres posibles valores:
+        \item \textbf{Visibility:} Tipo enumerado que representa un cambio de visibilidad sobre un campo. Tiene tres posibles valores:
         \begin{itemize}
             \item \textbf{MAKE\_PUBLIC:} En relación a un campo de una experiencia laboral indica que se solicita que se convierta en público.
             \item \textbf{KEEP\_PRIVATE:} En relación a un campo de una experiencia laboral indica que no se solicita que el campo se convierta en público, sino que se mantenga privado.
@@ -701,7 +800,8 @@
 
     \subsection{Entidad negociación}
     \label{subsec:negotiation_entity}
-    Aquí se describen las clases e interfaces que están relacionadas con el concepto de negociaciónl como entidad de la aplicación:
+    A continuación se describen las clases e interfaces que están relacionadas con el concepto de negociación como entidad de la aplicación.
+    Aparecen representados en la Figura~\ref{fig:domain_model_entities}.
 
     \begin{itemize}
         \item \textbf{NegotiationEntity:} Clase principal, representa directamente la entidad negociación.
@@ -710,7 +810,7 @@
             \item La referencia al usuario creador de la negociación.
             \item La referencia al usuario receptor de la negociación.
             \item La experiencia laboral que el usuario creador de la negociación ofreció.
-            \item La experiencia laboral que el usuario creador de la negociación solictó al usuario receptor.
+            \item La experiencia laboral que el usuario creador de la negociación solicitó al usuario receptor.
             \item El histórico de acciones que sucedieron durante la negociación.
             \item La referencia al usuario que debe dar el siguiente paso en la negociación si esta está activa.
         \end{itemize}
@@ -733,8 +833,10 @@
 
 
     \begin{itemize}
-        \item \textbf{Tabla WORK\_EXPERIENCE:} En ella se alamacenan los datos relativos a cada experiencia laboral perteneciente a los usuarios.
-        Contiene el identificador único de la experiencia laboral, su fechar de creación, el identificador del usuario al que pertenece la experiencia, el indicador de si la experiencia extá vinculada o no al perfil del usuario.
+        \item \textbf{Tabla WORK\_EXPERIENCE:} En ella se almacenan los datos relativos a cada experiencia laboral perteneciente a los usuarios.
+        Contiene el identificador único de la experiencia laboral, su fechar de creación,
+        el identificador del usuario al que pertenece la experiencia,
+        el indicador que marca si la experiencia está vinculada o no al perfil del usuario.
         Además, para cada campo de la experiencia laboral, esta tabla contiene:
         \begin{itemize}
             \item Puesto de trabajo: la visibilidad (privada o pública) del campo y una referencia a la tabla \emph{JOB\_TITLE} que contiene el puesto de trabajo.
@@ -745,7 +847,7 @@
         \end{itemize}
         \item \textbf{Tabla JOB\_TITLE:} Contiene los nombres de los puestos de trabajo relacionados con las experiencias laborales.
         \item \textbf{Tabla COMPANY:} Contiene los nombres de las empresas relacionadas con las experiencias laborales.
-        \item \textbf{Tabla WORK\_EXPERIENCE\_TECHNOLOGY:} Relaciona las experincias laborales con las tecnologías utilizadas en cada una de ellas, mediante una relación de muchas a muchas.
+        \item \textbf{Tabla WORK\_EXPERIENCE\_TECHNOLOGY:} Relaciona las experiencias laborales con las tecnologías utilizadas en cada una de ellas, mediante una relación de muchas a muchas.
         \item \textbf{Tabla TECHNOLOGY:} Contiene los nombres de las tecnologías relacionadas con las experiencias laborales.
         \item \textbf{Tabla NEGOTIATION:} En ella se almacenan los datos relativos a las negociaciones.
         Contiene el identificador único de la negociación, su fecha de creación, una referencia a la experiencia laboral ofrecida en la negociación y otra a la experiencia laboral solicitada, el identificador del usuario creador de la negociación y del usuario receptor, y el identificador del usuario que será el siguiente actor en la negociación, si aplica.
@@ -757,9 +859,9 @@
     \end{itemize}
 
 
-    \section{Diseño del API}
+    \section{Diseño de la API REST}
     \label{sec:api_desing}
-    En esta sección se describirá el API REST de la aplicación en cuatro grupos de puntos de API según su clasifiación funcional:
+    En esta sección se describirá la API REST de la aplicación en cuatro grupos de puntos de API según su clasificación funcional:
 
     \begin{itemize}
         \item Puntos de API de sesión: aquellos relacionados con la sesión del usuario.
@@ -775,10 +877,11 @@
     \subsubsection{Punto de API de obtención de usuario}
     \label{subsec:get_user}
     Este punto de API se utiliza para obtener la información del usuario que encuentra en sesión.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/user}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/user}.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /user
@@ -796,10 +899,11 @@
     \subsubsection{Punto de API de cierre de sesión}
     \label{subsec:get_user}
     Este punto de API se utiliza para invalidar la sesión del usuario en un cierre de sesión.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/user/logout}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/user/logout}.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /user/logout
@@ -811,17 +915,18 @@
 
     \subsection{Puntos de API de datos de referencia}
     \label{subsec:reference_endpoints}
-    Es el conjunto de tres puntos de API que se utilizan para proveer listados de información preexistente para las experencias laborales.
+    Es el conjunto de tres puntos de API que se utilizan para proveer listados de información preexistente para las experiencias laborales.
     Se utilizan principalmente para alimentar componentes de tipo combo en la interfaz de usuario:
 
     \subsubsection{Punto de API de datos de puesto de trabajo}
     \label{subsec:get_data_job_titles}
     Este punto de API se utiliza para obtener la lista de nombres de puestos de trabajo que ya existen en la aplicación.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/job-titles}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/data/job-titles}.
     La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /data/job-titles?name=pro
@@ -842,11 +947,12 @@
     \subsubsection{Punto de API de datos de empresas}
     \label{subsec:get_data_companies}
     Este punto de API se utiliza para obtener la lista de nombres de empresas que ya existen en la aplicación.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/companies}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/data/companies}.
     La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /data/companies?name=in
@@ -866,11 +972,12 @@
     \subsubsection{Punto de API de datos de tecnologías}
     \label{subsec:get_data_job_technologies}
     Este punto de API se utiliza para obtener la lista de nombres de tecnologías que ya existen en la aplicación.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/data/technologies}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/data/technologies}.
     La solicitud acepta un parámetro de consulta llamado \emph{name} cuyo valor permite filtrar aquellos elementos de la lista que lo contienen en su nombre:
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /data/technologies?name=j
@@ -897,12 +1004,13 @@
     \subsubsection{Punto de API de creación de experiencia laboral}
     \label{subsec:post_work_experience}
     Este punto de API se utiliza para crear una nueva experiencia laboral.
-    Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/work-experience}.
+    Las solicitudes se envían mediante el método \emph{POST} al recurso de la aplicación \emph{/work-experience}.
     El cuerpo de la solicitud contiene la información acerca de la experiencia laboral a crear en formato JSON.
     La respuesta contiene el identificador único de la nueva experiencia laboral.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			POST /work-experience
@@ -950,11 +1058,12 @@
     \subsubsection{Punto de API de obtención de experiencia laboral por identificador}
     \label{subsec:get_work_experience_id}
     Este punto de API se utiliza para recuperar una experiencia laboral por su identificador único.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a recuperar.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a recuperar.
     La respuesta contiene los datos de la experiencia laboral, con los filtros de visibilidad aplicados según el usuario solicitante.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
@@ -1005,7 +1114,7 @@
     \subsubsection{Punto de API de búsqueda de experiencias laborales}
     \label{subsec:get_work_experience}
     Este punto de API se utiliza para buscar experiencias laborales filtrando por su contenido.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/work-experience}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/work-experience}.
     La solicitud admite varios parámetros de consulta que filtran el resultado:
     \begin{itemize}
         \item \emph{scope}: Indica si se solicitan todas las experiencias laborales (\emph{scope=all}), las del usuario (\emph{scope=own}) o las del resto de usuarios (\emph{scope=foreign}).
@@ -1021,7 +1130,8 @@
     La respuesta contiene un listado de experiencias laborales, con los filtros de visibilidad aplicados según el usuario solicitante.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /work-experience?scope=own&jobTitle=programador&company=arquimea
@@ -1079,11 +1189,12 @@
     \subsubsection{Punto de API de actualización de experiencia laboral}
     \label{subsec:put_work_experience}
     Este punto de API se utiliza para actualizar una experiencia laboral.
-    Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a actualizar.
+    Las solicitudes se envían mediante el método \emph{POST} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a actualizar.
     El cuerpo de la solicitud contiene la información acerca de la experiencia laboral a actualizar en formato JSON.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			PUT /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
@@ -1128,10 +1239,11 @@
     \subsubsection{Punto de API de borrado de experiencia laboral}
     \label{subsec:delete_work_experience}
     Este punto de API se utiliza para borrar una experiencia laboral.
-    Las solicitudes se envían metidante el método \emph{DELETE} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a borrar.
+    Las solicitudes se envían mediante el método \emph{DELETE} al recurso de la aplicación \emph{/work-experience/\{id\}}, donde \emph{id} es el identificador de la experiencia laboral a borrar.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			DELETE /work-experience/99784c87-70d0-43cc-a340-aa28a19cb8a3
@@ -1148,12 +1260,13 @@
     \subsubsection{Punto de API de creación de negociación}
     \label{subsec:post_work_experience}
     Este punto de API se utiliza para crear una nueva negociación.
-    Las solicitudes se envían metidante el método \emph{POST} al recurso de la aplicación \emph{/negotiation}.
+    Las solicitudes se envían mediante el método \emph{POST} al recurso de la aplicación \emph{/negotiation}.
     El cuerpo de la solicitud contiene las referencias a las experiencias laborales entre las que se establece la negociación.
     La respuesta contiene el identificador único de la nueva negociación.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			POST /negotiation
@@ -1173,11 +1286,12 @@
     \subsubsection{Punto de API de agregación de acciones a una negociación}
     \label{subsec:put_negotiation}
     Este punto de API se utiliza para agregar una nueva acción a una negociación.
-    Las solicitudes se envían metidante el método \emph{PUT} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a la que se le va a agregar una nueva acción.
+    Las solicitudes se envían mediante el método \emph{PUT} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a la que se le va a agregar una nueva acción.
     El cuerpo de la solicitud contiene la información de la nueva acción a añadir.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			PUT /negotiation/958961ae-deaa-484f-b3a7-39bcb7ca0df0/action
@@ -1207,11 +1321,12 @@
     \subsubsection{Punto de API de obtención de negociación por identificador}
     \label{subsec:get_negotiation_id}
     Este punto de API se utiliza para recuperar una negociación por su identificador único.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a recuperar.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/negotiation/\{id\}}, donde \emph{id} es el identificador de la negociación a recuperar.
     La respuesta contiene los datos de la negociación, con los filtros de visibilidad aplicados a algunos campos según el usuario solicitante.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /negotiation/958961ae-deaa-484f-b3a7-39bcb7ca0df0
@@ -1267,14 +1382,15 @@
     \subsubsection{Punto de API de obtención de negociaciones}
     \label{subsec:get_negotiation}
     Este punto de API se utiliza obtener las negociaciones en las cuales el usuario solicitantes está implicado.
-    Las solicitudes se envían metidante el método \emph{GET} al recurso de la aplicación \emph{/negotiation}.
+    Las solicitudes se envían mediante el método \emph{GET} al recurso de la aplicación \emph{/negotiation}.
     La solicitud admite un parámetro de consulta, \emph{scope},
     este parámetro indica si deben devolverse las negociaciones de las que el usuario es creador (\emph{scope=creator}) o de las que el usuario es receptor (\emph{scope=receiver}).
     Por defecto su valor es(\emph{scope=creator}.
     La respuesta contiene un listado de negociaciones.
     A continuación se muestra un ejemplo de llamada al punto de API:
 
-        {\footnotesize
+        {\scriptsize
+    \linespread{1}
     \begin{verbatim}
 			-- Solicitud
 			GET /work-experience?scope=own&jobTitle=programador&company=arquimea
@@ -1334,12 +1450,17 @@
 
     \section{Componentes web}
     \label{sec:web_components}
-    En esta sección se describen los componentes web que se implementaron para su uso en la interfaz de usuario de la applicación.
+    En esta sección se describen los componentes web que se implementaron para su uso en la interfaz de usuario de la aplicación.
+    Los componentes web utilizados para este Trabajo Fin de Grado no pertenecen a ninguna librería, sino que fueron desarrollados por el autor desde
+    cero utilizando la librería de desarrollo React.
+    Por ello lo que a continuación se describe es el catálogo completo desarrollado
+    explicando propósito, interfaz de programación e interfaz gráfica
+    de cada componente creado. Los estilos aplicados a cada componente sí provienen de la hoja de estilos de Bootstrap.
 
     \subsection{ActionDisplay}
     \label{subsec:wc_action_display}
     Este componente que se utiliza en la vista de detalles de una negociación se utiliza para visualizar cada una de las acciones del histórico de una negociación.
-    Informa de el usuario que realizó la acción, el tipo de acción que realizó, el tiempo que trancurrió desde que se realizó la acción y, en caso de que la acción sea una modificación de la negociación, la visibilidad que se ofrece y solicita entre las experiencias laborales.
+    Informa del usuario que realizó la acción, el tipo de acción que realizó, el tiempo que transcurrió desde que se realizó la acción y, en caso de que la acción sea una modificación de la negociación, la visibilidad que se ofrece y solicita entre las experiencias laborales.
     Este componente se muestra en la Figura~\ref{fig:component_action_display}.
 
     \begin{figure}
@@ -1422,7 +1543,7 @@
 
     \subsection{CardSkeleton}
     \label{subsec:wc_card_skeleton}
-    Componente visual que muestra una tarjeta con datos en blanco, utilizado para mantener una experiencia de usuario agradable durante el tiempo que tardan en cargarse algunos que se consulta al API REST.
+    Componente visual que muestra una tarjeta con datos en blanco, utilizado para mantener una experiencia de usuario agradable durante el tiempo que tardan en cargarse algunos que se consulta a la API REST.
     Este componente se muestra en la Figura~\ref{fig:component_card_skeleton}.
 
     \begin{figure}
@@ -1461,7 +1582,7 @@
 
     \subsection{Chip}
     \label{subsec:wc_chip}
-    Componente de tipo visual que permite representar un texto envuelto en un óvalo. Se usa para reprensentar un elemento en un listado de valores.
+    Componente de tipo visual que permite representar un texto envuelto en un óvalo. Se usa para representar un elemento en un listado de valores.
     Este componente se muestra en la Figura~\ref{fig:component_chip}.
 
     \begin{figure}
@@ -1629,7 +1750,7 @@
     \begin{itemize}
         \item \textbf{workExperience:} Objeto con el contenido de la experiencia laboral de la que se muestran los datos, ver definición de \emph{WorkExperienceEntity} en la Subsección~\ref{subsec:work_experience_entity}.
         \item \textbf{afterDelete:} Función de tipo callback que se ejecuta después del borrado de la experiencia laboral.
-        \item \textbf{editable:} Si se establece a \emph{true} permite eliminar y navegar a la vista de modifiación de la experiencia laboral.
+        \item \textbf{editable:} Si se establece a \emph{true} permite eliminar y navegar a la vista de modificación de la experiencia laboral.
     \end{itemize}
 
     \subsection{Radio}
@@ -1732,7 +1853,7 @@
     \section{Vistas}
     \label{sec:views}
     En esta sección se describen las vistas que componen la aplicación web.
-    Para crear el sistema de vistas de la aplicación de una sola pagína, el enrutador de React asocia a cada vista una ruta de navegador concreta. Esta es la relación entre vistas y rutas dentro de la aplicación:
+    Para crear el sistema de vistas de la aplicación de una sola página, el enrutador de React asocia a cada vista una ruta de navegador concreta. Esta es la relación entre vistas y rutas dentro de la aplicación:
 
     \begin{itemize}
         \item Vista de \emph{Mis experiencias}: Asociada a la ruta \emph{/my-work-experiences}.
@@ -1816,13 +1937,13 @@
     \begin{itemize}
         \item Puesto de trabajo: Nombre del puesto de trabajo de la experiencia laboral.
         \item Empresa: Nombre de la empresa de la experiencia laboral.
-        \item Tecnologías: Listado de las tecnologías que se emplearon en la experienca laboral.
+        \item Tecnologías: Listado de las tecnologías que se emplearon en la experiencia laboral.
         \item Salario: Salario bruto anual que se percibió en la experiencia laboral.
         \item Periodo laboral: Compuesto de una entrada de texto para la fecha de inicio, un botón de radio que permite indicar si la experiencia dura hasta el presente, y en caso negativo, otra entrada de texto para la fecha de fin.
     \end{itemize}
     Además cada campo tiene un interruptor que permite elegir si el campo tiene una visibilidad pública o privada para el resto de usuarios. Aquellos campos marcados como privados solo serán visibles para el propio usuario y para aquellos que hayan finalizado una negociación con el con el resultado de revelar dicho campo.
     Finalmente el formulario pregunta al usuario si desea vincular la experiencia que está creando con su perfil, en caso negativo esta experiencia aparecerá como anónima para el resto de usuarios.
-    Una vez el usuario hace click en el botón \emph{Crear experiencia laboral}, la experiencia será creada y el usario redirigido a la vista \emph{Mis experiencias}.
+    Una vez el usuario hace click en el botón \emph{Crear experiencia laboral}, la experiencia será creada y el usuario redirigido a la vista \emph{Mis experiencias}.
 
     \begin{figure}
         \centering
@@ -1835,7 +1956,7 @@
     El propósito de esta vista es permitir a un usuario modificar datos de una de sus experiencias laborales.
     Esta vista proporciona un formulario igual que el de la vista \emph{Añadir experiencia}, pero con los campos ya cumplimentados con la información de la experiencia laboral a editar para que el usuario los modifique.
     La vista está representada en la Figura~\ref{fig:view_edit_work_experience}.
-    Una vez el usuario hace click en el botón \emph{Guardar}, la experiencia será modificada y el usario redirigido a la vista \emph{Mis experiencias}.
+    Una vez el usuario hace click en el botón \emph{Guardar}, la experiencia será modificada y el usuario redirigido a la vista \emph{Mis experiencias}.
 
     \begin{figure}
         \centering
@@ -1879,7 +2000,7 @@
         \item Experiencia solicitada: En la parte derecha de la vista, el usuario solicitante selecciona aquellos campos privados de la experiencia laboral del receptor que quiere que le sean revelados.
     \end{itemize}
 
-    Una vez el usuario hace click en el botón \emph{Solicitar información} será redigirigido a la vista \emph{Mis solicitudes}.
+    Una vez el usuario hace click en el botón \emph{Solicitar información} será redirigido a la vista \emph{Mis solicitudes}.
 
     \begin{figure}
         \centering
@@ -1893,7 +2014,7 @@
     Los usuarios que aun no participan en ninguna solicitud de información verán la vista como se muestra en la Figura~\ref{fig:view_my_negotiations_empty}.
     El resto de usuario verá una lista de tarjetas como la que se muestra en la figura Figura~\ref{fig:view_my_negotiations}.
     Cada tarjeta presentada en la lista corresponde con una solicitud de información, en ella aparece el solicitante en el lado izquierdo de la tarjeta, el receptor de la solicitud en el lado derecho, el estado de la negociación en el centro de la tarjeta, y un resumen del último paso de la solicitud en la parte de abajo.
-    Haciendo click en el botón \emph{Ver detalles} de una tarjeta el usario navegará a la vista de \emph{Detalles de solicitud}.
+    Haciendo click en el botón \emph{Ver detalles} de una tarjeta el usuario navegará a la vista de \emph{Detalles de solicitud}.
 
     \begin{figure}
         \centering
@@ -1907,13 +2028,13 @@
         \caption{Vista \emph{Mis solicitudes}.}\label{fig:view_my_negotiations}
     \end{figure}
 
-    \subsection{Detalles de solictud}
+    \subsection{Detalles de solicitud}
     \label{subsec:view_negotiation_details}
     En esta vista se presentan al usuario los detalles de una solicitud.
     La vista se divide entres alturas:
 
     \begin{itemize}
-        \item Parte superior: A la izquiera se muestran el estado de la solictud y el tiempo transcurrido desde que fue creada.
+        \item Parte superior: A la izquierda se muestran el estado de la solicitud y el tiempo transcurrido desde que fue creada.
         A la derecha se muestran los botones con las posibles acciones que el usuario puede aplicar a la solicitud,
         como se muestra en la Figura~\ref{fig:negotiation_details_buttons}, a distinguir:
         \begin{itemize}
@@ -1924,11 +2045,11 @@
             por el otro usuario, es decir, el usuario puede modificar la visibilidad que se ofrece
             y solicita para los campos de las experiencias laborales asociadas a la solicitud.
             Hacer click en el botón de negociar hace que emerja un componente de tipo modal como el que se muestra en
-            la Figura~\ref{fig:negotiation_details_modal}, similar a la vista de \emph{Solcitud de información}.
+            la Figura~\ref{fig:negotiation_details_modal}, similar a la vista de \emph{Solicitud de información}.
             Cuando el usuario hace click en el botón \emph{Enviar} del modal, se genera un nuevo paso en la solicitud,
             y el turno pasa al otro usuario implicado
         \end{itemize}
-        \item Parte media: A la izquiera se muestra una tarjeta con los detalles de la experiencia laboral ofrecida en la solicitud.
+        \item Parte media: A la izquierda se muestra una tarjeta con los detalles de la experiencia laboral ofrecida en la solicitud.
         A la derecha otra tarjeta con los detalles de la experiencia laboral solicitada.
         \item Parte inferior: A modo de conversación aparecen los distintos pasos que los usuarios
         implicados han ido dando en la negociación desde su creación hasta su estado actual, como se muestra en la Figura~\ref{fig:negotiation_details}.
@@ -1981,7 +2102,7 @@
     \subsection{Antecedentes: Ingreso en la aplicación}
     \label{subsec:background}
     Durante la descripción de los casos de uso, siempre se asumirá que ambos usuarios han realizado los pasos de inicio de sesión
-    que se describen a continuación y mantinen su sesión activa a la hora de interactuar en la aplicación:
+    que se describen a continuación y mantienen su sesión activa a la hora de interactuar en la aplicación:
 
     \begin{figure}
         \centering
@@ -2006,7 +2127,7 @@
 
     \subsection{Añadir experiencia laboral}
     \label{subsec:add_work_experience}
-    Para este escenario, el \emph{Usuario 1} ha realizado los pasos que figuran el la Subsección~\ref{subsec:background}
+    Para este escenario, el \emph{Usuario 1} ha realizado los pasos que figuran en la Subsección~\ref{subsec:background}
     por lo que su sesión está iniciada y se encuentra en la vista \emph{Mis experiencias} (Figura~\ref{fig:use_cases_1_1}).
 
     \begin{figure}
@@ -2122,7 +2243,7 @@
     \begin{enumerate}
         \item El \emph{Usuario 1} rellena los filtros en la parte superior de la pantalla para realizar
         una búsqueda de las experiencias que le interesan.
-        \item Cuando los filtros se rellenan la información de la pagína se actualiza automáticamente
+        \item Cuando los filtros se rellenan la información de la página se actualiza automáticamente
         para mostrar los resultados (Figura~\ref{fig:use_cases_4_2}).
     \end{enumerate}
 
@@ -2207,7 +2328,7 @@
     \begin{figure}
         \centering
         \includegraphics[width=15cm, keepaspectratio]{img/6.5.png}
-        \caption{El \emph{Usuario 1} visualiza el cambio en el histórico de la solcitud.}
+        \caption{El \emph{Usuario 1} visualiza el cambio en el histórico de la solicitud.}
         \label{fig:use_cases_6_5}
     \end{figure}
 
@@ -2242,187 +2363,271 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EXPERIMENTOS Y VALIDACIÓN %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    \cleardoublepage
-    \chapter{Experimentos y validación}
-
-    [TODO]
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTADOS %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     \cleardoublepage
-    \chapter{Resultados}
 
-    {\footnotesize
-        \begin{verbatim}
+
+    \chapter{Pruebas y validación}
+    Para la validación de la aplicación se siguieron dos estrategias distintas:
+
+
+    \section{Pruebas manuales}
+    \label{sec:manual_tests}
+    Una vez realizado el desarrollo completo de la aplicación se aplicaron pruebas de usuario sobre la interfaz de usuario
+    basadas en los casos de uso definidos en la Sección~\ref{sec:use_cases} y teniendo en cuenta los requisitos definidos
+    en la Sección~\ref{sec:target_requirements}. Los defectos que se encontrar durante las pruebas manuales fueron corregidos
+    hasta que la aplicación cumplió con todos los requisitos.
+
+
+    \section{Pruebas automáticas de aceptación}
+    \label{sec:acceptance_tests}
+    Adicionalmente a las pruebas manuales, se implementaron unas pruebas automáticas utilizando el framework de pruebas Cucumber~\cite{bib:cucumber}
+    con el propósito de detectar futuros errores derivados de la modificación de la lógica de negocio de la aplicación.
+    Para ello se seleccionaron los requisitos que se consideraron críticos para el funcionamiento correcto de la aplicación,
+    aquellos relacionados con la privacidad (requisitos 5, 6, 7, 8, 14 y 15 de la Sección~\ref{sec:target_requirements}).
+    Se realizaron dos baterías de pruebas distintas:
+    \begin{itemize}
+        \item La primera comprueba la visibilidad de campos y la identidad de usuarios en experiencias laborales
+        sobre las que no media ninguna solicitud de información.
+        \item La segunda realiza las mismas comprobaciones en experiencias laborales sobre las que median solicitudes
+        de información que han sido aprobadas, se comprueba por lo tanto la visibilidad de los campos para usuarios
+        involucrados en solicitudes aceptadas.
+    \end{itemize}
+
+    Las baterías de pruebas realizadas para esta sección se referencian abajo:
+
+    \subsection{Pruebas sobre experiencias laborales sin solicitudes}
+    Esta batería de pruebas comprueba el funcionamiento por defecto de la visibilidad de los campos de una experiencia laboral
+    a la hora de mostrarse estos a los usuarios.
+    Para los antecedentes de la prueba se crean dos usuarios distintos:
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
 Feature: Work experience visibility by default
-  Check the work experiences visibility business rules by default.
+Check the work experiences visibility business rules by default.
 
-  Background:
-    Given a user with id "user_1"
-    And a user with id "user_2"
-    And the user "user_1" starts to fill the create work experience form
+Background:
+Given a user with id "user_1"
+And a user with id "user_2"
+And the user "user_1" starts to fill the create work experience form
+    \end{verbatim}
+    }
+    La primera prueba verifica que un usuario puede acceder a todos los campos y a su propia identidad de una experiencia
+    laboral propia que contiene toda esta información marcada como pública.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 1 creates a work experience associated to his profile with all fields public.
+When the user "user_1" fills the job title as "developer" with "public" visibility
+And the user "user_1" fills the company as "Google" with "public" visibility
+And the user "user_1" adds a technology "Java" with "public" visibility
+And the user "user_1" adds a work period from "2016-08-16" to present with "public" visibility
+And the user "user_1" adds a salary of 50000 "EUR" with "public" visibility
+And the user "user_1" sends his work experience to create, associated to his profile, with reference ID "work_experience_1"
+When the user "user_1" gets his own work experiences
+Then the work experience "work_experience_1" is present
+And the work experience job title is present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is NOT anonymous
+    \end{verbatim}
+    }
+    Esta prueba verifica que un usuario puede acceder a todos los campos y a su propia identidad de una experiencia
+    laboral propia que es anónima y tiene marcados todos los campos como privados, ya que el mismo es el poseedor.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 1 creates a work experience anonymously with all fields private,
+  but he can see all data.
+When the user "user_1" fills the job title as "developer" with "private" visibility
+And the user "user_1" fills the company as "Google" with "private" visibility
+And the user "user_1" adds a technology "Java" with "private" visibility
+And the user "user_1" adds a work period from "2016-08-16" to present
+  with "private" visibility
+And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
+And the user "user_1" sends his work experience to create, anonymously,
+  with reference ID "work_experience_1"
+When the user "user_1" gets his own work experiences
+Then the work experience "work_experience_1" is present
+And the work experience job title is present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is NOT anonymous
+    \end{verbatim}
+    }
+    Esta prueba verifica que otro usuario puede acceder a todos los campos y a la identidad de una experiencia
+    laboral ajena que contiene toda esta información marcada como pública.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 1 creates a work experience associated to his profile with all fields public,
+  then User 2 can see all data.
+When the user "user_1" fills the job title as "developer" with "public" visibility
+And the user "user_1" fills the company as "Google" with "public" visibility
+And the user "user_1" adds a technology "Java" with "public" visibility
+And the user "user_1" adds a work period from "2016-08-16" to present with "public" visibility
+And the user "user_1" adds a salary of 50000 "EUR" with "public" visibility
+And the user "user_1" sends his work experience to create, associated to his profile,
+  with reference ID "work_experience_1"
+When the user "user_2" gets his own work experiences
+Then the work experience "work_experience_1" is NOT present
+When the user "user_2" gets work experiences of others
+Then the work experience "work_experience_1" is present
+And the work experience job title is present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is NOT anonymous
+    \end{verbatim}
+    }
+    Esta prueba verifica que otro usuario NO puede acceder a ningún campo ni a la identidad de una experiencia
+    laboral ajena que es anónima y tiene marcados todos los campos como privados.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 1 creates a work experience anonymously with all fields private,
+  then User 2 can't see any field nor the owner identity.
+When the user "user_1" fills the job title as "developer" with "private" visibility
+And the user "user_1" fills the company as "Google" with "private" visibility
+And the user "user_1" adds a technology "Java" with "private" visibility
+And the user "user_1" adds a work period from "2016-08-16" to present with "private" visibility
+And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
+And the user "user_1" sends his work experience to create, anonymously,
+  with reference ID "work_experience_1"
+When the user "user_2" gets his own work experiences
+Then the work experience "work_experience_1" is NOT present
+When the user "user_2" gets work experiences of others
+Then the work experience "work_experience_1" is present
+And the work experience job title is NOT present
+And the work experience company is NOT present
+And the work experience technologies are NOT present
+And the work experience work period is NOT present
+And the work experience salary is NOT present
+And the work experience user is anonymous
 
-  Scenario: User 1 creates a work experience associated to his profile with all fields public.
-    When the user "user_1" fills the job title as "developer" with "public" visibility
-    And the user "user_1" fills the company as "Google" with "public" visibility
-    And the user "user_1" adds a technology "Java" with "public" visibility
-    And the user "user_1" adds a work period from "2016-08-16" to present with "public" visibility
-    And the user "user_1" adds a salary of 50000 "EUR" with "public" visibility
-    And the user "user_1" sends his work experience to create, associated to his profile, with reference ID "work_experience_1"
-    When the user "user_1" gets his own work experiences
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is NOT anonymous
-
-  Scenario: User 1 creates a work experience anonymously with all fields private, but he can see all data.
-    When the user "user_1" fills the job title as "developer" with "private" visibility
-    And the user "user_1" fills the company as "Google" with "private" visibility
-    And the user "user_1" adds a technology "Java" with "private" visibility
-    And the user "user_1" adds a work period from "2016-08-16" to present with "private" visibility
-    And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
-    And the user "user_1" sends his work experience to create, anonymously, with reference ID "work_experience_1"
-    When the user "user_1" gets his own work experiences
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is NOT anonymous
-
-  Scenario: User 1 creates a work experience associated to his profile with all fields public, then User 2 can see all data.
-    When the user "user_1" fills the job title as "developer" with "public" visibility
-    And the user "user_1" fills the company as "Google" with "public" visibility
-    And the user "user_1" adds a technology "Java" with "public" visibility
-    And the user "user_1" adds a work period from "2016-08-16" to present with "public" visibility
-    And the user "user_1" adds a salary of 50000 "EUR" with "public" visibility
-    And the user "user_1" sends his work experience to create, associated to his profile, with reference ID "work_experience_1"
-    When the user "user_2" gets his own work experiences
-    Then the work experience "work_experience_1" is NOT present
-    When the user "user_2" gets work experiences of others
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is NOT anonymous
-
-  Scenario: User 1 creates a work experience anonymously with all fields private, then User 2 can't see any field nor the owner identity.
-    When the user "user_1" fills the job title as "developer" with "private" visibility
-    And the user "user_1" fills the company as "Google" with "private" visibility
-    And the user "user_1" adds a technology "Java" with "private" visibility
-    And the user "user_1" adds a work period from "2016-08-16" to present with "private" visibility
-    And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
-    And the user "user_1" sends his work experience to create, anonymously, with reference ID "work_experience_1"
-    When the user "user_2" gets his own work experiences
-    Then the work experience "work_experience_1" is NOT present
-    When the user "user_2" gets work experiences of others
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is NOT present
-    And the work experience company is NOT present
-    And the work experience technologies are NOT present
-    And the work experience work period is NOT present
-    And the work experience salary is NOT present
-    And the work experience user is anonymous
-
-        \end{verbatim}
+    \end{verbatim}
     }
 
-    {\footnotesize
-        \begin{verbatim}
+    \subsection{Pruebas sobre experiencias laborales con solicitudes aprobadas}
+    Esta batería de pruebas comprueba el impacto sobre la visibilidad de los campos de las experiencias laborales para los usuarios
+    cuando se acepta una solicitud de información.
+    Para los antedecentes de la prueba se crean dos usuarios distintos, cada uno de ellos tiene una experiencia laboral
+    con todos los campos privados y no vinculada a su perfil de usuario, es decir, anónima:
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
 Feature: Work experience visibility with negotiations
-  Check the work experiences visibility business rules with negotiation.
+Check the work experiences visibility business rules with negotiation.
 
-  Background:
-    Given a user with id "user_1"
-    And a user with id "user_2"
-    And the user "user_1" starts to fill the create work experience form
-    And the user "user_1" fills the job title as "developer" with "private" visibility
-    And the user "user_1" fills the company as "Google" with "private" visibility
-    And the user "user_1" adds a technology "Java" with "private" visibility
-    And the user "user_1" adds a work period from "2016-08-16" to present with "private" visibility
-    And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
-    And the user "user_1" sends his work experience to create, anonymously, with reference ID "work_experience_1"
-    And the user "user_2" starts to fill the create work experience form
-    And the user "user_2" fills the job title as "developer" with "private" visibility
-    And the user "user_2" fills the company as "Amazon" with "private" visibility
-    And the user "user_2" adds a technology "JavaScript" with "private" visibility
-    And the user "user_2" adds a work period from "2017-05-12" to present with "private" visibility
-    And the user "user_2" adds a salary of 60000 "EUR" with "private" visibility
-    And the user "user_2" sends his work experience to create, anonymously, with reference ID "work_experience_2"
-
-  Scenario: Without negotiation, User 2 can't see anything about User 1's experience
-    When the user "user_2" gets work experiences of others
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is NOT present
-    And the work experience company is NOT present
-    And the work experience technologies are NOT present
-    And the work experience work period is NOT present
-    And the work experience salary is NOT present
-    And the work experience user is anonymous
-
-  Scenario:User 2 creates a negotiation asking for visibility for all fields and offering all the fields of his work experience
-    When the user "user_2" creates a data request to unlock "work_experience_1" offering "work_experience_2"
-    And the user "user_2" adds a negotiation step
-    And asks for visibility for "job title, company, technologies, work period and salary"
-    And offers visibility for "job title, company, technologies, work period and salary"
-    And "user_2" sends the negotiation
-    And "user_1" accepts the negotiation
-    When the user "user_2" gets work experiences of others
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is anonymous
-    When the user "user_1" gets work experiences of others
-    Then the work experience "work_experience_2" is present
-    And the work experience job title is present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is anonymous
-
-  Scenario: User 2 creates a negotiation asking for visibility for some fields of the User 1's work experience and offering some fields of his work experience
-    When the user "user_2" creates a data request to unlock "work_experience_1" offering "work_experience_2"
-    And the user "user_2" adds a negotiation step
-    And asks for visibility for "job title, work period and salary"
-    And offers visibility for "company and technologies"
-    And "user_2" sends the negotiation
-    And "user_1" accepts the negotiation
-    When the user "user_2" gets work experiences of others
-    Then the work experience "work_experience_1" is present
-    And the work experience job title is present
-    And the work experience company is NOT present
-    And the work experience technologies are NOT present
-    And the work experience work period is present
-    And the work experience salary is present
-    And the work experience user is anonymous
-    When the user "user_1" gets work experiences of others
-    Then the work experience "work_experience_2" is present
-    And the work experience job title is NOT present
-    And the work experience company is present
-    And the work experience technologies are present
-    And the work experience work period is NOT present
-    And the work experience salary is NOT present
-    And the work experience user is anonymous
-
-
-        \end{verbatim}
+Background:
+Given a user with id "user_1"
+And a user with id "user_2"
+And the user "user_1" starts to fill the create work experience form
+And the user "user_1" fills the job title as "developer" with "private" visibility
+And the user "user_1" fills the company as "Google" with "private" visibility
+And the user "user_1" adds a technology "Java" with "private" visibility
+And the user "user_1" adds a work period from "2016-08-16" to present with "private" visibility
+And the user "user_1" adds a salary of 50000 "EUR" with "private" visibility
+And the user "user_1" sends his work experience to create, anonymously,
+  with reference ID "work_experience_1"
+And the user "user_2" starts to fill the create work experience form
+And the user "user_2" fills the job title as "developer" with "private" visibility
+And the user "user_2" fills the company as "Amazon" with "private" visibility
+And the user "user_2" adds a technology "JavaScript" with "private" visibility
+And the user "user_2" adds a work period from "2017-05-12" to present with "private" visibility
+And the user "user_2" adds a salary of 60000 "EUR" with "private" visibility
+And the user "user_2" sends his work experience to create, anonymously,
+  with reference ID "work_experience_2"
+    \end{verbatim}
+    }
+    En esta prueba se demuestra que el segundo usuario no ve ningún campo de la experiencia laboral del primero
+    y que esta última se le muestra como anónima.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: Without negotiation, User 2 can't see anything about User 1's experience
+When the user "user_2" gets work experiences of others
+Then the work experience "work_experience_1" is present
+And the work experience job title is NOT present
+And the work experience company is NOT present
+And the work experience technologies are NOT present
+And the work experience work period is NOT present
+And the work experience salary is NOT present
+And the work experience user is anonymous
+    \end{verbatim}
+    }
+    Para esta prueba el segundo usuario crea una solicitud de información solicitando visibilidad para todos los campos de
+    la experiencia laboral del primer usuario y ofreciendo visibilidad a todos los campos de la experiencia laboral que él mismo
+    ofrece. Cuando el primer usuario acepta la solicitud el resultado es que ambas experiencias laborales son totalmente visibles
+    a ambos usuarios.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 2 creates a negotiation asking for visibility for all fields and offering
+  all the fields of his work experience
+When the user "user_2" creates a data request to unlock "work_experience_1" offering "work_experience_2"
+And the user "user_2" adds a negotiation step
+And asks for visibility for "job title, company, technologies, work period and salary"
+And offers visibility for "job title, company, technologies, work period and salary"
+And "user_2" sends the negotiation
+And "user_1" accepts the negotiation
+When the user "user_2" gets work experiences of others
+Then the work experience "work_experience_1" is present
+And the work experience job title is present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is anonymous
+When the user "user_1" gets work experiences of others
+Then the work experience "work_experience_2" is present
+And the work experience job title is present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is anonymous
+    \end{verbatim}
+    }
+    Para esta prueba el segundo usuario crea una solicitud de información solicitando visibilidad para algunos los campos de
+    la experiencia laboral del primer usuario y ofreciendo visibilidad a algunos los campos de la experiencia laboral que él mismo
+    ofrece. Cuando el primer usuario acepta la solicitud el resultado es cada usuario podrá ver sólo los campos de la experiencia
+    laboral del otro que formaran parte del acuerdo.
+        {\scriptsize
+    \linespread{1}
+    \begin{verbatim}
+Scenario: User 2 creates a negotiation asking for visibility for some fields of
+  the User 1's work experience and offering some fields of his work experience
+When the user "user_2" creates a data request to unlock "work_experience_1" offering "work_experience_2"
+And the user "user_2" adds a negotiation step
+And asks for visibility for "job title, work period and salary"
+And offers visibility for "company and technologies"
+And "user_2" sends the negotiation
+And "user_1" accepts the negotiation
+When the user "user_2" gets work experiences of others
+Then the work experience "work_experience_1" is present
+And the work experience job title is present
+And the work experience company is NOT present
+And the work experience technologies are NOT present
+And the work experience work period is present
+And the work experience salary is present
+And the work experience user is anonymous
+When the user "user_1" gets work experiences of others
+Then the work experience "work_experience_2" is present
+And the work experience job title is NOT present
+And the work experience company is present
+And the work experience technologies are present
+And the work experience work period is NOT present
+And the work experience salary is NOT present
+And the work experience user is anonymous
+    \end{verbatim}
     }
 
 
@@ -2441,19 +2646,64 @@ Feature: Work experience visibility with negotiations
     \section{Consecución de objetivos}
     \label{sec:consecucion-objetivos}
 
-    [TODO]
+    Desde el punto de vista del objetivo general, la aplicación cumple con el propósito de permitir a estudiantes
+    y trabajadores del sector TIC evaluar cuál es el rango salarial justo para una oferta de empleo mediante la utilización
+    de esta para obtener información de otros usuarios con experiencias laborales similares a la oferta de empleo que se
+    quiere estimar, ya que estas experiencias laborales pueden arrojar información sobre los principales parámetros que
+    definen una oferta de empleo, es decir, puesto de trabajo, empresa, tecnologías empleadas, salario y período de actividad.
 
+    Desde el punto de vista de los objetivos específicos:
 
-    \section{Aplicación de lo aprendido}
-    \label{sec:aplicacion}
-
-    [TODO]
+    \begin{enumerate}
+        \item La aplicación permite a los usuarios añadir sus experiencias laborales a la plataforma,
+        buscar experiencias laborales de otros usuarios y solicitar aquella información que no sea accesible en primer lugar.
+        \item La aplicación es accesible para todo usuario que posea una cuenta de GitHub, sin necesidad de registro adicional,
+        algo común en estudiantes y empleados del sector TIC.
+        \item Para toda experiencia laboral, el usuario al que pertenece puede elegir en todo momento qué campos de ésta son visibles
+        al resto de los usuarios y qué campos son privados y por lo tanto invisibles.
+        Cuando un usuario solicita a otro usuario información privada, es este último el que tiene finalmente el control para revelarla o no hacerlo.
+        \item Los usuarios pueden operar con experiencias laborales propias que no vinculan a su perfil de usuario.
+        De esta forma la experiencia laboral aparecerá como anónima tanto en la búsqueda de experiencias como en las solicitudes de información
+        de forma que será imposible para el resto de usuarios averiguar a quién pertenece.
+        \item La plataforma proporciona un mecanismo de búsqueda basado en todos los filtros cualitativos y cuantitativos que componen una
+        experiencia laboral de forma que resulta sencillo encontrar aquellas que son del interés de un usuario.
+        \item El mecanismo para obtener información pública de la plataforma es tan sencillo como realizar búsquedas con filtros.
+        El mecanismo para obtener información privada de otros usuarios fomenta mediante la oferta de información privada propia que los usuarios
+        se muestren receptivos a la hora de desvelar su información.
+    \end{enumerate}
 
 
     \section{Lecciones aprendidas}
     \label{sec:lecciones_aprendidas}
+    Se ha desarrollado finalmente una aplicación que cumple con los objetivos y requisitos propuestos al inicio del desarrollo,
+    es decir, permite a usuarios de las TIC intercambiar información laboral con control de su privacidad e identidad para así poder
+    evaluar mejor el mercado laboral.
+    Las lecciones aprendidas desde el punto de vista técnico son las siguientes se narran a continuación.
 
-    [TODO]
+    Desde el punto de vista del desarrollo de la aplicación web, la librería React demuestra ser una herramienta útil y potente
+    que permite desarrollar componentes web fácilmente reutilizables
+    (que de hecho en la mayoría de los casos se han reutilizado dentro de la propia aplicación de este proyecto)
+    de forma muy rápida y orientada a proporcionar una buena experiencia de usuario. Uno de las principales desventajas que se han
+    valorado y que no ha afectado a este proyecto es la manera que impone React de empotrar el HTML de los componentes en el código JavaScript
+    lo que resulta positivo en cuanto a velocidad de desarrollo y encapsulamiento de los propios componentes, pero resultaría un problema a la hora
+    de evolucionar en caso de necesidad los estilos CSS de los componentes de forma autónoma, sin tener que modificar el código fuente la aplicación,
+    es decir, no permite trabajar sobre estilos de forma agnóstica al código JavaScript.
+
+    Atendiendo al uso de arquitectura hexagonal en el desarrollo del servidor, se establecen como principales ventajas la facilidad que
+    proporciona el diseño de capas a la hora de enfocarse en el diseño, desarrollo y pruebas de la lógica de negocio (modelo de dominio)
+    sin tener que pensar en una primera fase en la implementación de cuestiones relacionadas con el transporte y persistencia de los datos
+    (como las APIs REST o los conectores de las bases de datos), para poder realizar estos desarrollos a posteriori de la lógica de negocio
+    y de forma autónoma de esta. Como principal desventaja se apunta a la verbosidad del código, que para poder cumplir con el diseño concéntrico
+    en el que no existen dependencias de las capas internas hacia las más externas, obliga a duplicar en gran medida muchas estructuras de datos
+    y a realizar mapeos de unas a las otras según la capa en la que se esté desarrollando, lo que genera gran cantidad de clases Java y código
+    de mapeo. Esta desventaja podría paliarse utilizando lenguajes menos verbosos que Java, como Scala o Kotlin.
+
+    Para concluir, el uso de la plataforma GitHub como proveedor de autenticación y de información de usuario ha demostrado ser también
+    muy ventajoso para el desarrollo del proyecto porque permite evitar implementar los mecanismos de registro, ingreso a la aplicación,
+    mantenimiento de la sesión, estructuras para almacenamiento de los usuarios, etc., siendo provistas todas estas características por una
+    plataforma persistente. El único punto negativo en este aspecto sería la necesidad de tener que desarrollar conectores ad-hoc si se quisiera
+    integrar esta plataforma con otros proveedores con LinkedIn, ya que cada proveedor implementa el protocolo OAuth2 con distintas características
+    que no permiten al conector utilizado para GitHub ser reutilizable.
 
 
     \section{Trabajos futuros}
@@ -2462,8 +2712,9 @@ Feature: Work experience visibility with negotiations
     Para posibles fases posteriores a este Trabajo Fin de Grado se proponen los siguientes trabajos que podrían mejorar la aplicación:
 
     \begin{itemize}
-        \item Agregar a la aplicación una tecnología de generación de contenedores, como Docker, que permita desplegar
+        \item Agregar a la aplicación una tecnología de generación de contenedores, como Docker~\cite{bib:docker}, que permita desplegar
         el servidor de aplicaciones, la aplicación web y la base de datos en un servidor accesible desde internet fácilmente.
+        \item Realizar pruebas sobre la aplicación con usuarios reales.
         \item Añadir integración vía OAuth con LinkedIn adicionalmente a GitHub, de forma que los usuarios con cuenta de LinkedIn también puedan acceder a la aplicación,
         lo que haría la funcionalidad más accesible a usuarios que no fueran del sector TIC.
         \item Hacer la aplicación totalmente responsiva en dispositivos móviles.
@@ -2478,6 +2729,29 @@ Feature: Work experience visibility with negotiations
     \end{itemize}
 
 
+    \section{Código y estadísitcas}
+    \label{sec:code_and_statistics}
+
+    El código fuente desarrollado para este Trabajo Fin de Grado se puede encontrar en el
+    repositorio de GitHub del proyecto.\footnote{\url{https://github.com/vicengg/protic}}.
+
+    El código del servidor de aplicaciones se compone principalmente de:
+    \begin{itemize}
+        \item 114 clases de Java con un total de 4555 líneas efectivas de código que contienen la lógica del servidor (test incluidos).
+        \item 4 scripts SQL con un total de 558 líneas efectivas que contienen la estructura de la base de datos.
+        \item 9 archivos XML con un total de 492 líneas efectivas que contienen
+        \item 2 archivos de tipo \emph{feature} con las definiciones Gherkin~\cite{bib:gherkin} (Cucumber) de las baterías de pruebas de aceptación.
+        los mapeos de las operaciones de base de datos de MyBatis.
+    \end{itemize}
+
+    El código de la aplicación web se compone principalmente de:
+    \begin{itemize}
+        \item 40 ficheros JavaScript con un total de 2414 líneas efectivas de código que contienen la lógica de la aplicación web (componentes, hooks y helpers).
+        \item 1 archivo CSS con 78 líneas para algunos de los estilos de la aplicación.
+        \item 1 archivo HTML con 20 que carga los componentes de React y librerías.
+    \end{itemize}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % APÉNDICE(S) %
@@ -2487,10 +2761,90 @@ Feature: Work experience visibility with negotiations
     \appendix
 
 
-    \chapter{Manual de usuario}
-    \label{app:manual}
+    \chapter{Mockups del diseño inicial}
+    \label{app:mockups}
 
-    [TODO]
+    En este apéndice se muestran los \emph{mockups} de los diseños antiguos de la aplicación, pertenecientes a la primera
+    fase del proyecto que tuvo lugar en 2016.
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_inicial.PNG}
+        \caption{Vista inicial}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_inicio_sesión.PNG}
+        \caption{Vista inicio de sesión}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_registro_basico.PNG}
+        \caption{Vista registro básico}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_registro_completado.PNG}
+        \caption{Vista registro completado}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_home.PNG}
+        \caption{Vista home}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_men_desplegable.PNG}
+        \caption{Vista menú desplegable}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_busqueda_de_perfiles.PNG}
+        \caption{Vista búsqueda de perfiles}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_resultados_de_perfiles.PNG}
+        \caption{Vista resultados de perfiles}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_nueva_experiencia_laboral.PNG}
+        \caption{Vista nueva experiencia laboral}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_solicitud_negociación.PNG}
+        \caption{Vista solicitud de negociación}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_solicitudes_pendientes.PNG}
+        \caption{Vista solicitudes pendientes}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_informacion_de_perfiles_laborales_adquiridos.PNG}
+        \caption{Vista informacion de perfiles laborales adquiridos}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=7cm, keepaspectratio]{img/old_vista_detalles_información_laboral_adquirida.PNG}
+        \caption{Vista detalles de información laboral adquirida}
+    \end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
