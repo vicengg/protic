@@ -21,7 +21,7 @@ cd protic-app
 npm start
 ```
 4. Acceso a la aplicación: en el navegador introducir
-```http://localhost:8083/```, ingresar conel usuario de GitHub.
+```http://localhost:8083/```, ingresar con el usuario de GitHub.
 
 
 ## Introducción a la aplicación
